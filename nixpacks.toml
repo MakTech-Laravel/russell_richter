@@ -10,7 +10,7 @@ cmds = [
 
 [phases.build]
 cmds = [
-    "npm ci --omit=dev",
+    "npm ci",
     "npm run build"
 ]
 

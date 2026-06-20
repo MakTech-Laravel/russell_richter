@@ -17,10 +17,20 @@ COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 COPY . .
 
+# Use file-based drivers during image build so artisan/vite do not need a live database.
+ENV APP_ENV=local \
+    SESSION_DRIVER=file \
+    CACHE_STORE=file \
+    QUEUE_CONNECTION=sync \
+    DB_CONNECTION=sqlite
+
 RUN cp .env.example .env || touch .env \
     && mkdir -p storage/framework/{views,sessions,cache} storage/logs bootstrap/cache \
-    && composer install --no-dev --optimize-autoloader --no-scripts \
-    && npm install && npm run build \
+    && php artisan key:generate --force --no-interaction \
+    && composer install --no-dev --optimize-autoloader --no-interaction \
+    && php artisan wayfinder:generate --no-interaction \
+    && npm ci \
+    && npm run build \
     && chown -R www-data:www-data /var/www \
     && chmod -R 775 storage bootstrap/cache
 
