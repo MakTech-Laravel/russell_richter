@@ -24,10 +24,12 @@ ENV APP_ENV=local \
     QUEUE_CONNECTION=sync \
     DB_CONNECTION=sqlite
 
-RUN cp .env.example .env || touch .env \
-    && mkdir -p storage/framework/{views,sessions,cache} storage/logs bootstrap/cache \
-    && php artisan key:generate --force --no-interaction \
+RUN APP_ENV=local SESSION_DRIVER=file CACHE_STORE=file QUEUE_CONNECTION=sync DB_CONNECTION=sqlite \
+    cp .env.example .env || touch .env \
+    && mkdir -p storage/framework/{views,sessions,cache} storage/logs bootstrap/cache database \
+    && touch database/database.sqlite \
     && composer install --no-dev --optimize-autoloader --no-interaction \
+    && php artisan key:generate --force --no-interaction \
     && php artisan wayfinder:generate --no-interaction \
     && npm ci \
     && npm run build \
