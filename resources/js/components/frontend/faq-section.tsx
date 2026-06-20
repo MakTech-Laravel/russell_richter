@@ -1,10 +1,7 @@
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+
+import { FrontendSection } from '@/components/frontend/frontend-container';
+import { SectionHeader } from '@/components/frontend/section-header';
 
 interface FaqSectionProps {
     items: ReadonlyArray<{
@@ -14,47 +11,43 @@ interface FaqSectionProps {
 }
 
 export function FaqSection({ items }: FaqSectionProps) {
-    const [openIndex, setOpenIndex] = useState<number | null>(0);
+    const [open, setOpen] = useState<number>(0);
 
     return (
-        <section id="faq" className="ml-section-dark py-20">
-            <div className="container mx-auto px-4">
-                <div className="mx-auto mb-14 max-w-2xl text-center">
-                    <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-ml-gold">
-                        FAQ
-                    </p>
-                    <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
-                        Frequently Asked Questions
-                    </h2>
-                    <p className="text-gray-600">
-                        Everything you need to know about our mobile oil change service.
-                    </p>
-                </div>
-
-                <div className="mx-auto flex max-w-3xl flex-col gap-3">
-                    {items.map((item, index) => (
-                        <Collapsible
-                            key={item.question}
-                            open={openIndex === index}
-                            onOpenChange={(open) => setOpenIndex(open ? index : null)}
+        <FrontendSection id="faq" narrow>
+            <SectionHeader
+                tag="FAQ"
+                title={
+                    <>
+                        Frequently asked <span className="text-gold-grad">questions</span>
+                    </>
+                }
+            />
+            <div className="mt-10 space-y-3 sm:mt-12">
+                {items.map((item, index) => (
+                    <div key={item.question} className="overflow-hidden rounded-2xl border border-white/10 bg-ink-800">
+                        <button
+                            type="button"
+                            className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left sm:px-5"
+                            onClick={() => setOpen(open === index ? -1 : index)}
                         >
-                            <div className="overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
-                                <CollapsibleTrigger className="flex w-full items-center justify-between px-6 py-4 text-left transition-colors hover:bg-amber-50">
-                                    <span className="pr-4 font-semibold text-gray-900">{item.question}</span>
-                                    <ChevronDown
-                                        className={`size-5 shrink-0 text-ml-gold transition-transform ${openIndex === index ? 'rotate-180' : ''}`}
-                                    />
-                                </CollapsibleTrigger>
-                                <CollapsibleContent>
-                                    <p className="border-t border-gray-200 px-6 py-4 text-sm leading-relaxed text-gray-600">
-                                        {item.answer}
-                                    </p>
-                                </CollapsibleContent>
+                            <span className="text-sm font-bold text-white sm:text-base">{item.question}</span>
+                            <div
+                                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gold-500/40 text-gold-400 transition-transform ${open === index ? 'rotate-45' : ''}`}
+                            >
+                                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                    <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                                </svg>
                             </div>
-                        </Collapsible>
-                    ))}
-                </div>
+                        </button>
+                        {open === index && (
+                            <div className="border-t border-white/5 px-4 py-4 text-sm leading-relaxed text-slate-300 sm:px-5">
+                                {item.answer}
+                            </div>
+                        )}
+                    </div>
+                ))}
             </div>
-        </section>
+        </FrontendSection>
     );
 }

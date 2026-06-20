@@ -9,6 +9,7 @@ use App\Services\StripeCheckoutService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use UnexpectedValueException;
 
@@ -16,7 +17,7 @@ class BookingPaymentController extends Controller
 {
     public function __construct(private StripeCheckoutService $stripeCheckoutService) {}
 
-    public function checkout(Request $request, Booking $booking): RedirectResponse
+    public function checkout(Request $request, Booking $booking): RedirectResponse|SymfonyResponse
     {
         $this->authorize('view', $booking);
 
@@ -26,7 +27,7 @@ class BookingPaymentController extends Controller
 
         $session = $this->stripeCheckoutService->createCheckoutSession($booking);
 
-        return redirect()->away($session->url);
+        return Inertia::location($session->url);
     }
 
     public function success(Request $request, Booking $booking): RedirectResponse

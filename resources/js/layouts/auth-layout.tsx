@@ -1,16 +1,17 @@
 import { Head, Link } from '@inertiajs/react';
 import * as React from 'react';
 
-import AppLogo from '@/components/app-logo';
+import { BrandMark, FullLogo } from '@/components/brand';
+import { home } from '@/routes';
 import { login, register } from '@/routes';
 
 interface AuthLayoutProps {
     children: React.ReactNode;
-    title: string;
+    title: React.ReactNode;
     description: string;
     context?: 'login' | 'register';
-    showHeader?: boolean;
-    showFooter?: boolean;
+    headTitle: string;
+    backHref?: string;
 }
 
 export default function AuthLayout({
@@ -18,85 +19,71 @@ export default function AuthLayout({
     title,
     description,
     context = 'login',
+    headTitle,
+    backHref,
 }: AuthLayoutProps) {
     const isRegisterView = context === 'register';
-    const ctaHref = isRegisterView ? login() : register();
-    const ctaLabel = isRegisterView ? 'Return to login' : 'Create account';
-    const ctaPrompt = isRegisterView ? 'Already have an account?' : 'New to Mobile Lube?';
-
-    const highlights = [
-        {
-            title: 'Book On-Site Service',
-            description: 'Schedule oil changes and maintenance at your home, office, or job site.',
-        },
-        {
-            title: 'Manage Your Vehicles',
-            description: 'Save VIN-based vehicle records and get personalized part recommendations.',
-        },
-        {
-            title: 'Track Service History',
-            description: 'View completed services, bookings, and upcoming appointments anytime.',
-        },
-    ];
+    const switchHref = isRegisterView ? login() : register();
+    const switchLabel = isRegisterView ? 'Sign in' : 'Sign up free';
+    const switchPrompt = isRegisterView ? 'Already have an account?' : "Don't have an account?";
 
     return (
-        <div className="relative min-h-screen overflow-hidden bg-gray-50 text-gray-900">
-            <div className="pointer-events-none absolute inset-0">
-                <div className="absolute -left-32 top-12 h-80 w-80 rounded-full bg-amber-100/80 blur-[120px]" />
-                <div className="absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-amber-50 blur-[140px]" />
+        <div className="flex min-h-screen bg-carbon">
+            <Head title={headTitle} />
+
+            <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-16">
+                <Link
+                    href={backHref ?? home()}
+                    className="mb-8 inline-flex w-max items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-gold-400"
+                >
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    Back to home
+                </Link>
+
+                <FullLogo />
+
+                <h1 className="mt-8 text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
+                    {title}
+                </h1>
+                <p className="mt-2 text-sm text-slate-400">{description}</p>
+
+                <div className="mt-8 max-w-md">{children}</div>
+
+                <p className="mt-6 text-sm text-slate-400">
+                    {switchPrompt}{' '}
+                    <Link href={switchHref} className="font-bold text-gold-400 hover:text-gold-300">
+                        {switchLabel}
+                    </Link>
+                </p>
             </div>
 
-            <div className="relative z-10 flex min-h-screen items-center justify-center px-2 py-12 lg:px-10">
-                <main className="relative w-full max-w-6xl overflow-hidden rounded-[32px] border border-gray-200 bg-white shadow-xl">
-                    <Head title={title} />
-
-                    <div className="absolute inset-x-10 top-0 h-px bg-linear-to-r from-transparent via-ml-gold/60 to-transparent" />
-
-                    <div className="grid gap-10 px-2 py-2 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:py-12">
-                        <section className="flex flex-col gap-8 rounded-3xl border border-gray-100 bg-gray-50 p-6 lg:p-8">
-                            <header className="space-y-5">
-                                <AppLogo className="h-14 w-auto" />
-                                <div className="space-y-2 text-balance">
-                                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-ml-gold">
-                                        Mobile Lube Customer Portal
-                                    </p>
-                                    <h1 className="text-3xl font-semibold leading-tight md:text-4xl">{title}</h1>
-                                    <p className="text-lg text-gray-600">{description}</p>
-                                </div>
-                            </header>
-
-                            <div className="space-y-3">
-                                {highlights.map((highlight) => (
-                                    <div
-                                        key={highlight.title}
-                                        className="rounded-xl border border-gray-200 bg-white p-4"
-                                    >
-                                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ml-gold">
-                                            {highlight.title}
-                                        </p>
-                                        <p className="mt-1 text-sm text-gray-600">{highlight.description}</p>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm">
-                                <p className="text-gray-600">{ctaPrompt}</p>
-                                <Link
-                                    href={ctaHref}
-                                    className="rounded-full ml-gold-gradient px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-ml-black"
-                                >
-                                    {ctaLabel}
-                                </Link>
-                            </div>
-                        </section>
-
-                        <section className="relative flex items-center">
-                            <div className="w-full rounded-3xl border border-gray-100 bg-white p-2 shadow-sm">
-                                {children}
-                            </div>
-                        </section>
+            <div className="relative hidden w-1/2 overflow-hidden lg:block">
+                <div className="absolute inset-0 bg-gradient-to-br from-ink-900 via-ink-800 to-ink-900" />
+                <div className="absolute inset-0 bg-grid-gold opacity-30" />
+                <div className="absolute -right-32 -top-32 h-[500px] w-[500px] rounded-full bg-gold-500/20 blur-3xl" />
+                <div className="absolute -bottom-20 -left-20 h-[400px] w-[400px] rounded-full bg-gold-700/15 blur-3xl" />
+                <div className="relative flex h-full flex-col items-center justify-center p-12">
+                    <div className="absolute right-12 top-12">
+                        <BrandMark className="h-12 w-12" />
                     </div>
-                </main>
+                    <div className="flex flex-col items-center text-center">
+                        <BrandMark className="h-48 w-48 drop-shadow-[0_8px_40px_rgba(255,184,32,0.45)]" />
+                        <h2 className="mt-8 text-4xl font-black uppercase leading-tight text-white">
+                            <span className="text-chrome">Mobile</span>{' '}
+                            <span className="text-gold-grad">Lube</span>
+                        </h2>
+                        <div className="mt-2 text-sm font-bold uppercase tracking-[0.4em] text-gold-400">
+                            We Come To You
+                        </div>
+                        <blockquote className="mt-10 max-w-md text-lg font-medium leading-snug text-slate-300">
+                            &ldquo;Booked an oil change in 60 seconds and was back to work before my coffee got
+                            cold.&rdquo;
+                        </blockquote>
+                        <p className="mt-3 text-sm text-slate-500">— Sarah M., Honda owner</p>
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -2,11 +2,15 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Loader2, Search } from 'lucide-react';
 import { useState } from 'react';
 
+import {
+    DashboardCard,
+    DashboardCardContent,
+    DashboardCardHeader,
+    dashboardInputClass,
+    dashboardLabelClass,
+} from '@/components/dashboard/dashboard-ui';
 import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import UserLayout from '@/layouts/user-layout';
 
 function getCsrfToken(): string {
@@ -101,29 +105,21 @@ export default function Create() {
         post(route('vehicles.store'));
     };
 
-    const inputClass = 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-400';
-
     return (
-        <UserLayout>
+        <UserLayout title="Add Vehicle" subtitle="Enter your VIN to auto-fill vehicle details.">
             <Head title="Add Vehicle" />
 
-            <div className="container mx-auto max-w-2xl px-4 py-8">
-                <div className="mb-6">
-                    <Link href={route('vehicles.index')} className="inline-flex items-center gap-1 text-sm text-ml-gold hover:underline">
-                        <ArrowLeft className="size-4" /> Back to vehicles
-                    </Link>
-                    <h1 className="mt-2 text-3xl font-bold text-gray-900">Add Vehicle</h1>
-                    <p className="text-gray-500">Enter your VIN to auto-fill vehicle details.</p>
-                </div>
+            <div className="mx-auto max-w-2xl space-y-4">
+                <Link href={route('vehicles.index')} className="inline-flex items-center gap-1 text-sm text-gold-400 hover:underline">
+                    <ArrowLeft className="h-4 w-4" /> Back to vehicles
+                </Link>
 
-                <Card className="border-gray-200 bg-white text-gray-900 shadow-sm">
-                    <CardHeader>
-                        <CardTitle>Vehicle Information</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                <DashboardCard>
+                    <DashboardCardHeader title="Vehicle Information" />
+                    <DashboardCardContent>
                         <form onSubmit={submit} className="space-y-6">
                             <div className="space-y-2">
-                                <Label htmlFor="vin" className="text-gray-600">VIN</Label>
+                                <label htmlFor="vin" className={dashboardLabelClass()}>VIN</label>
                                 <div className="flex gap-2">
                                     <Input
                                         id="vin"
@@ -131,19 +127,18 @@ export default function Create() {
                                         onChange={(e) => setData('vin', e.target.value.toUpperCase())}
                                         maxLength={17}
                                         placeholder="17-character VIN"
-                                        className={inputClass}
+                                        className={dashboardInputClass()}
                                         required
                                     />
-                                    <Button
+                                    <button
                                         type="button"
-                                        variant="outline"
                                         onClick={decodeVin}
                                         disabled={decoding || data.vin.length !== 17}
-                                        className="shrink-0 border-amber-200 text-gray-900 hover:bg-amber-50"
+                                        className="ml-btn-outline inline-flex shrink-0"
                                     >
-                                        {decoding ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
+                                        {decoding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
                                         Decode
-                                    </Button>
+                                    </button>
                                 </div>
                                 <InputError message={errors.vin} />
                                 {decodeError && <InputError message={decodeError} />}
@@ -151,66 +146,66 @@ export default function Create() {
 
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="space-y-2">
-                                    <Label htmlFor="year" className="text-gray-600">Year</Label>
-                                    <Input id="year" value={data.year} onChange={(e) => setData('year', e.target.value)} className={inputClass} />
+                                    <label htmlFor="year" className={dashboardLabelClass()}>Year</label>
+                                    <Input id="year" value={data.year} onChange={(e) => setData('year', e.target.value)} className={dashboardInputClass()} />
                                     <InputError message={errors.year} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="make" className="text-gray-600">Make</Label>
-                                    <Input id="make" value={data.make} onChange={(e) => setData('make', e.target.value)} className={inputClass} />
+                                    <label htmlFor="make" className={dashboardLabelClass()}>Make</label>
+                                    <Input id="make" value={data.make} onChange={(e) => setData('make', e.target.value)} className={dashboardInputClass()} />
                                     <InputError message={errors.make} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="model" className="text-gray-600">Model</Label>
-                                    <Input id="model" value={data.model} onChange={(e) => setData('model', e.target.value)} className={inputClass} />
+                                    <label htmlFor="model" className={dashboardLabelClass()}>Model</label>
+                                    <Input id="model" value={data.model} onChange={(e) => setData('model', e.target.value)} className={dashboardInputClass()} />
                                     <InputError message={errors.model} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="trim" className="text-gray-600">Trim</Label>
-                                    <Input id="trim" value={data.trim} onChange={(e) => setData('trim', e.target.value)} className={inputClass} />
+                                    <label htmlFor="trim" className={dashboardLabelClass()}>Trim</label>
+                                    <Input id="trim" value={data.trim} onChange={(e) => setData('trim', e.target.value)} className={dashboardInputClass()} />
                                     <InputError message={errors.trim} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="engine" className="text-gray-600">Engine</Label>
-                                    <Input id="engine" value={data.engine} onChange={(e) => setData('engine', e.target.value)} className={inputClass} />
+                                    <label htmlFor="engine" className={dashboardLabelClass()}>Engine</label>
+                                    <Input id="engine" value={data.engine} onChange={(e) => setData('engine', e.target.value)} className={dashboardInputClass()} />
                                     <InputError message={errors.engine} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="fuel_type" className="text-gray-600">Fuel Type</Label>
-                                    <Input id="fuel_type" value={data.fuel_type} onChange={(e) => setData('fuel_type', e.target.value)} className={inputClass} />
+                                    <label htmlFor="fuel_type" className={dashboardLabelClass()}>Fuel Type</label>
+                                    <Input id="fuel_type" value={data.fuel_type} onChange={(e) => setData('fuel_type', e.target.value)} className={dashboardInputClass()} />
                                     <InputError message={errors.fuel_type} />
                                 </div>
                             </div>
 
                             <div className="grid gap-4 sm:grid-cols-3">
                                 <div className="space-y-2">
-                                    <Label htmlFor="mileage" className="text-gray-600">Mileage</Label>
-                                    <Input id="mileage" type="number" value={data.mileage} onChange={(e) => setData('mileage', e.target.value)} className={inputClass} />
+                                    <label htmlFor="mileage" className={dashboardLabelClass()}>Mileage</label>
+                                    <Input id="mileage" type="number" value={data.mileage} onChange={(e) => setData('mileage', e.target.value)} className={dashboardInputClass()} />
                                     <InputError message={errors.mileage} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="license_plate" className="text-gray-600">License Plate</Label>
-                                    <Input id="license_plate" value={data.license_plate} onChange={(e) => setData('license_plate', e.target.value)} className={inputClass} />
+                                    <label htmlFor="license_plate" className={dashboardLabelClass()}>License Plate</label>
+                                    <Input id="license_plate" value={data.license_plate} onChange={(e) => setData('license_plate', e.target.value)} className={dashboardInputClass()} />
                                     <InputError message={errors.license_plate} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="color" className="text-gray-600">Color</Label>
-                                    <Input id="color" value={data.color} onChange={(e) => setData('color', e.target.value)} className={inputClass} />
+                                    <label htmlFor="color" className={dashboardLabelClass()}>Color</label>
+                                    <Input id="color" value={data.color} onChange={(e) => setData('color', e.target.value)} className={dashboardInputClass()} />
                                     <InputError message={errors.color} />
                                 </div>
                             </div>
 
                             <div className="flex gap-3">
-                                <Button type="submit" disabled={processing} className="ml-gold-gradient border-0 font-bold text-ml-black">
+                                <button type="submit" disabled={processing} className="ml-btn-primary inline-flex">
                                     {processing ? 'Saving...' : 'Add Vehicle'}
-                                </Button>
-                                <Button asChild type="button" variant="outline" className="border-amber-200 text-gray-900 hover:bg-amber-50">
-                                    <Link href={route('vehicles.index')}>Cancel</Link>
-                                </Button>
+                                </button>
+                                <Link href={route('vehicles.index')} className="ml-btn-outline inline-flex">
+                                    Cancel
+                                </Link>
                             </div>
                         </form>
-                    </CardContent>
-                </Card>
+                    </DashboardCardContent>
+                </DashboardCard>
             </div>
         </UserLayout>
     );

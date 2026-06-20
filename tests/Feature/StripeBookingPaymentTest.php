@@ -65,6 +65,26 @@ it('redirects unpaid bookings to stripe checkout on retry', function () {
         ->assertRedirect('https://checkout.stripe.com/retry');
 });
 
+it('returns an inertia location response for stripe checkout from spa requests', function () {
+    $user = User::factory()->create();
+    $booking = Booking::factory()->create([
+        'user_id' => $user->id,
+        'payment_status' => PaymentStatus::Unpaid,
+    ]);
+
+    mock(StripeCheckoutService::class)
+        ->shouldReceive('createCheckoutSession')
+        ->once()
+        ->andReturn(fakeStripeSession('cs_test_inertia', 'https://checkout.stripe.com/inertia'));
+
+    $this->actingAs($user)
+        ->post(route('bookings.payment.checkout', $booking), [], [
+            'X-Inertia' => 'true',
+        ])
+        ->assertStatus(409)
+        ->assertHeader('X-Inertia-Location', 'https://checkout.stripe.com/inertia');
+});
+
 it('does not retry checkout for paid bookings', function () {
     $user = User::factory()->create();
     $booking = Booking::factory()->create([

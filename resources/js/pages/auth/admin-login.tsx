@@ -1,12 +1,11 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
+import { authInputClass, AuthField } from '@/components/auth/auth-field';
+import { BrandMark, FullLogo } from '@/components/brand';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
 import { Spinner } from '@/components/ui/spinner';
-import AuthLayout from '@/layouts/auth-layout';
+import { home } from '@/routes';
 
 export default function AdminLogin() {
     const { data, setData, post, processing, errors } = useForm({
@@ -21,102 +20,77 @@ export default function AdminLogin() {
     };
 
     return (
-        <AuthLayout
-            title="Admin Access"
-            description="Enter your admin credentials to continue"
-            context="login"
-        >
+        <div className="flex min-h-screen bg-carbon">
             <Head title="Admin Login" />
 
-            <div className="w-full space-y-3 md:space-y-6 lg:space-y-10 px-2 py-4 lg:py-10">
-                <div className="rounded-3xl border border-primary-50/40 bg-primary-50/20 px-4 py-3 text-sm text-primary-600 sm:px-5 sm:py-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <p className="text-xs uppercase tracking-[0.35em] text-primary-600">Admin Portal</p>
-                    <p className="mt-1 text-base font-medium text-primary-600">
-                        Sign in with your administrator credentials.
-                    </p>
-                </div>
+            <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-16">
+                <Link
+                    href={home()}
+                    className="mb-8 inline-flex w-max items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-gold-400"
+                >
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    Back to home
+                </Link>
 
-                <form onSubmit={submit} className="space-y-3 px-1 sm:space-y-6 sm:px-0">
-                    <div className="space-y-3 sm:space-y-6">
-                        <div className="rounded-3xl border border-primary-50/40 bg-primary-50/20 p-4 text-foreground shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 sm:p-5">
-                            <Label
-                                htmlFor="email"
-                                className="text-xs font-semibold uppercase tracking-[0.35em] text-primary-500"
-                            >
-                                Email address
-                            </Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}
-                                required
-                                autoFocus
-                                placeholder="admin@company.com"
-                                className="mt-2 h-11 rounded-2xl border border-muted/60 bg-white text-sm text-primary-500 placeholder:text-primary-500/60 focus:border-primary-400 focus-visible:ring-2 focus-visible:ring-primary-200 sm:h-12 sm:text-base"
-                            />
-                            <InputError message={errors.email} />
-                        </div>
+                <FullLogo />
 
-                        <div className="rounded-3xl border border-primary-50/40 bg-primary-50/20 p-4 text-foreground shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 sm:p-5">
-                            <Label
-                                htmlFor="password"
-                                className="text-xs font-semibold uppercase tracking-[0.35em] text-primary-500"
-                            >
-                                Password
-                            </Label>
-                            <PasswordInput
-                                id="password"
-                                value={data.password}
-                                onChange={(e) => setData('password', e.target.value)}
-                                required
-                                placeholder="••••••••"
-                                className="mt-2 h-11 rounded-2xl border border-muted/60 bg-white text-sm text-primary-500 placeholder:text-primary-500/60 focus:border-primary-400 focus-visible:ring-2 focus-visible:ring-primary-200 sm:h-12 sm:text-base"
-                            />
-                            <InputError message={errors.password} />
-                        </div>
-                    </div>
+                <h1 className="mt-8 text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
+                    Admin <span className="text-gold-grad">portal</span>
+                </h1>
+                <p className="mt-2 text-sm text-slate-400">
+                    Sign in to manage bookings, technicians, routes, and shop operations.
+                </p>
 
-                    <div className="space-y-3 sm:space-y-4">
-                        <div className="flex flex-wrap items-center gap-3 rounded-3xl border border-primary-50/40 bg-primary-50/20 px-3 py-3 text-xs text-primary-500/80 animate-in fade-in slide-in-from-bottom-2 duration-300 sm:px-4">
-                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-white/15 text-lg">
-                                🛡️
-                            </span>
-                            Admin-only restricted access · Audit logged
-                        </div>
+                <form onSubmit={submit} className="mt-8 max-w-md space-y-4">
+                    <AuthField id="email" label="Email" error={errors.email}>
+                        <Input
+                            id="email"
+                            type="email"
+                            value={data.email}
+                            onChange={(e) => setData('email', e.target.value)}
+                            required
+                            autoFocus
+                            placeholder="admin@mobilelube.co"
+                            className={authInputClass()}
+                        />
+                    </AuthField>
 
-                        <Button
-                            type="submit"
-                            className="group relative w-full overflow-hidden rounded-3xl bg-gradient-to-r from-primary-500 via-primary-400 to-primary-600 py-4 text-sm font-semibold tracking-wide text-gray-900 shadow-lg transition hover:brightness-110 sm:py-5 sm:text-base"
-                            disabled={processing}
-                        >
-                            <span className="relative flex items-center justify-center gap-2">
-                                {processing ? (
-                                    <Spinner className="h-4 w-4" />
-                                ) : (
-                                    <>
-                                        <span>Admin Login</span>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={1.5}
-                                            stroke="currentColor"
-                                            className="h-5 w-5 transition group-hover:translate-x-1"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M13.5 4.5 21 12l-7.5 7.5M21 12H3"
-                                            />
-                                        </svg>
-                                    </>
-                                )}
-                            </span>
-                        </Button>
-                    </div>
+                    <AuthField id="password" label="Password" error={errors.password}>
+                        <PasswordInput
+                            id="password"
+                            value={data.password}
+                            onChange={(e) => setData('password', e.target.value)}
+                            required
+                            placeholder="••••••••"
+                            className={authInputClass()}
+                        />
+                    </AuthField>
+
+                    <button
+                        type="submit"
+                        disabled={processing}
+                        className="ml-btn-primary flex h-12 w-full items-center justify-center gap-2 rounded-lg text-sm uppercase tracking-wider disabled:opacity-50"
+                    >
+                        {processing ? <Spinner className="h-4 w-4" /> : 'Admin sign in'}
+                    </button>
                 </form>
             </div>
-        </AuthLayout>
+
+            <div className="relative hidden w-1/2 overflow-hidden lg:block">
+                <div className="absolute inset-0 bg-gradient-to-br from-ink-900 via-ink-800 to-ink-900" />
+                <div className="absolute inset-0 bg-grid-gold opacity-30" />
+                <div className="relative flex h-full flex-col items-center justify-center p-12 text-center">
+                    <BrandMark className="h-48 w-48 drop-shadow-[0_8px_40px_rgba(255,184,32,0.45)]" />
+                    <h2 className="mt-8 text-3xl font-black uppercase text-white">
+                        Shop <span className="text-gold-grad">operations</span>
+                    </h2>
+                    <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-400">
+                        Manage bookings, assign technicians, optimize routes, and oversee your mobile service fleet.
+                    </p>
+                </div>
+            </div>
+        </div>
     );
 }

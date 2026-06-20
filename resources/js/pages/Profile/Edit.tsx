@@ -1,17 +1,21 @@
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { Camera, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import {
+    DashboardCard,
+    DashboardCardContent,
+    DashboardCardHeader,
+    dashboardInputClass,
+    dashboardLabelClass,
+} from '@/components/dashboard/dashboard-ui';
+import InputError from '@/components/input-error';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useInitials } from '@/hooks/use-initials';
-import { UserHeader } from '@/layouts/partials/user/header';
+import UserLayout from '@/layouts/user-layout';
 import { type User } from '@/types';
-
 
 interface Props {
     user: User;
@@ -58,33 +62,31 @@ export default function EditProfile({ user }: Props) {
     };
 
     return (
-        <div className="min-h-screen bg-background">
-            <UserHeader />
-            <main className="container mx-auto px-4 py-8">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Edit Profile</CardTitle>
-                        <CardDescription>Update your profile information</CardDescription>
-                    </CardHeader>
-                    <CardContent>
+        <UserLayout title="Edit Profile" subtitle="Update your profile information">
+            <Head title="Edit Profile" />
+
+            <div className="mx-auto max-w-2xl">
+                <DashboardCard>
+                    <DashboardCardHeader title="Profile Settings" />
+                    <DashboardCardContent>
                         <form onSubmit={submit} className="space-y-6">
                             <div className="flex flex-col items-center gap-4">
                                 <div className="relative">
-                                    <Avatar className="h-24 w-24">
+                                    <Avatar className="h-24 w-24 border border-white/10">
                                         <AvatarImage
                                             src={previewUrl || user.avatar_url || user.avatar}
                                             alt={user.name}
                                         />
-                                        <AvatarFallback className="bg-violet-600 text-gray-900 text-2xl">
+                                        <AvatarFallback className="bg-gold-500/20 text-2xl text-gold-400">
                                             {getInitials(user.name)}
                                         </AvatarFallback>
                                     </Avatar>
-                                    <Label
+                                    <label
                                         htmlFor="avatar"
-                                        className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-violet-600 text-gray-900 hover:bg-violet-700 transition-colors"
+                                        className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gold-500 text-ink-900 transition-colors hover:bg-gold-400"
                                     >
                                         <Camera className="h-4 w-4" />
-                                    </Label>
+                                    </label>
                                     <Input
                                         id="avatar"
                                         type="file"
@@ -94,59 +96,55 @@ export default function EditProfile({ user }: Props) {
                                     />
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-sm font-medium">Profile Picture</p>
-                                    <p className="text-xs text-muted-foreground">Click the camera icon to upload</p>
+                                    <p className="text-sm font-medium text-white">Profile Picture</p>
+                                    <p className="text-xs text-slate-500">Click the camera icon to upload</p>
                                 </div>
-                                {errors.avatar && (
-                                    <p className="text-sm text-red-500">{errors.avatar}</p>
-                                )}
+                                <InputError message={errors.avatar} />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="name">Name</Label>
+                                <label htmlFor="name" className={dashboardLabelClass()}>Name</label>
                                 <Input
                                     id="name"
                                     type="text"
                                     value={data.name}
-                                    onChange={e => setData('name', e.target.value)}
+                                    onChange={(e) => setData('name', e.target.value)}
+                                    className={dashboardInputClass()}
                                 />
-                                {errors.name && (
-                                    <p className="text-sm text-red-500">{errors.name}</p>
-                                )}
+                                <InputError message={errors.name} />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
+                                <label htmlFor="email" className={dashboardLabelClass()}>Email</label>
                                 <Input
                                     id="email"
                                     type="email"
                                     value={data.email}
-                                    onChange={e => setData('email', e.target.value)}
+                                    onChange={(e) => setData('email', e.target.value)}
+                                    className={dashboardInputClass()}
                                 />
-                                {errors.email && (
-                                    <p className="text-sm text-red-500">{errors.email}</p>
-                                )}
+                                <InputError message={errors.email} />
                             </div>
 
-                            <div className="space-y-4 border-t pt-6">
-                                <h3 className="text-lg font-medium">Change Password</h3>
-                                <p className="text-sm text-muted-foreground">Leave blank if you don't want to change your password</p>
+                            <div className="space-y-4 border-t border-white/5 pt-6">
+                                <h3 className="text-lg font-medium text-white">Change Password</h3>
+                                <p className="text-sm text-slate-400">Leave blank if you don&apos;t want to change your password</p>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="password">New Password</Label>
+                                    <label htmlFor="password" className={dashboardLabelClass()}>New Password</label>
                                     <div className="relative">
                                         <Input
                                             id="password"
                                             type={showPassword ? 'text' : 'password'}
                                             value={data.password}
-                                            onChange={e => setData('password', e.target.value)}
+                                            onChange={(e) => setData('password', e.target.value)}
                                             autoComplete="new-password"
-                                            className="pr-10"
+                                            className={`${dashboardInputClass()} pr-10`}
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors hover:text-slate-300"
                                         >
                                             {showPassword ? (
                                                 <EyeOff className="h-4 w-4" />
@@ -155,26 +153,24 @@ export default function EditProfile({ user }: Props) {
                                             )}
                                         </button>
                                     </div>
-                                    {errors.password && (
-                                        <p className="text-sm text-red-500">{errors.password}</p>
-                                    )}
+                                    <InputError message={errors.password} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="password_confirmation">Confirm New Password</Label>
+                                    <label htmlFor="password_confirmation" className={dashboardLabelClass()}>Confirm New Password</label>
                                     <div className="relative">
                                         <Input
                                             id="password_confirmation"
                                             type={showPasswordConfirmation ? 'text' : 'password'}
                                             value={data.password_confirmation}
-                                            onChange={e => setData('password_confirmation', e.target.value)}
+                                            onChange={(e) => setData('password_confirmation', e.target.value)}
                                             autoComplete="new-password"
-                                            className="pr-10"
+                                            className={`${dashboardInputClass()} pr-10`}
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors hover:text-slate-300"
                                         >
                                             {showPasswordConfirmation ? (
                                                 <EyeOff className="h-4 w-4" />
@@ -183,19 +179,17 @@ export default function EditProfile({ user }: Props) {
                                             )}
                                         </button>
                                     </div>
-                                    {errors.password_confirmation && (
-                                        <p className="text-sm text-red-500">{errors.password_confirmation}</p>
-                                    )}
+                                    <InputError message={errors.password_confirmation} />
                                 </div>
                             </div>
 
-                            <Button type="submit" disabled={processing}>
-                                Save Changes
-                            </Button>
+                            <button type="submit" disabled={processing} className="ml-btn-primary inline-flex">
+                                {processing ? 'Saving...' : 'Save Changes'}
+                            </button>
                         </form>
-                    </CardContent>
-                </Card>
-            </main>
-        </div>
+                    </DashboardCardContent>
+                </DashboardCard>
+            </div>
+        </UserLayout>
     );
 }

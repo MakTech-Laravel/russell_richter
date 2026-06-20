@@ -507,18 +507,39 @@
   animation: fadeIn 0.8s ease-out 0.4s both;
 }
 
-/* Mobile Lube brand — light theme */
+/* Mobile Lube brand — dark gold theme */
 :root {
-  --ml-gold: #d4af37;
-  --ml-gold-light: #f0cc5a;
-  --ml-gold-dark: #a8891f;
-  --ml-black: #111827;
-  --ml-charcoal: #f9fafb;
-  --ml-gray: #e5e7eb;
-  --ml-silver: #6b7280;
+  --ml-gold: #f5a000;
+  --ml-gold-light: #ffcc4a;
+  --ml-gold-dark: #d97f00;
+  --ml-black: #0a0a0a;
+  --ml-charcoal: #141414;
+  --ml-gray: #262626;
+  --ml-silver: #94a3b8;
 }
 
 @theme inline {
+  --container-center: true;
+  --container-padding: 1rem;
+  --container-padding-sm: 1.5rem;
+  --container-padding-lg: 2rem;
+  --container-xl: 72rem;
+  --container-2xl: 80rem;
+  --color-gold-50: #fffaeb;
+  --color-gold-100: #fff1c6;
+  --color-gold-200: #ffe188;
+  --color-gold-300: #ffcc4a;
+  --color-gold-400: #ffb820;
+  --color-gold-500: #f5a000;
+  --color-gold-600: #d97f00;
+  --color-gold-700: #b45a00;
+  --color-gold-800: #924708;
+  --color-gold-900: #783a0c;
+  --color-ink-900: #0a0a0a;
+  --color-ink-800: #141414;
+  --color-ink-700: #1c1c1c;
+  --color-ink-600: #262626;
+  --color-ink-500: #3d3d3d;
   --color-ml-gold: var(--ml-gold);
   --color-ml-gold-light: var(--ml-gold-light);
   --color-ml-gold-dark: var(--ml-gold-dark);
@@ -528,34 +549,123 @@
   --color-ml-silver: var(--ml-silver);
 }
 
-.ml-hero-gradient {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgb(212 175 55 / 0.14), transparent),
-    linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+.text-gold-grad {
+  background: linear-gradient(180deg, #fff1c6 0%, #ffcc4a 35%, #d97f00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.text-chrome {
+  background: linear-gradient(180deg, #ffffff 0%, #e5e7eb 45%, #9ca3af 70%, #f8fafc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-carbon {
+  background-color: #0a0a0a;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 184, 32, 0.08), transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(255, 184, 32, 0.04), transparent 45%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
+}
+
+.bg-grid-gold {
+  background-image:
+    linear-gradient(rgba(255, 184, 32, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 184, 32, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 .ml-gold-gradient {
-  background: linear-gradient(135deg, var(--ml-gold-light) 0%, var(--ml-gold) 50%, var(--ml-gold-dark) 100%);
+  background: linear-gradient(180deg, var(--ml-gold-light) 0%, var(--ml-gold) 50%, var(--ml-gold-dark) 100%);
 }
 
-.ml-section-dark {
-  background-color: #f9fafb;
+.ml-btn-primary {
+  background: linear-gradient(180deg, #ffcc4a 0%, #f5a000 50%, #d97f00 100%);
+  color: #0a0a0a;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(255, 184, 32, 0.35);
+  transition: all 0.15s ease;
+}
+
+.ml-btn-primary:hover {
+  background: linear-gradient(180deg, #ffe188 0%, #ffb820 50%, #f5a000 100%);
+}
+
+.ml-btn-outline {
+  border: 1px solid rgba(245, 160, 0, 0.4);
+  background: transparent;
+  color: #ffcc4a;
+  transition: all 0.15s ease;
+}
+
+.ml-btn-outline:hover {
+  border-color: #ffb820;
+  background: rgba(245, 160, 0, 0.1);
+}
+
+.ml-btn-ghost {
+  color: #ffcc4a;
+  transition: all 0.15s ease;
+}
+
+.ml-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .ml-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
+  background: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .ml-card:hover {
-  border-color: rgb(212 175 55 / 0.45);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
+  border-color: rgba(245, 160, 0, 0.4);
   transform: translateY(-4px);
 }
 
 .ml-pricing-popular {
-  border-color: var(--ml-gold);
-  box-shadow: 0 4px 24px rgb(212 175 55 / 0.18);
+  border-color: rgba(245, 160, 0, 0.6);
+  box-shadow: 0 0 60px -15px rgba(255, 184, 32, 0.4);
+}
+
+.ml-auth-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #141414;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  color: #fff;
+}
+
+.ml-auth-input::placeholder {
+  color: #64748b;
+}
+
+.ml-auth-input:focus {
+  border-color: rgba(245, 160, 0, 0.5);
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(245, 160, 0, 0.3);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f5a000;
 }

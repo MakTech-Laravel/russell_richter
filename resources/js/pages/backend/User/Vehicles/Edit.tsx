@@ -1,11 +1,15 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
 
+import {
+    DashboardCard,
+    DashboardCardContent,
+    DashboardCardHeader,
+    dashboardInputClass,
+    dashboardLabelClass,
+} from '@/components/dashboard/dashboard-ui';
 import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import UserLayout from '@/layouts/user-layout';
 
 interface Vehicle {
@@ -22,26 +26,21 @@ interface EditProps {
 }
 
 export default function Edit({ vehicle }: EditProps) {
-    const inputClass = 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-400';
-
     return (
-        <UserLayout>
+        <UserLayout
+            title="Edit Vehicle"
+            subtitle={`${vehicle.display_name} · ${vehicle.vin}`}
+        >
             <Head title={`Edit ${vehicle.display_name}`} />
 
-            <div className="container mx-auto max-w-lg px-4 py-8">
-                <div className="mb-6">
-                    <Link href={route('vehicles.show', vehicle.id)} className="inline-flex items-center gap-1 text-sm text-ml-gold hover:underline">
-                        <ArrowLeft className="size-4" /> Back to vehicle
-                    </Link>
-                    <h1 className="mt-2 text-3xl font-bold text-gray-900">Edit Vehicle</h1>
-                    <p className="text-gray-500">{vehicle.display_name} · {vehicle.vin}</p>
-                </div>
+            <div className="mx-auto max-w-lg space-y-4">
+                <Link href={route('vehicles.show', vehicle.id)} className="inline-flex items-center gap-1 text-sm text-gold-400 hover:underline">
+                    <ArrowLeft className="h-4 w-4" /> Back to vehicle
+                </Link>
 
-                <Card className="border-gray-200 bg-white text-gray-900 shadow-sm">
-                    <CardHeader>
-                        <CardTitle>Update Details</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                <DashboardCard>
+                    <DashboardCardHeader title="Update Details" />
+                    <DashboardCardContent>
                         <Form
                             action={route('vehicles.update', vehicle.id)}
                             method="put"
@@ -50,52 +49,52 @@ export default function Edit({ vehicle }: EditProps) {
                             {({ processing, errors }) => (
                                 <>
                                     <div className="space-y-2">
-                                        <Label htmlFor="mileage" className="text-gray-600">Mileage</Label>
+                                        <label htmlFor="mileage" className={dashboardLabelClass()}>Mileage</label>
                                         <Input
                                             id="mileage"
                                             name="mileage"
                                             type="number"
                                             defaultValue={vehicle.mileage ?? ''}
-                                            className={inputClass}
+                                            className={dashboardInputClass()}
                                         />
                                         <InputError message={errors.mileage} />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="license_plate" className="text-gray-600">License Plate</Label>
+                                        <label htmlFor="license_plate" className={dashboardLabelClass()}>License Plate</label>
                                         <Input
                                             id="license_plate"
                                             name="license_plate"
                                             defaultValue={vehicle.license_plate ?? ''}
-                                            className={inputClass}
+                                            className={dashboardInputClass()}
                                         />
                                         <InputError message={errors.license_plate} />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="color" className="text-gray-600">Color</Label>
+                                        <label htmlFor="color" className={dashboardLabelClass()}>Color</label>
                                         <Input
                                             id="color"
                                             name="color"
                                             defaultValue={vehicle.color ?? ''}
-                                            className={inputClass}
+                                            className={dashboardInputClass()}
                                         />
                                         <InputError message={errors.color} />
                                     </div>
 
                                     <div className="flex gap-3">
-                                        <Button type="submit" disabled={processing} className="ml-gold-gradient border-0 font-bold text-ml-black">
+                                        <button type="submit" disabled={processing} className="ml-btn-primary inline-flex">
                                             {processing ? 'Saving...' : 'Save Changes'}
-                                        </Button>
-                                        <Button asChild type="button" variant="outline" className="border-amber-200 text-gray-900 hover:bg-amber-50">
-                                            <Link href={route('vehicles.show', vehicle.id)}>Cancel</Link>
-                                        </Button>
+                                        </button>
+                                        <Link href={route('vehicles.show', vehicle.id)} className="ml-btn-outline inline-flex">
+                                            Cancel
+                                        </Link>
                                     </div>
                                 </>
                             )}
                         </Form>
-                    </CardContent>
-                </Card>
+                    </DashboardCardContent>
+                </DashboardCard>
             </div>
         </UserLayout>
     );

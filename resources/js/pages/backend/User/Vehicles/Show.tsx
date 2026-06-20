@@ -1,8 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Edit } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    DashboardCard,
+    DashboardCardContent,
+    DashboardCardHeader,
+} from '@/components/dashboard/dashboard-ui';
 import UserLayout from '@/layouts/user-layout';
 
 interface Vehicle {
@@ -33,42 +36,37 @@ function DetailRow({ label, value }: { label: string; value: string | number | n
     }
 
     return (
-        <div className="flex justify-between border-b border-gray-200 py-3 last:border-0">
-            <span className="text-gray-500">{label}</span>
-            <span className="font-medium">{value}</span>
+        <div className="flex justify-between border-b border-white/5 py-3 last:border-0">
+            <span className="text-slate-400">{label}</span>
+            <span className="font-medium text-white">{value}</span>
         </div>
     );
 }
 
 export default function Show({ vehicle }: ShowProps) {
     return (
-        <UserLayout>
+        <UserLayout
+            title={vehicle.display_name}
+            subtitle={vehicle.vin}
+            actions={
+                <Link href={route('vehicles.edit', vehicle.id)} className="ml-btn-outline inline-flex">
+                    <Edit className="h-4 w-4" /> Edit
+                </Link>
+            }
+        >
             <Head title={vehicle.display_name} />
 
-            <div className="container mx-auto max-w-2xl px-4 py-8">
-                <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                        <Link href={route('vehicles.index')} className="inline-flex items-center gap-1 text-sm text-ml-gold hover:underline">
-                            <ArrowLeft className="size-4" /> Back to vehicles
-                        </Link>
-                        <h1 className="mt-2 text-3xl font-bold text-gray-900">{vehicle.display_name}</h1>
-                        <p className="font-mono text-sm text-gray-400">{vehicle.vin}</p>
-                    </div>
-                    <Button asChild variant="outline" className="border-amber-200 text-gray-900 hover:bg-amber-50">
-                        <Link href={route('vehicles.edit', vehicle.id)}>
-                            <Edit className="size-4" /> Edit
-                        </Link>
-                    </Button>
-                </div>
+            <div className="mx-auto max-w-2xl space-y-4">
+                <Link href={route('vehicles.index')} className="inline-flex items-center gap-1 text-sm text-gold-400 hover:underline">
+                    <ArrowLeft className="h-4 w-4" /> Back to vehicles
+                </Link>
 
-                <Card className="border-gray-200 bg-white text-gray-900 shadow-sm">
-                    <CardHeader>
-                        <CardTitle>Vehicle Details</CardTitle>
-                        {vehicle.decoded_at && (
-                            <p className="text-xs text-gray-400">VIN decoded {vehicle.decoded_at}</p>
-                        )}
-                    </CardHeader>
-                    <CardContent>
+                <DashboardCard>
+                    <DashboardCardHeader
+                        title="Vehicle Details"
+                        subtitle={vehicle.decoded_at ? `VIN decoded ${vehicle.decoded_at}` : undefined}
+                    />
+                    <DashboardCardContent>
                         <DetailRow label="Year" value={vehicle.year} />
                         <DetailRow label="Make" value={vehicle.make} />
                         <DetailRow label="Model" value={vehicle.model} />
@@ -80,14 +78,12 @@ export default function Show({ vehicle }: ShowProps) {
                         <DetailRow label="Mileage" value={vehicle.mileage != null ? `${vehicle.mileage.toLocaleString()} mi` : null} />
                         <DetailRow label="License Plate" value={vehicle.license_plate} />
                         <DetailRow label="Color" value={vehicle.color} />
-                    </CardContent>
-                </Card>
+                    </DashboardCardContent>
+                </DashboardCard>
 
-                <div className="mt-6">
-                    <Button asChild className="ml-gold-gradient border-0 font-bold text-ml-black">
-                        <Link href={route('bookings.create')}>Book Service for This Vehicle</Link>
-                    </Button>
-                </div>
+                <Link href={route('bookings.create')} className="ml-btn-primary inline-flex">
+                    Book Service for This Vehicle
+                </Link>
             </div>
         </UserLayout>
     );

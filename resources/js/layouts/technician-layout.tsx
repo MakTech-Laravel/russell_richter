@@ -3,40 +3,39 @@ import { type ReactNode } from 'react';
 
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Toaster } from '@/components/ui/sonner';
-import { customerNav } from '@/config/dashboard-nav';
+import { technicianNav } from '@/config/dashboard-nav';
 import { type SharedData } from '@/types';
 
-interface UserLayoutProps {
+interface TechnicianLayoutProps {
     children: ReactNode;
     title?: string;
     subtitle?: string;
     actions?: ReactNode;
 }
 
-export default function UserLayout({
+export default function TechnicianLayout({
     children,
-    title = 'Dashboard',
+    title = 'My Jobs',
     subtitle,
     actions,
-}: UserLayoutProps) {
-    const { auth, portal } = usePage<SharedData>().props;
-    const user = auth.user;
+}: TechnicianLayoutProps) {
+    const { auth } = usePage<SharedData>().props;
+    const technician = auth.technician;
 
-    if (!user) {
+    if (!technician) {
         return null;
     }
 
     return (
         <>
             <DashboardShell
-                portalLabel="Customer Portal"
-                nav={customerNav}
-                user={{ name: user.name, email: user.email }}
-                logoutUrl={route('logout')}
+                portalLabel="Technician Portal"
+                nav={technicianNav}
+                user={{ name: technician.name, email: technician.email }}
+                logoutUrl={route('technician.logout')}
                 title={title}
                 subtitle={subtitle}
                 actions={actions}
-                pendingBookings={portal?.pending_bookings ?? 0}
             >
                 {children}
             </DashboardShell>

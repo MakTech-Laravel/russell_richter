@@ -1,13 +1,9 @@
-import {
-    Clock,
-    MapPin,
-    Shield,
-    Sparkles,
-    Star,
-    Truck,
-} from 'lucide-react';
+import { Calendar, Clock, Droplets, MapPin, Shield, Sparkles, Wrench } from 'lucide-react';
 
-const iconList = [Truck, Clock, Shield, Sparkles, Star, MapPin];
+import { FrontendSection } from '@/components/frontend/frontend-container';
+import { SectionHeader } from '@/components/frontend/section-header';
+
+const iconList = [MapPin, Clock, Droplets, Shield, Sparkles, Wrench, Calendar, Shield] as const;
 
 interface WhyChooseSectionProps {
     items: ReadonlyArray<{
@@ -18,38 +14,36 @@ interface WhyChooseSectionProps {
 
 export function WhyChooseSection({ items }: WhyChooseSectionProps) {
     return (
-        <section className="bg-white py-20">
-            <div className="container mx-auto px-4">
-                <div className="mx-auto mb-14 max-w-2xl text-center">
-                    <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-ml-gold">
-                        Why Mobile Lube
-                    </p>
-                    <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
-                        Why Choose Us
-                    </h2>
-                    <p className="text-gray-600">
-                        Reliable mobile car care built around your schedule, not ours.
-                    </p>
-                </div>
+        <FrontendSection id="why">
+            <SectionHeader
+                tag="Why Mobile Lube"
+                title={
+                    <>
+                        Built for drivers who <span className="text-gold-grad">value their time</span>
+                    </>
+                }
+                subtitle="From single-vehicle owners to enterprise fleets, our service model is faster, cleaner, and more transparent than a traditional shop."
+            />
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-5">
+                {items.map((item, index) => {
+                    const Icon = iconList[index % iconList.length];
 
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {items.map((item, index) => {
-                        const Icon = iconList[index % iconList.length];
-
-                        return (
-                            <div key={item.title} className="flex gap-4 rounded-xl border border-gray-200 p-6 transition-colors hover:border-amber-200">
-                                <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-amber-50">
-                                    <Icon className="size-6 text-ml-gold" />
-                                </div>
-                                <div>
-                                    <h3 className="mb-1 font-semibold text-gray-900">{item.title}</h3>
-                                    <p className="text-sm text-gray-500">{item.description}</p>
-                                </div>
+                    return (
+                        <div
+                            key={item.title}
+                            className="rounded-2xl border border-white/5 bg-ink-800/60 p-5 transition hover:border-gold-500/30"
+                        >
+                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-gold-300 to-gold-600 text-ink-900 shadow-lg shadow-gold-700/30">
+                                <Icon className="h-5 w-5" />
                             </div>
-                        );
-                    })}
-                </div>
+                            <h4 className="mt-4 text-base font-bold uppercase tracking-wide text-white">
+                                {item.title}
+                            </h4>
+                            <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{item.description}</p>
+                        </div>
+                    );
+                })}
             </div>
-        </section>
+        </FrontendSection>
     );
 }

@@ -1,8 +1,13 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Calendar, Car } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    DashboardCard,
+    DashboardCardContent,
+    DashboardCardHeader,
+    StatusPill,
+    dashboardRowLinkClass,
+} from '@/components/dashboard/dashboard-ui';
 import AdminLayout from '@/layouts/admin-layout';
 
 interface Customer {
@@ -43,9 +48,9 @@ function DetailRow({ label, value }: { label: string; value: string | null | und
     }
 
     return (
-        <div className="flex justify-between border-b border-gray-200 py-3 last:border-0">
-            <span className="text-gray-500">{label}</span>
-            <span className="font-medium">{value}</span>
+        <div className="flex justify-between border-b border-white/5 py-3 last:border-0">
+            <span className="text-slate-400">{label}</span>
+            <span className="font-medium text-white">{value}</span>
         </div>
     );
 }
@@ -54,83 +59,83 @@ export default function Show({ customer, vehicles, bookings }: ShowProps) {
     const fullAddress = [customer.address_line, customer.city, customer.state, customer.zip].filter(Boolean).join(', ');
 
     return (
-        <AdminLayout>
+        <AdminLayout title={customer.name} subtitle={customer.email}>
             <Head title={customer.name} />
 
-            <div className="bg-white px-4 py-8 text-gray-900">
-                <div className="container mx-auto max-w-4xl">
-                    <div className="mb-6">
-                        <Link href={route('admin.customers.index')} className="inline-flex items-center gap-1 text-sm text-ml-gold hover:underline">
-                            <ArrowLeft className="size-4" /> Back to customers
-                        </Link>
-                        <h1 className="mt-2 text-3xl font-bold">{customer.name}</h1>
-                        <p className="text-gray-500">{customer.email}</p>
-                    </div>
+            <div className="mx-auto max-w-4xl space-y-4">
+                <Link href={route('admin.customers.index')} className="inline-flex items-center gap-1 text-sm text-gold-400 hover:underline">
+                    <ArrowLeft className="h-4 w-4" /> Back to customers
+                </Link>
 
-                    <div className="grid gap-6 lg:grid-cols-2">
-                        <Card className="border-gray-200 bg-white text-gray-900 shadow-sm">
-                            <CardHeader><CardTitle>Contact Information</CardTitle></CardHeader>
-                            <CardContent>
-                                <DetailRow label="Email" value={customer.email} />
-                                <DetailRow label="Phone" value={customer.phone} />
-                                <DetailRow label="Address" value={fullAddress || null} />
-                            </CardContent>
-                        </Card>
+                <div className="grid gap-6 lg:grid-cols-2">
+                    <DashboardCard>
+                        <DashboardCardHeader title="Contact Information" />
+                        <DashboardCardContent>
+                            <DetailRow label="Email" value={customer.email} />
+                            <DetailRow label="Phone" value={customer.phone} />
+                            <DetailRow label="Address" value={fullAddress || null} />
+                        </DashboardCardContent>
+                    </DashboardCard>
 
-                        <Card className="border-gray-200 bg-white text-gray-900 shadow-sm">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Car className="size-4 text-ml-gold" />
+                    <DashboardCard>
+                        <DashboardCardHeader
+                            title={
+                                <span className="flex items-center gap-2">
+                                    <Car className="h-4 w-4 text-gold-400" />
                                     Vehicles ({vehicles.length})
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                {vehicles.length === 0 ? (
-                                    <p className="text-sm text-gray-400">No vehicles registered.</p>
-                                ) : (
-                                    vehicles.map((vehicle) => (
-                                        <div key={vehicle.id} className="rounded-lg border border-gray-200 p-4">
-                                            <p className="font-medium">{vehicle.display_name}</p>
-                                            <p className="text-xs text-gray-400">VIN: {vehicle.vin}</p>
-                                            {vehicle.mileage != null && (
-                                                <p className="text-xs text-gray-400">{vehicle.mileage.toLocaleString()} mi</p>
-                                            )}
-                                        </div>
-                                    ))
-                                )}
-                            </CardContent>
-                        </Card>
-
-                        <Card className="border-gray-200 bg-white text-gray-900 shadow-sm lg:col-span-2">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Calendar className="size-4 text-ml-gold" />
-                                    Bookings ({bookings.length})
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {bookings.length === 0 ? (
-                                    <p className="text-sm text-gray-400">No bookings yet.</p>
-                                ) : (
-                                    <div className="space-y-3">
-                                        {bookings.map((booking) => (
-                                            <Link
-                                                key={booking.id}
-                                                href={route('admin.bookings.show', booking.id)}
-                                                className="flex items-center justify-between rounded-lg border border-gray-200 p-4 transition-colors hover:border-amber-200"
-                                            >
-                                                <div>
-                                                    <p className="font-medium">{booking.service ?? 'Service'}</p>
-                                                    <p className="text-sm text-gray-500">{booking.vehicle} · {booking.scheduled_at}</p>
-                                                </div>
-                                                <Badge className="border-amber-200 bg-amber-50 text-ml-gold">{booking.status}</Badge>
-                                            </Link>
-                                        ))}
+                                </span>
+                            }
+                        />
+                        <DashboardCardContent className="space-y-3">
+                            {vehicles.length === 0 ? (
+                                <p className="text-sm text-slate-400">No vehicles registered.</p>
+                            ) : (
+                                vehicles.map((vehicle) => (
+                                    <div key={vehicle.id} className="rounded-xl border border-white/5 bg-ink-900/40 p-4">
+                                        <p className="font-medium text-white">{vehicle.display_name}</p>
+                                        <p className="text-xs text-slate-500">VIN: {vehicle.vin}</p>
+                                        {vehicle.mileage != null && (
+                                            <p className="text-xs text-slate-500">{vehicle.mileage.toLocaleString()} mi</p>
+                                        )}
                                     </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </div>
+                                ))
+                            )}
+                        </DashboardCardContent>
+                    </DashboardCard>
+
+                    <DashboardCard className="lg:col-span-2">
+                        <DashboardCardHeader
+                            title={
+                                <span className="flex items-center gap-2">
+                                    <Calendar className="h-4 w-4 text-gold-400" />
+                                    Bookings ({bookings.length})
+                                </span>
+                            }
+                        />
+                        <DashboardCardContent>
+                            {bookings.length === 0 ? (
+                                <p className="text-sm text-slate-400">No bookings yet.</p>
+                            ) : (
+                                <div className="space-y-3">
+                                    {bookings.map((booking) => (
+                                        <Link
+                                            key={booking.id}
+                                            href={route('admin.bookings.show', booking.id)}
+                                            className={dashboardRowLinkClass()}
+                                        >
+                                            <div className="flex items-center justify-between gap-4">
+                                                <div>
+                                                    <p className="font-medium text-white">{booking.service ?? 'Service'}</p>
+                                                    <p className="text-sm text-slate-400">{booking.vehicle} · {booking.scheduled_at}</p>
+                                                </div>
+                                                <StatusPill status={booking.status} />
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </DashboardCardContent>
+                    </DashboardCard>
                 </div>
             </div>
         </AdminLayout>

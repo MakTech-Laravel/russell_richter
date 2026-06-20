@@ -9,9 +9,9 @@ interface FrontendLayoutProps {
 
 export default function FrontendLayout({ children }: FrontendLayoutProps) {
     return (
-        <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
+        <div className="flex min-h-screen flex-col bg-carbon text-white">
             <FrontendHeader />
-            <main className="flex flex-1 flex-col">{children}</main>
+            <main className="flex flex-1 flex-col overflow-x-hidden">{children}</main>
             <FrontendFooter />
         </div>
     );

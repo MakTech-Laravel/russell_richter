@@ -2,8 +2,9 @@ import { InertiaLinkProps } from '@inertiajs/react';
 import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
-    user: User;
-    admin?: AdminUser;
+    user: User | null;
+    admin?: AdminUser | null;
+    technician?: AdminUser | null;
     permissions?: string[];
 }
 
@@ -43,6 +44,9 @@ export interface SharedData {
     auth: Auth;
     features: Features;
     sidebarOpen: boolean;
+    portal?: {
+        pending_bookings: number;
+    } | null;
     [key: string]: unknown;
 }
 

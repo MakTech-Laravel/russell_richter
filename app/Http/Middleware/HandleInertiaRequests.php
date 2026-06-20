@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\BookingStatus;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Laravel\Fortify\Features;
@@ -63,6 +65,7 @@ class HandleInertiaRequests extends Middleware
                 ] : null,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'portal' => $this->portalMeta($request),
             'features' => [
                 'canRegister' => Features::enabled(Features::registration()),
                 'canResetPassword' => Features::enabled(Features::resetPasswords()),
@@ -75,5 +78,32 @@ class HandleInertiaRequests extends Middleware
     private function displayName($user): string
     {
         return ! empty($user->name) ? $user->name : $user->email;
+    }
+
+    /**
+     * @return array{pending_bookings: int}|null
+     */
+    private function portalMeta(Request $request): ?array
+    {
+        $user = $request->user('web');
+
+        if ($user) {
+            return [
+                'pending_bookings' => Booking::query()
+                    ->where('user_id', $user->id)
+                    ->where('status', BookingStatus::Pending)
+                    ->count(),
+            ];
+        }
+
+        if ($request->user('admin')) {
+            return [
+                'pending_bookings' => Booking::query()
+                    ->where('status', BookingStatus::Pending)
+                    ->count(),
+            ];
+        }
+
+        return null;
     }
 }

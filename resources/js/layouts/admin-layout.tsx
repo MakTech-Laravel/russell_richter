@@ -1,19 +1,46 @@
+import { usePage } from '@inertiajs/react';
 import * as React from 'react';
 
-import { AdminHeader } from '@/layouts/partials/admin/header';
-
-import { AdminFooter } from './partials/admin/footer';
+import { DashboardShell } from '@/components/dashboard/dashboard-shell';
+import { Toaster } from '@/components/ui/sonner';
+import { adminNav } from '@/config/dashboard-nav';
+import { type SharedData } from '@/types';
 
 interface AdminLayoutProps {
     children: React.ReactNode;
+    title?: string;
+    subtitle?: string;
+    actions?: React.ReactNode;
 }
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+export default function AdminLayout({
+    children,
+    title = 'Overview',
+    subtitle,
+    actions,
+}: AdminLayoutProps) {
+    const { auth, portal } = usePage<SharedData>().props;
+    const admin = auth.admin;
+
+    if (!admin) {
+        return null;
+    }
+
     return (
-        <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
-            <AdminHeader />
-            <main className="flex-1 flex flex-col">{children}</main>
-            <AdminFooter />
-        </div>
+        <>
+            <DashboardShell
+                portalLabel="Admin Portal"
+                nav={adminNav}
+                user={{ name: admin.name, email: admin.email }}
+                logoutUrl={route('admin.logout')}
+                title={title}
+                subtitle={subtitle}
+                actions={actions}
+                pendingBookings={portal?.pending_bookings ?? 0}
+            >
+                {children}
+            </DashboardShell>
+            <Toaster position="top-right" richColors />
+        </>
     );
 }

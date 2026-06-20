@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class BookingController extends Controller
 {
@@ -57,7 +58,7 @@ class BookingController extends Controller
         ]);
     }
 
-    public function store(StoreBookingRequest $request): RedirectResponse
+    public function store(StoreBookingRequest $request): SymfonyResponse
     {
         $data = $request->validated();
         $service = Service::query()->findOrFail($data['service_id']);
@@ -80,7 +81,7 @@ class BookingController extends Controller
 
         $session = $this->stripeCheckoutService->createCheckoutSession($booking);
 
-        return redirect()->away($session->url);
+        return Inertia::location($session->url);
     }
 
     public function show(Booking $booking): Response

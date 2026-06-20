@@ -12,13 +12,58 @@ export const MOBILE_LUBE = {
 } as const;
 
 export const NAV_LINKS = [
-    { label: 'Home', href: '#home' },
     { label: 'Services', href: '#services' },
     { label: 'Pricing', href: '#pricing' },
-    { label: 'About', href: '#about' },
-    { label: 'Fleet', href: '#fleet' },
+    { label: 'Why Us', href: '#why' },
+    { label: 'Service Areas', href: '#areas' },
     { label: 'FAQ', href: '#faq' },
-    { label: 'Contact', href: '#contact' },
+] as const;
+
+export const TRUST_STATS = [
+    { value: '12k+', label: 'Vehicles Serviced' },
+    { value: '4.9★', label: 'Avg. Rating' },
+    { value: '30 min', label: 'Avg. Oil Change' },
+    { value: '100%', label: 'Spill-Free Tech' },
+] as const;
+
+export const HOW_IT_WORKS = [
+    { num: '01', title: 'Book online', description: 'Pick your service, vehicle, time and location in under 60 seconds.' },
+    { num: '02', title: 'We come to you', description: 'Our certified tech arrives in a fully equipped service truck.' },
+    { num: '03', title: 'Get back to your day', description: 'Spill-free service, digital invoice, and service history tracking.' },
+] as const;
+
+export const TESTIMONIALS = [
+    {
+        name: 'Jessica R.',
+        date: 'April 2026',
+        text: 'They came out to my house the same day I called and changed my brakes. The convenience alone was amazing — friendly, professional, and very knowledgeable. Will absolutely use again!',
+    },
+    {
+        name: 'Taylor Miller',
+        date: 'March 2026',
+        text: 'Highly recommend for your next oil change! Handled my truck with total professionalism — incredibly fast. No fighting traffic or sitting in a waiting room.',
+    },
+    {
+        name: 'Papa Jon',
+        date: 'March 2026',
+        text: 'Fantastic! Professional and knowledgeable. I use Mobile Lube for all 3 of my family vehicles AND our church buses and vans.',
+    },
+    {
+        name: 'Holli Carroll',
+        date: 'Feb 2026',
+        text: 'Jeep needed brakes and an oil change. Showed up on time, fast, efficient, and professional. The system is clean — no mess. Five stars all the way.',
+    },
+] as const;
+
+export const SERVICE_AREAS = [
+    'Victoria, TX',
+    'Port Lavaca, TX',
+    'Edna, TX',
+    'Goliad, TX',
+    'Cuero, TX',
+    'Yoakum, TX',
+    'Hallettsville, TX',
+    'Refugio, TX',
 ] as const;
 
 export const SERVICE_HIGHLIGHTS = [

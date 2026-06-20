@@ -1,9 +1,12 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { ArrowLeft, CreditCard } from 'lucide-react';
+import { ArrowLeft, CreditCard, Edit, Wrench } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    DashboardCard,
+    DashboardCardContent,
+    DashboardCardHeader,
+    StatusPill,
+} from '@/components/dashboard/dashboard-ui';
 import UserLayout from '@/layouts/user-layout';
 
 interface Recommendation {
@@ -50,9 +53,9 @@ function DetailRow({ label, value }: { label: string; value: string | number | n
     }
 
     return (
-        <div className="flex justify-between border-b border-gray-200 py-3 last:border-0">
-            <span className="text-gray-500">{label}</span>
-            <span className="text-right font-medium">{value}</span>
+        <div className="flex justify-between border-b border-white/5 py-3 last:border-0">
+            <span className="text-slate-400">{label}</span>
+            <span className="text-right font-medium text-white">{value}</span>
         </div>
     );
 }
@@ -63,59 +66,42 @@ export default function Show({ booking }: ShowProps) {
     const fullAddress = `${booking.service_address}, ${booking.service_city}, ${booking.service_state} ${booking.service_zip}`;
 
     return (
-        <UserLayout>
+        <UserLayout
+            title={booking.service?.name ?? 'Booking'}
+            subtitle={`Booking #${booking.id}`}
+            actions={
+                <div className="flex flex-wrap items-center gap-3">
+                    <StatusPill status={booking.status} label={booking.status_label} />
+                    <StatusPill status={booking.payment_status} label={booking.payment_status_label} />
+                    {isUnpaid && (
+                        <Form action={route('bookings.payment.checkout', booking.id)} method="post">
+                            {({ processing }) => (
+                                <button type="submit" disabled={processing} className="ml-btn-primary inline-flex">
+                                    <CreditCard className="h-4 w-4" />
+                                    {processing ? 'Redirecting...' : 'Pay Now'}
+                                </button>
+                            )}
+                        </Form>
+                    )}
+                    {canEdit && (
+                        <Link href={route('bookings.edit', booking.id)} className="ml-btn-outline inline-flex text-sm">
+                            <Edit className="h-4 w-4" /> Edit
+                        </Link>
+                    )}
+                </div>
+            }
+        >
             <Head title={`Booking #${booking.id}`} />
 
-            <div className="container mx-auto max-w-3xl px-4 py-8">
-                <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                        <Link href={route('bookings.index')} className="inline-flex items-center gap-1 text-sm text-ml-gold hover:underline">
-                            <ArrowLeft className="size-4" /> Back to bookings
-                        </Link>
-                        <h1 className="mt-2 text-3xl font-bold text-gray-900">{booking.service?.name ?? 'Booking'}</h1>
-                        <p className="text-gray-500">Booking #{booking.id}</p>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-3">
-                        <Badge className="border-amber-200 bg-amber-50 text-ml-gold">{booking.status_label}</Badge>
-                        <Badge
-                            className={
-                                booking.payment_status === 'paid'
-                                    ? 'border-green-200 bg-green-50 text-green-700'
-                                    : 'border-red-200 bg-red-50 text-red-700'
-                            }
-                        >
-                            {booking.payment_status_label}
-                        </Badge>
-                        {isUnpaid && (
-                            <Form action={route('bookings.payment.checkout', booking.id)} method="post">
-                                {({ processing }) => (
-                                    <Button
-                                        type="submit"
-                                        disabled={processing}
-                                        className="ml-gold-gradient border-0 font-bold text-ml-black"
-                                    >
-                                        <CreditCard className="size-4" />
-                                        {processing ? 'Redirecting...' : 'Pay Now'}
-                                    </Button>
-                                )}
-                            </Form>
-                        )}
-                        {canEdit && (
-                            <Button asChild variant="outline" size="sm" className="border-amber-200 text-gray-900 hover:bg-amber-50">
-                                <Link href={route('bookings.edit', booking.id)}>
-                                    <Edit className="size-4" /> Edit
-                                </Link>
-                            </Button>
-                        )}
-                    </div>
-                </div>
+            <div className="mx-auto max-w-3xl space-y-4">
+                <Link href={route('bookings.index')} className="inline-flex items-center gap-1 text-sm text-gold-400 hover:underline">
+                    <ArrowLeft className="h-4 w-4" /> Back to bookings
+                </Link>
 
                 <div className="grid gap-6 lg:grid-cols-2">
-                    <Card className="border-gray-200 bg-white text-gray-900 shadow-sm">
-                        <CardHeader>
-                            <CardTitle>Appointment Details</CardTitle>
-                        </CardHeader>
-                        <CardContent>
+                    <DashboardCard>
+                        <DashboardCardHeader title="Appointment Details" />
+                        <DashboardCardContent>
                             <DetailRow label="Scheduled" value={booking.scheduled_at} />
                             <DetailRow label="Paid At" value={booking.paid_at} />
                             <DetailRow label="Completed" value={booking.completed_at} />
@@ -126,45 +112,47 @@ export default function Show({ booking }: ShowProps) {
                             <DetailRow label="Address" value={fullAddress} />
                             <DetailRow label="Your Notes" value={booking.customer_notes} />
                             <DetailRow label="Technician Notes" value={booking.technician_notes} />
-                        </CardContent>
-                    </Card>
+                        </DashboardCardContent>
+                    </DashboardCard>
 
-                    <Card className="border-gray-200 bg-white text-gray-900 shadow-sm">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Wrench className="size-4 text-ml-gold" />
-                                Recommended Parts
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
+                    <DashboardCard>
+                        <DashboardCardHeader
+                            title={
+                                <span className="flex items-center gap-2">
+                                    <Wrench className="h-4 w-4 text-gold-400" />
+                                    Recommended Parts
+                                </span>
+                            }
+                        />
+                        <DashboardCardContent>
                             {booking.recommendations.length === 0 ? (
-                                <p className="text-sm text-gray-400">No recommendations yet. Parts will be suggested based on your vehicle.</p>
+                                <p className="text-sm text-slate-400">No recommendations yet. Parts will be suggested based on your vehicle.</p>
                             ) : (
                                 <div className="space-y-4">
                                     {booking.recommendations.map((rec) => (
-                                        <div key={rec.id} className="rounded-lg border border-gray-200 p-4">
+                                        <div key={rec.id} className="rounded-xl border border-white/5 bg-ink-900/40 p-4">
                                             <div className="flex items-start justify-between gap-2">
                                                 <div>
-                                                    <p className="font-medium">{rec.part_name}</p>
-                                                    <p className="text-xs text-ml-gold">{rec.part_type_label}</p>
+                                                    <p className="font-medium text-white">{rec.part_name}</p>
+                                                    <p className="text-xs text-gold-400">{rec.part_type_label}</p>
                                                 </div>
                                                 {rec.estimated_price != null && (
-                                                    <span className="text-sm font-medium text-ml-gold">
+                                                    <span className="text-sm font-medium text-gold-400">
                                                         ${Number(rec.estimated_price).toFixed(2)}
                                                     </span>
                                                 )}
                                             </div>
                                             {rec.specification && (
-                                                <p className="mt-1 text-sm text-gray-500">{rec.specification}</p>
+                                                <p className="mt-1 text-sm text-slate-400">{rec.specification}</p>
                                             )}
-                                            <p className="mt-1 text-xs text-gray-400">Qty: {rec.quantity}</p>
-                                            {rec.notes && <p className="mt-2 text-xs text-gray-400">{rec.notes}</p>}
+                                            <p className="mt-1 text-xs text-slate-500">Qty: {rec.quantity}</p>
+                                            {rec.notes && <p className="mt-2 text-xs text-slate-500">{rec.notes}</p>}
                                         </div>
                                     ))}
                                 </div>
                             )}
-                        </CardContent>
-                    </Card>
+                        </DashboardCardContent>
+                    </DashboardCard>
                 </div>
             </div>
         </UserLayout>
