@@ -1,4 +1,4 @@
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
 COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
@@ -28,7 +28,7 @@ RUN APP_ENV=local SESSION_DRIVER=file CACHE_STORE=file QUEUE_CONNECTION=sync DB_
     cp .env.example .env || touch .env \
     && mkdir -p storage/framework/{views,sessions,cache} storage/logs bootstrap/cache database \
     && touch database/database.sqlite \
-    && composer install --no-dev --optimize-autoloader --no-interaction \
+    && COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction \
     && php artisan key:generate --force --no-interaction \
     && php artisan wayfinder:generate --no-interaction \
     && npm ci \

@@ -1,6 +1,6 @@
 # nixpacks.toml
 [phases.setup]
-nixPkgs = ["php83", "php83Packages.composer", "nodejs_20", "mysql80"]
+nixPkgs = ["php84", "php84Packages.composer", "nodejs_20", "mysql80"]
 
 [phases.install]
 cmds = [
@@ -16,7 +16,7 @@ cmds = [
 
 [phases.setup.environment]
 # PHP Configuration
-PHP_VERSION = "8.3"
+PHP_VERSION = "8.4"
 
 [start]
 cmd = "php artisan serve --host=0.0.0.0 --port=8080"
