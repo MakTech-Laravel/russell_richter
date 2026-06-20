@@ -22,7 +22,7 @@ export default function AuthSplitLayout({
                 <div className="absolute inset-0 bg-zinc-900" />
                 <Link
                     href="/dashboard"
-                    className="relative z-20 flex items-center text-lg font-medium"
+                    className="relative z-20 flex items-center text-lg font-medium text-white"
                 >
                     <AppLogoIcon className="mr-2 size-8 fill-current text-white" />
                     {name}

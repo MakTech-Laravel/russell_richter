@@ -3,6 +3,7 @@
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\TechnicianMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,14 +14,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*', headers: Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_PROTO);
 
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+
+        $middleware->validateCsrfTokens(except: [
+            'stripe/webhook',
+        ]);
 
         $middleware->web(append: [
             HandleAppearance::class,
@@ -30,13 +35,28 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => AdminMiddleware::class,
+            'technician' => TechnicianMiddleware::class,
         ]);
 
-        $middleware->redirectGuestsTo(fn (Request $request) => route('login'));
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if ($request->routeIs('technician.*')) {
+                return route('technician.login');
+            }
+
+            if ($request->routeIs('admin.*')) {
+                return route('admin.login');
+            }
+
+            return route('login');
+        });
 
         $middleware->redirectUsersTo(function (Request $request) {
             if ($request->routeIs('admin.*')) {
                 return route('admin.dashboard');
+            }
+
+            if ($request->routeIs('technician.*')) {
+                return route('technician.jobs.index');
             }
 
             return route('dashboard');

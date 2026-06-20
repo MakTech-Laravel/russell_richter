@@ -15,7 +15,7 @@ interface UserLayoutProps {
 export default function UserLayout({ children, showProfileMenu = true }: UserLayoutProps) {
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
+        <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
             <UserHeader showProfileMenu={showProfileMenu} />
             <main className="flex-1">{children}</main>
             <UserFooter />

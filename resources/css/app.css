@@ -506,3 +506,56 @@
 .animate-fade-in-delay-2 {
   animation: fadeIn 0.8s ease-out 0.4s both;
 }
+
+/* Mobile Lube brand — light theme */
+:root {
+  --ml-gold: #d4af37;
+  --ml-gold-light: #f0cc5a;
+  --ml-gold-dark: #a8891f;
+  --ml-black: #111827;
+  --ml-charcoal: #f9fafb;
+  --ml-gray: #e5e7eb;
+  --ml-silver: #6b7280;
+}
+
+@theme inline {
+  --color-ml-gold: var(--ml-gold);
+  --color-ml-gold-light: var(--ml-gold-light);
+  --color-ml-gold-dark: var(--ml-gold-dark);
+  --color-ml-black: var(--ml-black);
+  --color-ml-charcoal: var(--ml-charcoal);
+  --color-ml-gray: var(--ml-gray);
+  --color-ml-silver: var(--ml-silver);
+}
+
+.ml-hero-gradient {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgb(212 175 55 / 0.14), transparent),
+    linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+}
+
+.ml-gold-gradient {
+  background: linear-gradient(135deg, var(--ml-gold-light) 0%, var(--ml-gold) 50%, var(--ml-gold-dark) 100%);
+}
+
+.ml-section-dark {
+  background-color: #f9fafb;
+}
+
+.ml-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.ml-card:hover {
+  border-color: rgb(212 175 55 / 0.45);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
+  transform: translateY(-4px);
+}
+
+.ml-pricing-popular {
+  border-color: var(--ml-gold);
+  box-shadow: 0 4px 24px rgb(212 175 55 / 0.18);
+}

@@ -57,7 +57,7 @@ export function AuthHeader() {
                                 <Button variant="ghost" className="relative h-9 w-9 rounded-full ring-offset-background transition-all hover:ring-2 hover:ring-ring">
                                     <Avatar className="h-9 w-9">
                                         <AvatarImage src={auth.user.avatar_url || auth.user.avatar} alt={auth.user.name} />
-                                        <AvatarFallback className="bg-violet-600 text-white text-xs">
+                                        <AvatarFallback className="bg-violet-600 text-gray-900 text-xs">
                                             {getInitials(auth.user.name)}
                                         </AvatarFallback>
                                     </Avatar>
@@ -73,7 +73,7 @@ export function AuthHeader() {
                                 <Button variant="ghost" size="sm" className="text-sm font-medium">Log in</Button>
                             </Link>
                             <Link href={register()}>
-                                <Button size="sm" className="bg-violet-600 text-white shadow-sm hover:bg-violet-700">
+                                <Button size="sm" className="bg-violet-600 text-gray-900 shadow-sm hover:bg-violet-700">
                                     Get Started
                                 </Button>
                             </Link>

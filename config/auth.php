@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Admin;
+use App\Models\Technician;
+use App\Models\User;
+
 return [
 
     /*
@@ -45,6 +49,11 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+
+        'technician' => [
+            'driver' => 'session',
+            'provider' => 'technicians',
+        ],
     ],
 
     /*
@@ -67,12 +76,17 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => env('AUTH_MODEL', User::class),
         ],
 
         'admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Admin::class,
+            'model' => Admin::class,
+        ],
+
+        'technicians' => [
+            'driver' => 'eloquent',
+            'model' => Technician::class,
         ],
     ],
 

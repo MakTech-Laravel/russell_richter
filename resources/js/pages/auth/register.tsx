@@ -121,7 +121,7 @@ export default function Register() {
 
                                 <Button
                                     type="submit"
-                                    className="group relative w-full overflow-hidden rounded-3xl bg-gradient-to-r from-primary-500 via-primary-400 to-primary-600 py-4 sm:py-5 text-sm sm:text-base font-semibold tracking-wide text-white shadow-lg transition hover:brightness-110"
+                                    className="group relative w-full overflow-hidden rounded-3xl bg-gradient-to-r from-primary-500 via-primary-400 to-primary-600 py-4 sm:py-5 text-sm sm:text-base font-semibold tracking-wide text-gray-900 shadow-lg transition hover:brightness-110"
                                     disabled={processing}
                                 >
                                     <span className="relative flex items-center justify-center gap-2">

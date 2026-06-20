@@ -56,17 +56,18 @@ class HandleInertiaRequests extends Middleware
                     'name' => $admin->name,
                     'email' => $admin->email,
                 ] : null,
+                'technician' => ($technician = $request->user('technician')) ? [
+                    'id' => $technician->id,
+                    'name' => $technician->name,
+                    'email' => $technician->email,
+                ] : null,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'features' => [
-                // 'canRegister' => Features::enabled(Features::registration()),
-                // 'canResetPassword' => Features::enabled(Features::resetPasswords()),
-                // 'canVerifyEmail' => Features::enabled(Features::emailVerification()),
-                // 'canUseTwoFactorAuthentication' => Features::enabled(Features::twoFactorAuthentication()),
-                'canRegister' => false,
-                'canResetPassword' => false,
-                'canVerifyEmail' => false,
-                'canUseTwoFactorAuthentication' => false,
+                'canRegister' => Features::enabled(Features::registration()),
+                'canResetPassword' => Features::enabled(Features::resetPasswords()),
+                'canVerifyEmail' => Features::enabled(Features::emailVerification()),
+                'canUseTwoFactorAuthentication' => Features::enabled(Features::twoFactorAuthentication()),
             ],
         ];
     }

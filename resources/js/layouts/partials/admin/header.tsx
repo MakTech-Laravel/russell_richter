@@ -8,6 +8,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useInitials } from '@/hooks/use-initials';
 import { type SharedData } from '@/types';
 
+const navItems = [
+    { label: 'Dashboard', route: 'admin.dashboard' },
+    { label: 'Bookings', route: 'admin.bookings.index' },
+    { label: 'Customers', route: 'admin.customers.index' },
+    { label: 'Vehicles', route: 'admin.vehicles.index' },
+    { label: 'Technicians', route: 'admin.technicians.index' },
+    { label: 'Routes', route: 'admin.routes.index' },
+];
 
 export function AdminHeader() {
     const { auth } = usePage<SharedData>().props;
@@ -18,73 +26,56 @@ export function AdminHeader() {
         return null;
     }
 
-    const handleLogout = () => {
+    const handleLogout = (): void => {
         router.post(route('admin.logout'));
     };
 
-    const adminInfo = (
-        <>
-            <Avatar className="h-10 w-10 overflow-hidden rounded-full">
-                <AvatarFallback className="rounded-lg bg-primary text-white text-lg font-semibold font-montserrat">
-                    {getInitials(admin.name)}
-                </AvatarFallback>
-            </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate text-base font-semibold text-text-secondary font-montserrat">
-                    {admin.name}
-                </span>
-                <span className="truncate text-base text-text-primary">
-                    {admin.email}
-                </span>
-            </div>
-        </>
-    );
-
-    const adminMenu = (
-        <>
-            <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    {adminInfo}
-                </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
-                <LogOut className="mr-2 h-4 w-4" />
-                Log out
-            </DropdownMenuItem>
-        </>
-    );
-
     return (
-        <header className='bg-primary-50'>
-            <div className='container mx-auto flex items-center justify-between py-4 px-4 text-primary-500'>
-                <Link href={route('admin.dashboard')} className='flex text-primary-500 items-center gap-2'>
-                    <AppLogo className="h-16 w-auto" />
+        <header className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
+            <div className="container mx-auto flex items-center justify-between px-4 py-3">
+                <Link href={route('admin.dashboard')} className="flex items-center">
+                    <AppLogo className="h-12 w-auto" />
                 </Link>
-                <div className='hidden md:flex items-center gap-4'>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="flex items-center gap-2 h-auto p-2 hover:bg-transparent hover:scale-105 transition-transform focus-visible:ring-0 focus-visible:ring-offset-0">
-                                {adminInfo}
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-64 p-2 shadow-sm border-none" align="end" sideOffset={8}>
-                            {adminMenu}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
-                <div className='md:hidden'>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="relative h-9 w-9 rounded-md ring-offset-background transition-all hover:ring-2 hover:ring-ring">
-                                <Menu className="size-6" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-64 p-2 shadow-sm border-none" align="end" sideOffset={8}>
-                            {adminMenu}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
+
+                <nav className="hidden items-center gap-1 xl:flex">
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.route}
+                            href={route(item.route)}
+                            className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:text-ml-gold"
+                        >
+                            {item.label}
+                        </Link>
+                    ))}
+                </nav>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="flex h-auto items-center gap-2 p-2 text-gray-900 hover:bg-amber-50">
+                            <Avatar className="h-9 w-9">
+                                <AvatarFallback className="bg-ml-gold text-ml-black">{getInitials(admin.name)}</AvatarFallback>
+                            </Avatar>
+                            <span className="hidden text-sm font-medium md:inline">{admin.name}</span>
+                            <Menu className="size-4 xl:hidden" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 border-gray-200 bg-gray-50" align="end">
+                        <DropdownMenuLabel className="text-gray-600">{admin.email}</DropdownMenuLabel>
+                        <DropdownMenuSeparator className="bg-amber-50" />
+                        <div className="xl:hidden">
+                            {navItems.map((item) => (
+                                <DropdownMenuItem key={item.route} asChild>
+                                    <Link href={route(item.route)} className="text-gray-600">{item.label}</Link>
+                                </DropdownMenuItem>
+                            ))}
+                            <DropdownMenuSeparator className="bg-amber-50" />
+                        </div>
+                        <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-gray-600">
+                            <LogOut className="mr-2 size-4" />
+                            Log out
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </header>
     );

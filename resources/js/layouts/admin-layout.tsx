@@ -10,7 +10,7 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
     return (
-        <div className="flex min-h-screen flex-col">
+        <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
             <AdminHeader />
             <main className="flex-1 flex flex-col">{children}</main>
             <AdminFooter />

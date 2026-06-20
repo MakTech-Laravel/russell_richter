@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Database\Factories\AdminFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class Admin extends Authenticatable
 {
-    use Notifiable;
+    /** @use HasFactory<AdminFactory> */
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.

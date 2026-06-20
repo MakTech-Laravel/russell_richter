@@ -75,13 +75,13 @@ export default function EditProfile({ user }: Props) {
                                             src={previewUrl || user.avatar_url || user.avatar}
                                             alt={user.name}
                                         />
-                                        <AvatarFallback className="bg-violet-600 text-white text-2xl">
+                                        <AvatarFallback className="bg-violet-600 text-gray-900 text-2xl">
                                             {getInitials(user.name)}
                                         </AvatarFallback>
                                     </Avatar>
                                     <Label
                                         htmlFor="avatar"
-                                        className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-violet-600 text-white hover:bg-violet-700 transition-colors"
+                                        className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-violet-600 text-gray-900 hover:bg-violet-700 transition-colors"
                                     >
                                         <Camera className="h-4 w-4" />
                                     </Label>

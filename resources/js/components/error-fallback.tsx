@@ -29,7 +29,7 @@ export default function ErrorFallback({ error, resetErrorBoundary }: ErrorFallba
                         </div>
                     </div>
 
-                    <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl dark:text-white">
+                    <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl dark:text-gray-900">
                         Something went <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-500 to-emerald-600">wrong</span>
                     </h1>
 
@@ -42,7 +42,7 @@ export default function ErrorFallback({ error, resetErrorBoundary }: ErrorFallba
                     <div className="mt-10 flex items-center justify-center gap-x-6">
                         <button
                             onClick={resetErrorBoundary}
-                            className="rounded-md bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-violet-500 transition-all"
+                            className="rounded-md bg-violet-600 px-6 py-3 text-sm font-semibold text-gray-900 shadow-sm hover:bg-violet-500 transition-all"
                         >
                             Reload Interface
                         </button>
@@ -50,7 +50,7 @@ export default function ErrorFallback({ error, resetErrorBoundary }: ErrorFallba
                         {isDebug && (
                             <button
                                 onClick={() => setShowDetails(!showDetails)}
-                                className="text-sm font-semibold leading-6 text-gray-900 dark:text-white hover:opacity-80"
+                                className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-900 hover:opacity-80"
                             >
                                 {showDetails ? 'Hide Error' : 'View Stack Trace'} <span aria-hidden="true">↓</span>
                             </button>
