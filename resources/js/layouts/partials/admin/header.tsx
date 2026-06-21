@@ -34,7 +34,7 @@ export function AdminHeader() {
         <header className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
             <div className="container mx-auto flex items-center justify-between px-4 py-3">
                 <Link href={route('admin.dashboard')} className="flex items-center">
-                    <AppLogo className="h-12 w-auto" />
+                    <AppLogo className="h-16 w-auto" />
                 </Link>
 
                 <nav className="hidden items-center gap-1 xl:flex">

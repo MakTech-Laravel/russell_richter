@@ -82,7 +82,7 @@ export default function AdminLogin() {
                 <div className="absolute inset-0 bg-gradient-to-br from-ink-900 via-ink-800 to-ink-900" />
                 <div className="absolute inset-0 bg-grid-gold opacity-30" />
                 <div className="relative flex h-full flex-col items-center justify-center p-12 text-center">
-                    <BrandMark className="h-48 w-48 drop-shadow-[0_8px_40px_rgba(255,184,32,0.45)]" />
+                    <BrandMark className="h-auto max-h-64 w-full max-w-lg drop-shadow-[0_8px_40px_rgba(255,184,32,0.45)]" />
                     <h2 className="mt-8 text-3xl font-black uppercase text-white">
                         Shop <span className="text-gold-grad">operations</span>
                     </h2>

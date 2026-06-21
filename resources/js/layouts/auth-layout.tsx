@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import * as React from 'react';
 
 import { BrandMark, FullLogo } from '@/components/brand';
+import { MOBILE_LUBE } from '@/lib/mobile-lube';
 import { home } from '@/routes';
 import { login, register } from '@/routes';
 
@@ -48,6 +49,12 @@ export default function AuthLayout({
                     {title}
                 </h1>
                 <p className="mt-2 text-sm text-slate-400">{description}</p>
+                <p className="mt-3 text-sm text-slate-500">
+                    Questions?{' '}
+                    <a href={MOBILE_LUBE.emailHref} className="font-semibold text-gold-400 hover:text-gold-300">
+                        {MOBILE_LUBE.email}
+                    </a>
+                </p>
 
                 <div className="mt-8 max-w-md">{children}</div>
 
@@ -66,17 +73,10 @@ export default function AuthLayout({
                 <div className="absolute -bottom-20 -left-20 h-[400px] w-[400px] rounded-full bg-gold-700/15 blur-3xl" />
                 <div className="relative flex h-full flex-col items-center justify-center p-12">
                     <div className="absolute right-12 top-12">
-                        <BrandMark className="h-12 w-12" />
+                        <BrandMark className="h-14 w-auto max-w-[220px]" />
                     </div>
                     <div className="flex flex-col items-center text-center">
-                        <BrandMark className="h-48 w-48 drop-shadow-[0_8px_40px_rgba(255,184,32,0.45)]" />
-                        <h2 className="mt-8 text-4xl font-black uppercase leading-tight text-white">
-                            <span className="text-chrome">Mobile</span>{' '}
-                            <span className="text-gold-grad">Lube</span>
-                        </h2>
-                        <div className="mt-2 text-sm font-bold uppercase tracking-[0.4em] text-gold-400">
-                            We Come To You
-                        </div>
+                        <BrandMark className="h-auto max-h-64 w-full max-w-lg drop-shadow-[0_8px_40px_rgba(255,184,32,0.45)]" />
                         <blockquote className="mt-10 max-w-md text-lg font-medium leading-snug text-slate-300">
                             &ldquo;Booked an oil change in 60 seconds and was back to work before my coffee got
                             cold.&rdquo;

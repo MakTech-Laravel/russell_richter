@@ -1,5 +1,6 @@
 import { Clock, Mail, MapPin, Phone } from 'lucide-react';
 
+import { BrandMark } from '@/components/brand';
 import { MOBILE_LUBE } from '@/lib/mobile-lube';
 import { Button } from '@/components/ui/button';
 
@@ -71,11 +72,7 @@ export function ContactSection() {
                             </div>
 
                             <div className="flex flex-col items-center justify-center border-t border-gray-200 bg-gray-50 p-8 text-center md:p-12 lg:border-t-0 lg:border-l">
-                                <img
-                                    src="/images/mobile-lube-logo.png"
-                                    alt="Mobile Lube LLC"
-                                    className="mb-8 h-auto max-h-40 w-full max-w-xs object-contain"
-                                />
+                                <BrandMark className="mb-8 h-auto max-h-56 w-full max-w-md" />
                                 <h3 className="mb-2 text-2xl font-bold italic text-gray-900">
                                     {MOBILE_LUBE.tagline}
                                 </h3>

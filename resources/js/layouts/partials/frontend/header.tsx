@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, Menu, Phone, X } from 'lucide-react';
+import { Calendar, Clock, Mail, MapPin, Menu, Phone, X } from 'lucide-react';
 import { useState } from 'react';
 
 import { FullLogo } from '@/components/brand';
@@ -43,6 +43,9 @@ export function FrontendHeader() {
                         <a href={MOBILE_LUBE.phoneHref} className="flex items-center gap-1.5 hover:opacity-80">
                             <Phone className="h-3 w-3" /> {MOBILE_LUBE.phone}
                         </a>
+                        <a href={MOBILE_LUBE.emailHref} className="flex items-center gap-1.5 hover:opacity-80">
+                            <Mail className="h-3 w-3" /> {MOBILE_LUBE.email}
+                        </a>
                         <span className="flex items-center gap-1.5">
                             <Clock className="h-3 w-3" /> {MOBILE_LUBE.hours}
                         </span>
@@ -51,7 +54,7 @@ export function FrontendHeader() {
             </div>
 
             <header className="border-b border-white/5 bg-ink-900/95 shadow-lg shadow-black/20 backdrop-blur-md">
-                <FrontendContainer className="flex items-center justify-between gap-4 py-3">
+                <FrontendContainer className="flex items-center justify-between gap-4 py-4">
                     <Link href="/" className="shrink-0">
                         <FullLogo />
                     </Link>
@@ -128,6 +131,13 @@ export function FrontendHeader() {
                                 >
                                     Sign in
                                 </Link>
+                                <a
+                                    href={MOBILE_LUBE.emailHref}
+                                    className="flex items-center gap-2 py-3 text-gold-400"
+                                >
+                                    <Mail className="h-4 w-4" />
+                                    {MOBILE_LUBE.email}
+                                </a>
                                 <a
                                     href={MOBILE_LUBE.phoneHref}
                                     className="flex items-center gap-2 py-3 text-gold-400"

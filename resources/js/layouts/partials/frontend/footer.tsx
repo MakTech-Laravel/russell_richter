@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Clock, MapPin, Phone } from 'lucide-react';
+import { Clock, Mail, MapPin, Phone } from 'lucide-react';
 
 import { FullLogo } from '@/components/brand';
 import { FrontendContainer } from '@/components/frontend/frontend-container';
@@ -21,6 +21,9 @@ export function FrontendFooter() {
                         <div className="mt-5 space-y-2.5 text-sm text-slate-300">
                             <a href={MOBILE_LUBE.phoneHref} className="flex items-center gap-2 hover:text-gold-300">
                                 <Phone className="h-4 w-4 shrink-0 text-gold-400" /> {MOBILE_LUBE.phone}
+                            </a>
+                            <a href={MOBILE_LUBE.emailHref} className="flex items-center gap-2 hover:text-gold-300">
+                                <Mail className="h-4 w-4 shrink-0 text-gold-400" /> {MOBILE_LUBE.email}
                             </a>
                             <div className="flex items-center gap-2">
                                 <MapPin className="h-4 w-4 shrink-0 text-gold-400" /> {MOBILE_LUBE.serviceArea}

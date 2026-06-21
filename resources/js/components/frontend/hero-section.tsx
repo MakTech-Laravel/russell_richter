@@ -66,17 +66,20 @@ export function HeroSection() {
 
                 <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
                     <div className="relative rounded-3xl border border-white/10 bg-gradient-to-br from-ink-800 to-ink-900 p-2 shadow-2xl shadow-black/50">
-                        <div className="relative h-[320px] overflow-hidden rounded-2xl bg-gradient-to-b from-ink-700 via-ink-800 to-ink-900 sm:h-[380px] lg:h-[420px]">
-                            <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full border-2 border-gold-500/30" />
-                            <div className="absolute right-10 top-10 h-32 w-32 rounded-full bg-gold-500/10 blur-2xl" />
+                        <div className="relative flex h-[340px] flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-ink-700 via-ink-800 to-ink-900 sm:h-[400px] lg:h-[440px]">
+                            <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full border-2 border-gold-500/30" />
+                            <div className="pointer-events-none absolute right-10 top-10 h-32 w-32 rounded-full bg-gold-500/10 blur-2xl" />
+                            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                <div className="h-40 w-40 rounded-full bg-gold-500/5 blur-3xl sm:h-52 sm:w-52" />
+                            </div>
 
-                            <div className="absolute left-4 right-4 top-4 rounded-xl border border-white/10 bg-ink-900/80 p-3 backdrop-blur sm:left-6 sm:right-6 sm:top-6 sm:p-4">
+                            <div className="relative z-10 m-4 rounded-xl border border-white/10 bg-ink-900/90 p-3 backdrop-blur sm:m-6 sm:p-4">
                                 <div className="flex items-start justify-between gap-3">
-                                    <div>
+                                    <div className="min-w-0">
                                         <div className="text-[10px] font-bold uppercase tracking-widest text-gold-400">
                                             Next Appointment
                                         </div>
-                                        <div className="mt-0.5 text-sm font-bold text-white">
+                                        <div className="mt-0.5 truncate text-sm font-bold text-white">
                                             Oil Change · 2018 F-150
                                         </div>
                                     </div>
@@ -86,18 +89,22 @@ export function HeroSection() {
                                 </div>
                                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-400">
                                     <span className="flex items-center gap-1">
-                                        <Clock className="h-3 w-3 text-gold-400" /> Thu 10:00 AM
+                                        <Clock className="h-3 w-3 shrink-0 text-gold-400" /> Thu 10:00 AM
                                     </span>
                                     <span className="flex items-center gap-1">
-                                        <MapPin className="h-3 w-3 text-gold-400" /> Victoria, TX
+                                        <MapPin className="h-3 w-3 shrink-0 text-gold-400" /> Victoria, TX
                                     </span>
                                     <span className="flex items-center gap-1">
-                                        <User className="h-3 w-3 text-gold-400" /> Tech: Marcus
+                                        <User className="h-3 w-3 shrink-0 text-gold-400" /> Tech: Marcus
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="absolute bottom-4 left-4 right-4 grid grid-cols-3 gap-2 sm:bottom-6 sm:left-6 sm:right-6">
+                            <div className="relative z-10 flex flex-1 items-center justify-center px-3 py-1 sm:px-5 sm:py-2">
+                                <BrandMark className="h-auto max-h-32 w-auto max-w-[320px] opacity-95 mix-blend-lighten sm:max-h-36 sm:max-w-[380px] lg:max-h-44 lg:max-w-[440px]" />
+                            </div>
+
+                            <div className="relative z-10 grid grid-cols-3 gap-2 px-4 pb-4 sm:px-6 sm:pb-6">
                                 {[
                                     { name: 'Oil', icon: Sparkles, val: '5W-30' },
                                     { name: 'Filter', icon: Gauge, val: 'OEM' },
@@ -105,7 +112,7 @@ export function HeroSection() {
                                 ].map((spec) => (
                                     <div
                                         key={spec.name}
-                                        className="rounded-xl border border-gold-500/20 bg-ink-900/60 p-2.5 backdrop-blur sm:p-3"
+                                        className="rounded-xl border border-gold-500/20 bg-ink-900/80 p-2.5 backdrop-blur sm:p-3"
                                     >
                                         <spec.icon className="h-4 w-4 text-gold-400" />
                                         <div className="mt-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 sm:mt-2">
@@ -114,10 +121,6 @@ export function HeroSection() {
                                         <div className="text-xs font-bold text-white sm:text-sm">{spec.val}</div>
                                     </div>
                                 ))}
-                            </div>
-
-                            <div className="absolute inset-0 flex items-center justify-center opacity-90">
-                                <BrandMark className="h-28 w-28 sm:h-36 sm:w-36 lg:h-44 lg:w-44 drop-shadow-[0_8px_30px_rgba(255,184,32,0.35)]" />
                             </div>
                         </div>
                     </div>

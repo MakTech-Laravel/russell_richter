@@ -1,13 +1,10 @@
+import { BrandMark } from '@/components/brand';
 import { cn } from '@/lib/utils';
 
-interface AppLogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface AppLogoProps {
     className?: string;
 }
 
-export default function AppLogo({ className, ...props }: AppLogoProps) {
-    return (
-        <>
-            <img src="/images/mobile-lube-logo.png" alt="Mobile Lube LLC" className={cn("w-auto max-w-[420px] object-contain", className)} {...props} />
-        </>
-    );
+export default function AppLogo({ className }: AppLogoProps) {
+    return <BrandMark className={cn('h-16 w-auto max-w-[300px]', className)} />;
 }

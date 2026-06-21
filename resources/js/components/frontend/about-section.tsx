@@ -1,3 +1,4 @@
+import { BrandMark } from '@/components/brand';
 import { MOBILE_LUBE } from '@/lib/mobile-lube';
 import { Button } from '@/components/ui/button';
 
@@ -35,11 +36,7 @@ export function AboutSection() {
                     <div className="relative">
                         <div className="ml-card rounded-2xl p-8">
                             <div className="mb-6 flex items-center justify-center">
-                                <img
-                                    src="/images/mobile-lube-logo.png"
-                                    alt="Mobile Lube LLC"
-                                    className="h-auto max-h-48 w-full max-w-sm object-contain"
-                                />
+                                <BrandMark className="h-auto max-h-64 w-full max-w-lg" />
                             </div>
                             <blockquote className="border-l-4 border-ml-gold pl-4 italic text-gray-600">
                                 &ldquo;{MOBILE_LUBE.tagline} — {MOBILE_LUBE.subtitle}&rdquo;
