@@ -15,7 +15,7 @@ class AdminTechnicianController extends Controller
     public function index(): Response
     {
         return Inertia::render('backend/Admin/Technicians/Index', [
-            'technicians' => Technician::query()->latest()->get()->map(fn (Technician $t) => [
+            'technicians' => Technician::query()->latest()->get()->map(fn(Technician $t) => [
                 'id' => $t->id,
                 'name' => $t->name,
                 'email' => $t->email,
@@ -32,8 +32,10 @@ class AdminTechnicianController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('technicians', 'email')],
             'phone' => ['nullable', 'string', 'max:30'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
+
+        unset($validated['password_confirmation']);
 
         Technician::query()->create($validated);
 
@@ -46,9 +48,19 @@ class AdminTechnicianController extends Controller
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'email', 'max:255', Rule::unique('technicians', 'email')->ignore($technician->id)],
             'phone' => ['nullable', 'string', 'max:30'],
-            'password' => ['nullable', 'string', 'min:8'],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
+
+        if (blank($validated['password'] ?? null)) {
+            unset($validated['password']);
+        }
+
+        unset($validated['password_confirmation']);
+
+        if ($request->has('is_active')) {
+            $validated['is_active'] = $request->boolean('is_active');
+        }
 
         $technician->update($validated);
 
