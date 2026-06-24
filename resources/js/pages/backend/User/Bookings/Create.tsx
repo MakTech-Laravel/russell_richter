@@ -9,6 +9,7 @@ import {
     dashboardLabelClass,
     dashboardSelectClass,
 } from '@/components/dashboard/dashboard-ui';
+import { BookingScheduleField } from '@/components/dashboard/booking-schedule-field';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -42,14 +43,6 @@ interface CreateProps {
 }
 
 export default function Create({ vehicles, services, selectedServiceId, defaults }: CreateProps) {
-    const defaultDatetime = (): string => {
-        const date = new Date();
-        date.setDate(date.getDate() + 1);
-        date.setHours(9, 0, 0, 0);
-
-        return date.toISOString().slice(0, 16);
-    };
-
     return (
         <UserLayout title="Book Service" subtitle="Schedule a mobile oil change at your location.">
             <Head title="Book Service" />
@@ -107,18 +100,7 @@ export default function Create({ vehicles, services, selectedServiceId, defaults
                                             <InputError message={errors.service_id} />
                                         </div>
 
-                                        <div className="space-y-2">
-                                            <label htmlFor="scheduled_at" className={dashboardLabelClass()}>Date & Time</label>
-                                            <Input
-                                                id="scheduled_at"
-                                                name="scheduled_at"
-                                                type="datetime-local"
-                                                defaultValue={defaultDatetime()}
-                                                required
-                                                className={dashboardInputClass()}
-                                            />
-                                            <InputError message={errors.scheduled_at} />
-                                        </div>
+                                        <BookingScheduleField error={errors.scheduled_at} />
 
                                         <div className="space-y-2">
                                             <label htmlFor="service_address" className={dashboardLabelClass()}>Service Address</label>

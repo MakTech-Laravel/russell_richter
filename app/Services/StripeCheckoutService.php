@@ -15,7 +15,7 @@ use UnexpectedValueException;
 
 class StripeCheckoutService
 {
-    public function __construct()
+    public function __construct(private AdminNotifier $adminNotifier)
     {
         Stripe::setApiKey(config('services.stripe.secret'));
     }
@@ -42,7 +42,7 @@ class StripeCheckoutService
                 ],
                 'quantity' => 1,
             ]],
-            'success_url' => route('bookings.payment.success', $booking).'?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('bookings.payment.success', $booking) . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('bookings.payment.cancel', $booking),
             'metadata' => [
                 'booking_id' => (string) $booking->id,
@@ -99,7 +99,7 @@ class StripeCheckoutService
 
         try {
             $event = Webhook::constructEvent($payload, $signature ?? '', $webhookSecret);
-        } catch (UnexpectedValueException|SignatureVerificationException) {
+        } catch (UnexpectedValueException | SignatureVerificationException) {
             throw new UnexpectedValueException('Invalid Stripe webhook payload.');
         }
 
@@ -144,7 +144,14 @@ class StripeCheckoutService
 
     private function markTransactionSucceeded(Booking $booking, Session $session, ?string $paymentIntentId): void
     {
-        Transaction::query()->updateOrCreate(
+        $existing = Transaction::query()
+            ->where('booking_id', $booking->id)
+            ->where('stripe_checkout_session_id', $session->id)
+            ->first();
+
+        $wasAlreadySucceeded = $existing?->status === TransactionStatus::Succeeded;
+
+        $transaction = Transaction::query()->updateOrCreate(
             [
                 'booking_id' => $booking->id,
                 'stripe_checkout_session_id' => $session->id,
@@ -158,6 +165,10 @@ class StripeCheckoutService
                 'paid_at' => now(),
             ],
         );
+
+        if (! $wasAlreadySucceeded) {
+            $this->adminNotifier->transactionSucceeded($transaction);
+        }
     }
 
     private function amountInCents(float|string $amount): int

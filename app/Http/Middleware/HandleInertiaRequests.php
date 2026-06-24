@@ -81,7 +81,7 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * @return array{pending_bookings: int}|null
+     * @return array{pending_bookings: int, unread_notifications?: int}|null
      */
     private function portalMeta(Request $request): ?array
     {
@@ -101,6 +101,7 @@ class HandleInertiaRequests extends Middleware
                 'pending_bookings' => Booking::query()
                     ->where('status', BookingStatus::Pending)
                     ->count(),
+                'unread_notifications' => $request->user('admin')->unreadNotifications()->count(),
             ];
         }
 

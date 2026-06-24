@@ -4,6 +4,7 @@ use App\Http\Controllers\Backend\Admin\AdminBookingController;
 use App\Http\Controllers\Backend\Admin\AdminCustomerController;
 use App\Http\Controllers\Backend\Admin\AdminDashboardController;
 use App\Http\Controllers\Backend\Admin\AdminLoginController;
+use App\Http\Controllers\Backend\Admin\AdminNotificationController;
 use App\Http\Controllers\Backend\Admin\AdminRouteController;
 use App\Http\Controllers\Backend\Admin\AdminServiceController;
 use App\Http\Controllers\Backend\Admin\AdminTechnicianController;
@@ -45,6 +46,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/services/{service}', [AdminServiceController::class, 'destroy'])->name('services.destroy');
 
         Route::get('/transactions', [AdminTransactionController::class, 'index'])->name('transactions.index');
+
+        Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
+        Route::patch('/notifications/{notification}/read', [AdminNotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::post('/notifications/read-all', [AdminNotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
 
         Route::get('/users/list', [UserSelectionController::class, 'getUsers'])->name('users.list');
     });

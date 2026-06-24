@@ -46,6 +46,7 @@ export interface SharedData {
     sidebarOpen: boolean;
     portal?: {
         pending_bookings: number;
+        unread_notifications?: number;
     } | null;
     [key: string]: unknown;
 }

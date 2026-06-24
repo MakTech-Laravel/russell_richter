@@ -165,7 +165,7 @@ export function dashboardSelectClass(): string {
 }
 
 export function dashboardInputClass(): string {
-    return 'w-full rounded-lg border border-white/10 bg-ink-800 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/30';
+    return 'w-full rounded-lg border border-white/10 bg-ink-800 px-3 py-2 text-sm text-white placeholder:text-slate-50/40 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/30';
 }
 
 export function dashboardLabelClass(): string {

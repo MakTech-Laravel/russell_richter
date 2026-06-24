@@ -1,8 +1,9 @@
 import { Link, router } from '@inertiajs/react';
-import { Bell, LogOut, Menu, Search } from 'lucide-react';
+import { LogOut, Menu, Search } from 'lucide-react';
 import { useState } from 'react';
 
 import { CompactLogo } from '@/components/brand';
+import { AdminNotificationBell } from '@/components/dashboard/admin-notification-bell';
 import type { DashboardNavItem } from '@/config/dashboard-nav';
 import { useNavActive } from '@/hooks/use-nav-active';
 import { cn } from '@/lib/utils';
@@ -21,6 +22,8 @@ interface DashboardShellProps {
     subtitle?: string;
     actions?: React.ReactNode;
     pendingBookings?: number;
+    unreadNotifications?: number;
+    showAdminNotifications?: boolean;
     children: React.ReactNode;
 }
 
@@ -83,6 +86,8 @@ export function DashboardShell({
     subtitle,
     actions,
     pendingBookings = 0,
+    unreadNotifications = 0,
+    showAdminNotifications = false,
     children,
 }: DashboardShellProps) {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -187,15 +192,9 @@ export function DashboardShell({
                                     className="w-56 rounded-lg border border-white/10 bg-ink-800 py-2 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-gold-500 focus:bg-ink-700 focus:outline-none focus:ring-2 focus:ring-gold-500/30 xl:w-72"
                                 />
                             </div>
-                            <button
-                                type="button"
-                                className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-ink-800 text-slate-300 hover:bg-ink-700 hover:text-gold-400"
-                            >
-                                <Bell className="h-4 w-4" />
-                                {pendingBookings > 0 && (
-                                    <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-gold-400 ring-2 ring-ink-900" />
-                                )}
-                            </button>
+                            {showAdminNotifications ? (
+                                <AdminNotificationBell initialUnreadCount={unreadNotifications} />
+                            ) : null}
                             {actions}
                         </div>
                     </div>

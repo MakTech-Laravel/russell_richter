@@ -37,6 +37,8 @@ export default function AdminLayout({
                 subtitle={subtitle}
                 actions={actions}
                 pendingBookings={portal?.pending_bookings ?? 0}
+                unreadNotifications={portal?.unread_notifications ?? 0}
+                showAdminNotifications
             >
                 {children}
             </DashboardShell>

@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateBookingRequest;
 use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Vehicle;
+use App\Services\AdminNotifier;
 use App\Services\GeocodingService;
 use App\Services\RecommendationService;
 use App\Services\StripeCheckoutService;
@@ -25,6 +26,7 @@ class BookingController extends Controller
         private RecommendationService $recommendationService,
         private GeocodingService $geocodingService,
         private StripeCheckoutService $stripeCheckoutService,
+        private AdminNotifier $adminNotifier,
     ) {}
 
     public function index(Request $request): Response
@@ -84,6 +86,8 @@ class BookingController extends Controller
         ]);
 
         $this->recommendationService->generateForBooking($booking);
+
+        $this->adminNotifier->bookingCreated($booking);
 
         $session = $this->stripeCheckoutService->createCheckoutSession($booking);
 

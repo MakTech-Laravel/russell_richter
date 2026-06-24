@@ -1,6 +1,7 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
 
+import { BookingScheduleField } from '@/components/dashboard/booking-schedule-field';
 import {
     DashboardCard,
     DashboardCardContent,
@@ -33,8 +34,6 @@ interface EditProps {
 }
 
 export default function Edit({ booking }: EditProps) {
-    const scheduledLocal = booking.scheduled_at.replace(' ', 'T').slice(0, 16);
-
     return (
         <UserLayout
             title="Edit Booking"
@@ -57,17 +56,10 @@ export default function Edit({ booking }: EditProps) {
                         >
                             {({ processing, errors }) => (
                                 <>
-                                    <div className="space-y-2">
-                                        <label htmlFor="scheduled_at" className={dashboardLabelClass()}>Date & Time</label>
-                                        <Input
-                                            id="scheduled_at"
-                                            name="scheduled_at"
-                                            type="datetime-local"
-                                            defaultValue={scheduledLocal}
-                                            className={dashboardInputClass()}
-                                        />
-                                        <InputError message={errors.scheduled_at} />
-                                    </div>
+                                    <BookingScheduleField
+                                        defaultValue={booking.scheduled_at}
+                                        error={errors.scheduled_at}
+                                    />
 
                                     <div className="space-y-2">
                                         <label htmlFor="service_address" className={dashboardLabelClass()}>Service Address</label>
