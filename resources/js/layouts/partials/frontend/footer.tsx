@@ -81,7 +81,7 @@ export function FrontendFooter() {
                         &copy; {new Date().getFullYear()} {MOBILE_LUBE.name}. All rights reserved.
                     </div>
                     <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-end">
-                        <span>{MOBILE_LUBE.domain}</span>
+                        {/* <span>{MOBILE_LUBE.domain}</span> */}
                         <a href={MOBILE_LUBE.emailHref} className="hover:text-gold-300">
                             {MOBILE_LUBE.email}
                         </a>
