@@ -10,6 +10,7 @@ import {
     dashboardLabelClass,
     dashboardSelectClass,
 } from '@/components/dashboard/dashboard-ui';
+import { BookingWorkProgress } from '@/components/dashboard/booking-work-progress';
 import InputError from '@/components/input-error';
 import { Textarea } from '@/components/ui/textarea';
 import AdminLayout from '@/layouts/admin-layout';
@@ -27,6 +28,9 @@ interface Booking {
     id: number;
     status: string;
     status_label: string;
+    work_status_label: string;
+    work_progress_step: number;
+    work_is_done: boolean;
     payment_status: string;
     payment_status_label: string;
     paid_at: string | null;
@@ -93,6 +97,13 @@ export default function Show({ booking, technicians, statuses }: ShowProps) {
                 <Link href={route('admin.bookings.index')} className="inline-flex items-center gap-1 text-sm text-gold-400 hover:underline">
                     <ArrowLeft className="h-4 w-4" /> Back to bookings
                 </Link>
+
+                <BookingWorkProgress
+                    status={booking.status}
+                    workStatusLabel={booking.work_status_label}
+                    workProgressStep={booking.work_progress_step}
+                    workIsDone={booking.work_is_done}
+                />
 
                 <div className="grid gap-6 lg:grid-cols-3">
                     <div className="space-y-6 lg:col-span-2">
@@ -161,7 +172,7 @@ export default function Show({ booking, technicians, statuses }: ShowProps) {
                                 {({ processing, errors }) => (
                                     <>
                                         <div className="space-y-2">
-                                            <label htmlFor="status" className={dashboardLabelClass()}>Status</label>
+                                            <label htmlFor="status" className={dashboardLabelClass()}>Work Status</label>
                                             <select id="status" name="status" defaultValue={booking.status} required className={dashboardSelectClass()}>
                                                 {statuses.map((status) => (
                                                     <option key={status.value} value={status.value}>{status.label}</option>

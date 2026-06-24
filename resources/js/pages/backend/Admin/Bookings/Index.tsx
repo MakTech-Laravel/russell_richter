@@ -22,6 +22,9 @@ interface BookingRow {
     technician: string | null;
     status: string;
     status_label: string;
+    work_status_label: string;
+    work_progress_step: number;
+    work_is_done: boolean;
     payment_status: string;
     payment_status_label: string;
     scheduled_at: string;
@@ -97,7 +100,7 @@ export default function Index({ bookings, filters, statuses }: IndexProps) {
                                     <th className="pb-3 pr-4">Service</th>
                                     <th className="pb-3 pr-4">Technician</th>
                                     <th className="pb-3 pr-4">Scheduled</th>
-                                    <th className="pb-3 pr-4">Status</th>
+                                    <th className="pb-3 pr-4">Work Status</th>
                                     <th className="pb-3 pr-4">Payment</th>
                                     <th className="pb-3">Price</th>
                                 </tr>
@@ -121,7 +124,22 @@ export default function Index({ bookings, filters, statuses }: IndexProps) {
                                         <td className="py-3 pr-4 text-slate-400">{booking.technician ?? '—'}</td>
                                         <td className="py-3 pr-4 text-slate-400">{booking.scheduled_at}</td>
                                         <td className="py-3 pr-4">
-                                            <StatusPill status={booking.status} label={booking.status_label} />
+                                            <div className="space-y-1">
+                                                <StatusPill
+                                                    status={booking.work_is_done ? 'completed' : booking.status}
+                                                    label={booking.work_status_label}
+                                                />
+                                                {!booking.work_is_done && booking.status !== 'cancelled' && (
+                                                    <div className="h-1 w-20 overflow-hidden rounded-full bg-white/5">
+                                                        <div
+                                                            className="h-full rounded-full bg-gold-400"
+                                                            style={{
+                                                                width: `${Math.max(12, (booking.work_progress_step / 4) * 100)}%`,
+                                                            }}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="py-3 pr-4">
                                             <StatusPill status={booking.payment_status} label={booking.payment_status_label} />

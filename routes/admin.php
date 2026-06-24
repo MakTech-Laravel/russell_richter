@@ -5,7 +5,9 @@ use App\Http\Controllers\Backend\Admin\AdminCustomerController;
 use App\Http\Controllers\Backend\Admin\AdminDashboardController;
 use App\Http\Controllers\Backend\Admin\AdminLoginController;
 use App\Http\Controllers\Backend\Admin\AdminRouteController;
+use App\Http\Controllers\Backend\Admin\AdminServiceController;
 use App\Http\Controllers\Backend\Admin\AdminTechnicianController;
+use App\Http\Controllers\Backend\Admin\AdminTransactionController;
 use App\Http\Controllers\Backend\Admin\AdminVehicleController;
 use App\Http\Controllers\UserSelectionController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +38,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/routes', [AdminRouteController::class, 'index'])->name('routes.index');
         Route::post('/routes/optimize', [AdminRouteController::class, 'optimize'])->name('routes.optimize');
+
+        Route::get('/services', [AdminServiceController::class, 'index'])->name('services.index');
+        Route::post('/services', [AdminServiceController::class, 'store'])->name('services.store');
+        Route::patch('/services/{service}', [AdminServiceController::class, 'update'])->name('services.update');
+        Route::delete('/services/{service}', [AdminServiceController::class, 'destroy'])->name('services.destroy');
+
+        Route::get('/transactions', [AdminTransactionController::class, 'index'])->name('transactions.index');
 
         Route::get('/users/list', [UserSelectionController::class, 'getUsers'])->name('users.list');
     });

@@ -2,5 +2,8 @@
 
 use App\Http\Controllers\Frontend\FrontendController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', [FrontendController::class, 'index'])->name('home');
+
+Route::get('/sign-in', fn () => Inertia::render('auth/portal-select'))->name('sign-in');

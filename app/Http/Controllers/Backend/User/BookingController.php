@@ -12,6 +12,7 @@ use App\Models\Vehicle;
 use App\Services\GeocodingService;
 use App\Services\RecommendationService;
 use App\Services\StripeCheckoutService;
+use App\Support\BookingPresenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -42,13 +43,18 @@ class BookingController extends Controller
 
     public function create(Request $request): Response
     {
+        $selectedServiceId = $request->integer('service_id');
+
         return Inertia::render('backend/User/Bookings/Create', [
             'vehicles' => $request->user()->vehicles()->latest()->get()->map(fn(Vehicle $v) => [
                 'id' => $v->id,
                 'display_name' => $v->display_name,
                 'vin' => $v->vin,
             ]),
-            'services' => Service::query()->where('is_active', true)->orderBy('sort_order')->get(['id', 'name', 'base_price', 'slug']),
+            'services' => Service::query()->where('is_active', true)->where('service_type', 'package')->orderBy('sort_order')->get(['id', 'name', 'base_price', 'slug']),
+            'selectedServiceId' => Service::query()->whereKey($selectedServiceId)->where('is_active', true)->exists()
+                ? $selectedServiceId
+                : null,
             'defaults' => [
                 'service_address' => $request->user()->address_line,
                 'service_city' => $request->user()->city ?? 'Victoria',
@@ -140,6 +146,7 @@ class BookingController extends Controller
             'id' => $booking->id,
             'status' => $booking->status->value,
             'status_label' => $booking->status->label(),
+            ...BookingPresenter::workMeta($booking->status),
             'payment_status' => $booking->payment_status->value,
             'payment_status_label' => $booking->payment_status->label(),
             'paid_at' => $booking->paid_at?->toDateTimeString(),

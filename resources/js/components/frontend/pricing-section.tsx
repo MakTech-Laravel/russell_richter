@@ -1,25 +1,39 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { Check } from 'lucide-react';
 
 import { FrontendSection } from '@/components/frontend/frontend-container';
 import { SectionHeader } from '@/components/frontend/section-header';
 import { register } from '@/routes';
+import type { SharedData } from '@/types';
 
 interface PricingSectionProps {
     packages: ReadonlyArray<{
+        id: number;
         name: string;
         price: number;
         popular: boolean;
         features: ReadonlyArray<string>;
     }>;
     addOns: ReadonlyArray<{
+        id: number;
         name: string;
         price: string;
         note: string | null;
     }>;
 }
 
+function bookingHref(serviceId: number, isAuthenticated: boolean): string {
+    if (isAuthenticated) {
+        return `${route('bookings.create')}?service_id=${serviceId}`;
+    }
+
+    return register();
+}
+
 export function PricingSection({ packages, addOns }: PricingSectionProps) {
+    const { auth } = usePage<SharedData>().props;
+    const isAuthenticated = Boolean(auth.user);
+
     return (
         <FrontendSection
             id="pricing"
@@ -37,7 +51,7 @@ export function PricingSection({ packages, addOns }: PricingSectionProps) {
             <div className="mt-12 grid gap-6 lg:mt-14 lg:grid-cols-3">
                 {packages.map((pkg) => (
                     <div
-                        key={pkg.name}
+                        key={pkg.id}
                         className={`relative flex flex-col overflow-hidden rounded-2xl border p-6 ${pkg.popular
                                 ? 'border-gold-500/60 bg-gradient-to-b from-gold-500/10 via-ink-800 to-ink-900 shadow-[0_0_60px_-15px_rgba(255,184,32,0.4)]'
                                 : 'border-white/10 bg-ink-800'
@@ -62,7 +76,7 @@ export function PricingSection({ packages, addOns }: PricingSectionProps) {
                             ))}
                         </ul>
                         <Link
-                            href={register()}
+                            href={bookingHref(pkg.id, isAuthenticated)}
                             className={`mt-7 flex h-10 items-center justify-center rounded-lg text-sm font-bold uppercase tracking-wider ${pkg.popular ? 'ml-btn-primary' : 'ml-btn-outline'
                                 }`}
                         >
@@ -77,7 +91,7 @@ export function PricingSection({ packages, addOns }: PricingSectionProps) {
                 <div className="mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
                     {addOns.map((addon) => (
                         <div
-                            key={addon.name}
+                            key={addon.id}
                             className="flex flex-col gap-1 border-b border-white/5 py-2 sm:flex-row sm:items-center sm:justify-between"
                         >
                             <div>

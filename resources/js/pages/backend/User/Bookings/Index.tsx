@@ -9,12 +9,16 @@ import {
     StatusPill,
     dashboardRowLinkClass,
 } from '@/components/dashboard/dashboard-ui';
+import { BookingWorkProgress } from '@/components/dashboard/booking-work-progress';
 import UserLayout from '@/layouts/user-layout';
 
 interface Booking {
     id: number;
     status: string;
     status_label: string;
+    work_status_label: string;
+    work_progress_step: number;
+    work_is_done: boolean;
     payment_status: string;
     payment_status_label: string;
     scheduled_at: string;
@@ -67,14 +71,23 @@ export default function Index({ bookings }: IndexProps) {
                                         </div>
                                     }
                                 />
-                                <DashboardCardContent className="flex flex-wrap gap-4 pt-0 text-sm text-slate-400">
-                                    <span>{booking.scheduled_at}</span>
-                                    {booking.technician && <span>Technician: {booking.technician.name}</span>}
-                                    {booking.total_price != null && (
-                                        <span className="font-semibold text-gold-400">
-                                            ${Number(booking.total_price).toFixed(2)}
-                                        </span>
-                                    )}
+                                <DashboardCardContent className="space-y-4 pt-0">
+                                    <BookingWorkProgress
+                                        status={booking.status}
+                                        workStatusLabel={booking.work_status_label}
+                                        workProgressStep={booking.work_progress_step}
+                                        workIsDone={booking.work_is_done}
+                                        compact
+                                    />
+                                    <div className="flex flex-wrap gap-4 text-sm text-slate-400">
+                                        <span>{booking.scheduled_at}</span>
+                                        {booking.technician && <span>Technician: {booking.technician.name}</span>}
+                                        {booking.total_price != null && (
+                                            <span className="font-semibold text-gold-400">
+                                                ${Number(booking.total_price).toFixed(2)}
+                                            </span>
+                                        )}
+                                    </div>
                                 </DashboardCardContent>
                             </DashboardCard>
                         </Link>

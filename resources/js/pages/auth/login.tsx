@@ -23,7 +23,8 @@ export default function Login() {
             }
             description="Sign in to manage your vehicles, bookings and service history."
             context="login"
-            headTitle="Log in"
+            headTitle="Customer sign in"
+            backHref={route('sign-in')}
         >
             <Form {...store.form()} resetOnSuccess={['password']} className="space-y-4">
                 {({ processing, errors }) => (

@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
 import { Spinner } from '@/components/ui/spinner';
-import { home } from '@/routes';
 
 export default function Login() {
     return (
@@ -15,13 +14,13 @@ export default function Login() {
 
             <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-16">
                 <Link
-                    href={home()}
+                    href={route('sign-in')}
                     className="mb-8 inline-flex w-max items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-gold-400"
                 >
                     <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                    Back to home
+                    Choose portal
                 </Link>
 
                 <FullLogo />

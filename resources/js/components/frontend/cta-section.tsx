@@ -2,7 +2,7 @@ import { Link } from '@inertiajs/react';
 import { Calendar } from 'lucide-react';
 
 import { FrontendSection } from '@/components/frontend/frontend-container';
-import { login, register } from '@/routes';
+import { register } from '@/routes';
 
 export function CtaSection() {
     return (
@@ -30,7 +30,7 @@ export function CtaSection() {
                         Book a Service
                     </Link>
                     <Link
-                        href={login()}
+                        href={route('sign-in')}
                         className="ml-btn-outline inline-flex h-12 items-center justify-center rounded-lg px-6 text-sm uppercase tracking-wider"
                     >
                         Sign in

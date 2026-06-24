@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Technician;
 use App\Services\RecommendationService;
+use App\Support\BookingPresenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,7 @@ class AdminBookingController extends Controller
                 'technician' => $b->technician?->name,
                 'status' => $b->status->value,
                 'status_label' => $b->status->label(),
+                ...BookingPresenter::workMeta($b->status),
                 'payment_status' => $b->payment_status->value,
                 'payment_status_label' => $b->payment_status->label(),
                 'scheduled_at' => $b->scheduled_at->toDateTimeString(),
@@ -89,6 +91,7 @@ class AdminBookingController extends Controller
             'id' => $booking->id,
             'status' => $booking->status->value,
             'status_label' => $booking->status->label(),
+            ...BookingPresenter::workMeta($booking->status),
             'payment_status' => $booking->payment_status->value,
             'payment_status_label' => $booking->payment_status->label(),
             'paid_at' => $booking->paid_at?->toDateTimeString(),

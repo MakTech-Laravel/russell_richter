@@ -4,7 +4,7 @@ import * as React from 'react';
 import { BrandMark, FullLogo } from '@/components/brand';
 import { MOBILE_LUBE } from '@/lib/mobile-lube';
 import { home } from '@/routes';
-import { login, register } from '@/routes';
+import { register } from '@/routes';
 
 interface AuthLayoutProps {
     children: React.ReactNode;
@@ -24,7 +24,7 @@ export default function AuthLayout({
     backHref,
 }: AuthLayoutProps) {
     const isRegisterView = context === 'register';
-    const switchHref = isRegisterView ? login() : register();
+    const switchHref = isRegisterView ? route('sign-in') : register();
     const switchLabel = isRegisterView ? 'Sign in' : 'Sign up free';
     const switchPrompt = isRegisterView ? 'Already have an account?' : "Don't have an account?";
 

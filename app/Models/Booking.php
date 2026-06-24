@@ -79,6 +79,11 @@ class Booking extends Model
         return $this->hasMany(BookingRecommendation::class);
     }
 
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
     public function isCompleted(): bool
     {
         return $this->status === BookingStatus::Completed;

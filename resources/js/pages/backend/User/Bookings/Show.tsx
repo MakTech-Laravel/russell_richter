@@ -7,6 +7,7 @@ import {
     DashboardCardHeader,
     StatusPill,
 } from '@/components/dashboard/dashboard-ui';
+import { BookingWorkProgress } from '@/components/dashboard/booking-work-progress';
 import UserLayout from '@/layouts/user-layout';
 
 interface Recommendation {
@@ -24,6 +25,9 @@ interface Booking {
     id: number;
     status: string;
     status_label: string;
+    work_status_label: string;
+    work_progress_step: number;
+    work_is_done: boolean;
     payment_status: string;
     payment_status_label: string;
     paid_at: string | null;
@@ -97,6 +101,13 @@ export default function Show({ booking }: ShowProps) {
                 <Link href={route('bookings.index')} className="inline-flex items-center gap-1 text-sm text-gold-400 hover:underline">
                     <ArrowLeft className="h-4 w-4" /> Back to bookings
                 </Link>
+
+                <BookingWorkProgress
+                    status={booking.status}
+                    workStatusLabel={booking.work_status_label}
+                    workProgressStep={booking.work_progress_step}
+                    workIsDone={booking.work_is_done}
+                />
 
                 <div className="grid gap-6 lg:grid-cols-2">
                     <DashboardCard>

@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/compon
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
-import { login, register } from '@/routes';
+import { register } from '@/routes';
 import { type SharedData } from '@/types';
 
 
@@ -69,7 +69,7 @@ export function AuthHeader() {
                         </DropdownMenu>
                     ) : (
                         <div className="hidden items-center gap-2 md:flex">
-                            <Link href={login()}>
+                            <Link href={route('sign-in')}>
                                 <Button variant="ghost" size="sm" className="text-sm font-medium">Log in</Button>
                             </Link>
                             <Link href={register()}>
@@ -114,7 +114,7 @@ export function AuthHeader() {
                                 <div className="space-y-3">
                                     {!auth.user ? (
                                         <>
-                                            <Link href={login()} className="block w-full" onClick={() => setIsMobileMenuOpen(false)}>
+                                            <Link href={route('sign-in')} className="block w-full" onClick={() => setIsMobileMenuOpen(false)}>
                                                 <Button variant="outline" className="w-full py-6">Log in</Button>
                                             </Link>
                                             <Link href={register()} className="block w-full" onClick={() => setIsMobileMenuOpen(false)}>

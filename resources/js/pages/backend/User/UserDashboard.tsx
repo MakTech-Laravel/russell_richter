@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { Calendar, Car, CheckCircle, Plus } from 'lucide-react';
+import { Calendar, Car, CheckCircle, CreditCard, Plus } from 'lucide-react';
 
 import {
     DashboardCard,
@@ -10,6 +10,7 @@ import {
     StatusPill,
     dashboardRowLinkClass,
 } from '@/components/dashboard/dashboard-ui';
+import { BookingWorkProgress } from '@/components/dashboard/booking-work-progress';
 import UserLayout from '@/layouts/user-layout';
 
 interface DashboardProps {
@@ -17,11 +18,16 @@ interface DashboardProps {
         vehicles_count: number;
         upcoming_bookings: number;
         completed_services: number;
+        total_spent: string | number;
     };
     upcomingBookings: Array<{
         id: number;
         scheduled_at: string;
         status: string;
+        status_label: string;
+        work_status_label: string;
+        work_progress_step: number;
+        work_is_done: boolean;
         vehicle: string | null;
         service: string | null;
     }>;
@@ -31,9 +37,16 @@ interface DashboardProps {
         vin: string;
         mileage: number | null;
     }>;
+    recentTransactions: Array<{
+        id: number;
+        service: string | null;
+        amount: string | number;
+        status: string;
+        paid_at: string | null;
+    }>;
 }
 
-export default function UserDashboard({ stats, upcomingBookings, vehicles }: DashboardProps) {
+export default function UserDashboard({ stats, upcomingBookings, vehicles, recentTransactions }: DashboardProps) {
     return (
         <UserLayout
             title="Dashboard"
@@ -52,10 +65,16 @@ export default function UserDashboard({ stats, upcomingBookings, vehicles }: Das
             <Head title="Customer Dashboard" />
 
             <div className="space-y-8">
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-4">
                     <DashboardStat label="Vehicles" value={stats.vehicles_count} icon={Car} tone="gold" />
                     <DashboardStat label="Upcoming" value={stats.upcoming_bookings} icon={Calendar} tone="sky" />
                     <DashboardStat label="Completed" value={stats.completed_services} icon={CheckCircle} tone="emerald" />
+                    <DashboardStat
+                        label="Total Spent"
+                        value={`$${Number(stats.total_spent).toFixed(0)}`}
+                        icon={CreditCard}
+                        tone="gold"
+                    />
                 </div>
 
                 <div className="grid gap-6 lg:grid-cols-2">
@@ -80,8 +99,14 @@ export default function UserDashboard({ stats, upcomingBookings, vehicles }: Das
                                         <p className="text-sm text-slate-400">
                                             {booking.vehicle} · {booking.scheduled_at}
                                         </p>
-                                        <div className="mt-2">
-                                            <StatusPill status={booking.status} />
+                                        <div className="mt-3">
+                                            <BookingWorkProgress
+                                                status={booking.status}
+                                                workStatusLabel={booking.work_status_label}
+                                                workProgressStep={booking.work_progress_step}
+                                                workIsDone={booking.work_is_done}
+                                                compact
+                                            />
                                         </div>
                                     </Link>
                                 ))
@@ -124,6 +149,41 @@ export default function UserDashboard({ stats, upcomingBookings, vehicles }: Das
                         </DashboardCardContent>
                     </DashboardCard>
                 </div>
+
+                <DashboardCard>
+                    <DashboardCardHeader
+                        title="Recent Transactions"
+                        actions={
+                            <Link href={route('transactions.index')} className="text-sm text-gold-400 hover:underline">
+                                View all
+                            </Link>
+                        }
+                    />
+                    <DashboardCardContent className="space-y-3">
+                        {recentTransactions.length === 0 ? (
+                            <p className="text-sm text-slate-400">No payments yet.</p>
+                        ) : (
+                            recentTransactions.map((tx) => (
+                                <div
+                                    key={tx.id}
+                                    className="flex items-center justify-between rounded-xl border border-white/5 bg-ink-900/40 px-4 py-3"
+                                >
+                                    <div>
+                                        <p className="font-semibold text-white">{tx.service}</p>
+                                        <p className="text-xs text-slate-500">{tx.paid_at ?? 'Pending'}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="font-semibold text-gold-300">${Number(tx.amount).toFixed(2)}</p>
+                                        <StatusPill
+                                            status={tx.status === 'Succeeded' ? 'completed' : 'pending'}
+                                            label={tx.status}
+                                        />
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </DashboardCardContent>
+                </DashboardCard>
             </div>
         </UserLayout>
     );

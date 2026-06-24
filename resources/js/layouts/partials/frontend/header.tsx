@@ -7,7 +7,7 @@ import { FrontendContainer } from '@/components/frontend/frontend-container';
 import { useScrollSpy } from '@/hooks/use-scroll-spy';
 import { MOBILE_LUBE, NAV_LINKS } from '@/lib/mobile-lube';
 import { cn } from '@/lib/utils';
-import { login, register } from '@/routes';
+import { register } from '@/routes';
 
 const SECTION_IDS = NAV_LINKS.map((link) => link.href.replace('#', ''));
 
@@ -79,7 +79,7 @@ export function FrontendHeader() {
 
                     <div className="flex items-center gap-2 sm:gap-3">
                         <Link
-                            href={login()}
+                            href={route('sign-in')}
                             className="ml-btn-ghost hidden rounded-lg px-3 py-2 text-sm font-semibold md:inline-flex"
                         >
                             Sign in
@@ -125,7 +125,7 @@ export function FrontendHeader() {
                                     );
                                 })}
                                 <Link
-                                    href={login()}
+                                    href={route('sign-in')}
                                     className="py-3 text-slate-300 transition hover:text-gold-400"
                                     onClick={() => setOpen(false)}
                                 >

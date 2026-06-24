@@ -12,16 +12,29 @@ import { TestimonialsSection } from '@/components/frontend/testimonials-section'
 import { TrustBarSection } from '@/components/frontend/trust-bar-section';
 import { WhyChooseSection } from '@/components/frontend/why-choose-section';
 import FrontendLayout from '@/layouts/frontend-layout';
-import {
-    ADD_ON_SERVICES,
-    FAQ_ITEMS,
-    MOBILE_LUBE,
-    PRICING_PACKAGES,
-    SERVICE_HIGHLIGHTS,
-    WHY_CHOOSE,
-} from '@/lib/mobile-lube';
+import { FAQ_ITEMS, MOBILE_LUBE, SERVICE_HIGHLIGHTS, WHY_CHOOSE } from '@/lib/mobile-lube';
 
-export default function Home() {
+interface PricingPackage {
+    id: number;
+    name: string;
+    price: number;
+    popular: boolean;
+    features: string[];
+}
+
+interface AddOnService {
+    id: number;
+    name: string;
+    price: string;
+    note: string | null;
+}
+
+interface HomeProps {
+    pricingPackages: PricingPackage[];
+    addOnServices: AddOnService[];
+}
+
+export default function Home({ pricingPackages, addOnServices }: HomeProps) {
     return (
         <FrontendLayout>
             <Head title={`${MOBILE_LUBE.name} | Mobile Oil Change in ${MOBILE_LUBE.serviceArea}`}>
@@ -35,7 +48,7 @@ export default function Home() {
             <HeroSection />
             <TrustBarSection />
             <ServicesSection services={SERVICE_HIGHLIGHTS} />
-            <PricingSection packages={PRICING_PACKAGES} addOns={ADD_ON_SERVICES} />
+            <PricingSection packages={pricingPackages} addOns={addOnServices} />
             <WhyChooseSection items={WHY_CHOOSE} />
             <HowItWorksSection />
             <TestimonialsSection />

@@ -37,10 +37,11 @@ interface Defaults {
 interface CreateProps {
     vehicles: VehicleOption[];
     services: ServiceOption[];
+    selectedServiceId: number | null;
     defaults: Defaults;
 }
 
-export default function Create({ vehicles, services, defaults }: CreateProps) {
+export default function Create({ vehicles, services, selectedServiceId, defaults }: CreateProps) {
     const defaultDatetime = (): string => {
         const date = new Date();
         date.setDate(date.getDate() + 1);
@@ -89,7 +90,13 @@ export default function Create({ vehicles, services, defaults }: CreateProps) {
 
                                         <div className="space-y-2">
                                             <label htmlFor="service_id" className={dashboardLabelClass()}>Service</label>
-                                            <select id="service_id" name="service_id" required className={dashboardSelectClass()} defaultValue="">
+                                            <select
+                                                id="service_id"
+                                                name="service_id"
+                                                required
+                                                className={dashboardSelectClass()}
+                                                defaultValue={selectedServiceId ?? ''}
+                                            >
                                                 <option value="" disabled>Select a service</option>
                                                 {services.map((service) => (
                                                     <option key={service.id} value={service.id}>
