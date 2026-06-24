@@ -23,6 +23,7 @@ interface Recommendation {
 
 interface Booking {
     id: number;
+    route_key: string;
     status: string;
     status_label: string;
     work_status_label: string;
@@ -78,7 +79,7 @@ export default function Show({ booking }: ShowProps) {
                     <StatusPill status={booking.status} label={booking.status_label} />
                     <StatusPill status={booking.payment_status} label={booking.payment_status_label} />
                     {isUnpaid && (
-                        <Form action={route('bookings.payment.checkout', booking.id)} method="post">
+                        <Form action={route('bookings.payment.checkout', booking.route_key)} method="post">
                             {({ processing }) => (
                                 <button type="submit" disabled={processing} className="ml-btn-primary inline-flex">
                                     <CreditCard className="h-4 w-4" />
@@ -88,7 +89,7 @@ export default function Show({ booking }: ShowProps) {
                         </Form>
                     )}
                     {canEdit && (
-                        <Link href={route('bookings.edit', booking.id)} className="ml-btn-outline inline-flex text-sm">
+                        <Link href={route('bookings.edit', booking.route_key)} className="ml-btn-outline inline-flex text-sm">
                             <Edit className="h-4 w-4" /> Edit
                         </Link>
                     )}

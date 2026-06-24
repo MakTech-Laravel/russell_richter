@@ -36,7 +36,7 @@ class BookingController extends Controller
             ->with(['vehicle', 'service', 'technician', 'recommendations'])
             ->latest('scheduled_at')
             ->get()
-            ->map(fn(Booking $booking) => $this->transformBooking($booking));
+            ->map(fn (Booking $booking) => $this->transformBooking($booking));
 
         return Inertia::render('backend/User/Bookings/Index', [
             'bookings' => $bookings,
@@ -48,7 +48,7 @@ class BookingController extends Controller
         $selectedServiceId = $request->integer('service_id');
 
         return Inertia::render('backend/User/Bookings/Create', [
-            'vehicles' => $request->user()->vehicles()->latest()->get()->map(fn(Vehicle $v) => [
+            'vehicles' => $request->user()->vehicles()->latest()->get()->map(fn (Vehicle $v) => [
                 'id' => $v->id,
                 'display_name' => $v->display_name,
                 'vin' => $v->vin,
@@ -148,6 +148,7 @@ class BookingController extends Controller
     {
         return [
             'id' => $booking->id,
+            'route_key' => $booking->getRouteKey(),
             'status' => $booking->status->value,
             'status_label' => $booking->status->label(),
             ...BookingPresenter::workMeta($booking->status),
@@ -178,7 +179,7 @@ class BookingController extends Controller
                 'id' => $booking->technician->id,
                 'name' => $booking->technician->name,
             ] : null,
-            'recommendations' => $booking->recommendations->map(fn($rec) => [
+            'recommendations' => $booking->recommendations->map(fn ($rec) => [
                 'id' => $rec->id,
                 'part_type' => $rec->part_type->value,
                 'part_type_label' => $rec->part_type->label(),

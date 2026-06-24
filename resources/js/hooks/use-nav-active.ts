@@ -10,6 +10,10 @@ export function isNavItemActive(item: DashboardNavItem, currentUrl: string): boo
             return currentUrl.startsWith(pattern.slice(0, -1));
         }
 
+        if (pattern === '/technician/jobs') {
+            return currentUrl === pattern;
+        }
+
         if (pattern === '/bookings' || pattern === '/admin/bookings') {
             return (
                 currentUrl === pattern ||

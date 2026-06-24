@@ -49,4 +49,5 @@ export const adminNav: DashboardNavItem[] = [
 
 export const technicianNav: DashboardNavItem[] = [
     { label: 'My Jobs', href: route('technician.jobs.index'), icon: LayoutDashboard, match: ['/technician/jobs'] },
+    { label: 'Job History', href: route('technician.jobs.history'), icon: History, match: ['/technician/jobs/history'] },
 ];

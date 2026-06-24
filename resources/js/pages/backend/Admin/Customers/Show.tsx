@@ -30,6 +30,7 @@ interface Vehicle {
 
 interface Booking {
     id: number;
+    route_key: string;
     service: string | null;
     vehicle: string | null;
     status: string;
@@ -120,7 +121,7 @@ export default function Show({ customer, vehicles, bookings }: ShowProps) {
                                     {bookings.map((booking) => (
                                         <Link
                                             key={booking.id}
-                                            href={route('admin.bookings.show', booking.id)}
+                                            href={route('admin.bookings.show', booking.route_key)}
                                             className={dashboardRowLinkClass()}
                                         >
                                             <div className="flex items-center justify-between gap-4">

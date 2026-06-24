@@ -13,6 +13,8 @@ Route::prefix('technician')->name('technician.')->group(function () {
     Route::middleware(['technician'])->group(function () {
         Route::post('/logout', [TechnicianLoginController::class, 'logout'])->name('logout');
         Route::get('/jobs', [TechnicianJobController::class, 'index'])->name('jobs.index');
+        Route::get('/jobs/history', [TechnicianJobController::class, 'history'])->name('jobs.history');
+        Route::get('/jobs/{booking}', [TechnicianJobController::class, 'show'])->name('jobs.show');
         Route::patch('/jobs/{booking}', [TechnicianJobController::class, 'updateStatus'])->name('jobs.update');
     });
 });

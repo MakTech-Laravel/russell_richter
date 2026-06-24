@@ -23,8 +23,9 @@ class UserDashboardController extends Controller
             ->orderBy('scheduled_at')
             ->limit(5)
             ->get()
-            ->map(fn($booking) => [
+            ->map(fn ($booking) => [
                 'id' => $booking->id,
+                'route_key' => $booking->getRouteKey(),
                 'scheduled_at' => $booking->scheduled_at->toDateTimeString(),
                 'status' => $booking->status->value,
                 'status_label' => $booking->status->label(),
@@ -41,7 +42,7 @@ class UserDashboardController extends Controller
                 'total_spent' => $user->transactions()->where('status', TransactionStatus::Succeeded)->sum('amount'),
             ],
             'upcomingBookings' => $upcomingBookings,
-            'vehicles' => $user->vehicles()->latest()->limit(3)->get()->map(fn($v) => [
+            'vehicles' => $user->vehicles()->latest()->limit(3)->get()->map(fn ($v) => [
                 'id' => $v->id,
                 'display_name' => $v->display_name,
                 'vin' => $v->vin,
@@ -52,7 +53,7 @@ class UserDashboardController extends Controller
                 ->latest()
                 ->limit(5)
                 ->get()
-                ->map(fn(Transaction $t) => [
+                ->map(fn (Transaction $t) => [
                     'id' => $t->id,
                     'service' => $t->booking?->service?->name,
                     'amount' => $t->amount,

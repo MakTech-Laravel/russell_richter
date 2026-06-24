@@ -16,6 +16,7 @@ import UserLayout from '@/layouts/user-layout';
 
 interface Booking {
     id: number;
+    route_key: string;
     status: string;
     status_label: string;
     scheduled_at: string;
@@ -42,7 +43,7 @@ export default function Edit({ booking }: EditProps) {
             <Head title={`Edit Booking #${booking.id}`} />
 
             <div className="mx-auto max-w-2xl space-y-4">
-                <Link href={route('bookings.show', booking.id)} className="inline-flex items-center gap-1 text-sm text-gold-400 hover:underline">
+                <Link href={route('bookings.show', booking.route_key)} className="inline-flex items-center gap-1 text-sm text-gold-400 hover:underline">
                     <ArrowLeft className="h-4 w-4" /> Back to booking
                 </Link>
 
@@ -50,7 +51,7 @@ export default function Edit({ booking }: EditProps) {
                     <DashboardCardHeader title="Update Appointment" />
                     <DashboardCardContent>
                         <Form
-                            action={route('bookings.update', booking.id)}
+                            action={route('bookings.update', booking.route_key)}
                             method="put"
                             className="space-y-6"
                         >
@@ -118,7 +119,7 @@ export default function Edit({ booking }: EditProps) {
                                         <button type="submit" disabled={processing} className="ml-btn-primary inline-flex">
                                             {processing ? 'Saving...' : 'Save Changes'}
                                         </button>
-                                        <Link href={route('bookings.show', booking.id)} className="ml-btn-outline inline-flex">
+                                        <Link href={route('bookings.show', booking.route_key)} className="ml-btn-outline inline-flex">
                                             Cancel
                                         </Link>
                                     </div>

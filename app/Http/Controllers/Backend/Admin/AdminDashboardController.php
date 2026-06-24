@@ -34,8 +34,9 @@ class AdminDashboardController extends Controller
                 ->latest()
                 ->limit(8)
                 ->get()
-                ->map(fn(Booking $b) => [
+                ->map(fn (Booking $b) => [
                     'id' => $b->id,
+                    'route_key' => $b->getRouteKey(),
                     'customer' => $b->user?->name,
                     'vehicle' => $b->vehicle?->display_name,
                     'service' => $b->service?->name,
@@ -49,7 +50,7 @@ class AdminDashboardController extends Controller
                 ->latest()
                 ->limit(6)
                 ->get()
-                ->map(fn(Transaction $t) => [
+                ->map(fn (Transaction $t) => [
                     'id' => $t->id,
                     'customer' => $t->user?->name,
                     'service' => $t->booking?->service?->name,

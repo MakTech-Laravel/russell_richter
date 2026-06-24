@@ -63,6 +63,7 @@ class AdminCustomerController extends Controller
             ]),
             'bookings' => $customer->bookings->map(fn ($b) => [
                 'id' => $b->id,
+                'route_key' => $b->getRouteKey(),
                 'service' => $b->service?->name,
                 'vehicle' => $b->vehicle?->display_name,
                 'status' => $b->status->label(),

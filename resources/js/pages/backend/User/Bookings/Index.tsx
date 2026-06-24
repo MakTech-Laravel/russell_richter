@@ -14,6 +14,7 @@ import UserLayout from '@/layouts/user-layout';
 
 interface Booking {
     id: number;
+    route_key: string;
     status: string;
     status_label: string;
     work_status_label: string;
@@ -59,7 +60,7 @@ export default function Index({ bookings }: IndexProps) {
             ) : (
                 <div className="space-y-4">
                     {bookings.map((booking) => (
-                        <Link key={booking.id} href={route('bookings.show', booking.id)} className="block">
+                        <Link key={booking.id} href={route('bookings.show', booking.route_key)} className="block">
                             <DashboardCard className="transition hover:border-gold-500/20">
                                 <DashboardCardHeader
                                     title={booking.service?.name ?? 'Service'}

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\BookingStatus;
 use App\Enums\PaymentStatus;
+use App\Models\Concerns\HasEncryptedRouteKey;
 use Database\Factories\BookingFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Booking extends Model
 {
     /** @use HasFactory<BookingFactory> */
-    use HasFactory;
+    use HasEncryptedRouteKey, HasFactory;
 
     protected $fillable = [
         'user_id',

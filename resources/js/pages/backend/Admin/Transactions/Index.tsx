@@ -21,6 +21,7 @@ interface TransactionRow {
     customer_email: string | null;
     service: string | null;
     booking_id: number;
+    booking_route_key: string | null;
     stripe_payment_intent_id: string | null;
     paid_at: string | null;
     created_at: string;
@@ -89,7 +90,7 @@ export default function Index({ transactions }: IndexProps) {
                                             <td className="py-3 pr-4 text-slate-400">{tx.paid_at ?? tx.created_at}</td>
                                             <td className="py-3">
                                                 <Link
-                                                    href={route('admin.bookings.show', tx.booking_id)}
+                                                    href={route('admin.bookings.show', tx.booking_route_key ?? tx.booking_id)}
                                                     className="text-gold-400 hover:underline"
                                                 >
                                                     #{tx.booking_id}

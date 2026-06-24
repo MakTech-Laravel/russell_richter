@@ -26,6 +26,7 @@ class BookingPresenter
     {
         return [
             'id' => $booking->id,
+            'route_key' => $booking->getRouteKey(),
             'status' => $booking->status->value,
             'status_label' => $booking->status->label(),
             ...self::workMeta($booking->status),

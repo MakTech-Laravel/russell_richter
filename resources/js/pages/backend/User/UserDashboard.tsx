@@ -22,6 +22,7 @@ interface DashboardProps {
     };
     upcomingBookings: Array<{
         id: number;
+        route_key: string;
         scheduled_at: string;
         status: string;
         status_label: string;
@@ -92,7 +93,7 @@ export default function UserDashboard({ stats, upcomingBookings, vehicles, recen
                                 upcomingBookings.map((booking) => (
                                     <Link
                                         key={booking.id}
-                                        href={route('bookings.show', booking.id)}
+                                        href={route('bookings.show', booking.route_key)}
                                         className={dashboardRowLinkClass()}
                                     >
                                         <p className="font-semibold text-white">{booking.service}</p>

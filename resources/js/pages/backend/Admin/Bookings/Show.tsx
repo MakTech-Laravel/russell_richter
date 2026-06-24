@@ -26,6 +26,7 @@ interface Recommendation {
 
 interface Booking {
     id: number;
+    route_key: string;
     status: string;
     status_label: string;
     work_status_label: string;
@@ -165,7 +166,7 @@ export default function Show({ booking, technicians, statuses }: ShowProps) {
                         <DashboardCardHeader title="Manage Booking" />
                         <DashboardCardContent>
                             <Form
-                                action={route('admin.bookings.update', booking.id)}
+                                action={route('admin.bookings.update', booking.route_key)}
                                 method="patch"
                                 className="space-y-4"
                             >

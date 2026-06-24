@@ -20,6 +20,7 @@ class ServiceHistoryController extends Controller
             ->get()
             ->map(fn ($booking) => [
                 'id' => $booking->id,
+                'route_key' => $booking->getRouteKey(),
                 'completed_at' => $booking->completed_at?->toDateTimeString(),
                 'scheduled_at' => $booking->scheduled_at->toDateTimeString(),
                 'total_price' => $booking->total_price,

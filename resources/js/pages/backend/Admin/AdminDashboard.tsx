@@ -25,6 +25,7 @@ interface Stats {
 
 interface RecentBooking {
     id: number;
+    route_key: string;
     customer: string | null;
     vehicle: string | null;
     service: string | null;
@@ -100,7 +101,7 @@ export default function AdminDashboard({ stats, recentBookings, recentTransactio
                                             <tr key={booking.id} className={dashboardTableRowClass()}>
                                                 <td className="py-3 pr-4">
                                                     <Link
-                                                        href={route('admin.bookings.show', booking.id)}
+                                                        href={route('admin.bookings.show', booking.route_key)}
                                                         className="text-gold-400 hover:underline"
                                                     >
                                                         {booking.customer ?? '—'}

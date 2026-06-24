@@ -13,7 +13,7 @@ class AdminTransactionController extends Controller
     public function index(Request $request): Response
     {
         $transactions = Transaction::query()
-            ->with(['user:id,name,email', 'booking.service:id,name'])
+            ->with(['user:id,name,email', 'booking.service:id,name', 'booking'])
             ->latest()
             ->paginate(20)
             ->withQueryString()
@@ -27,6 +27,7 @@ class AdminTransactionController extends Controller
                 'customer_email' => $transaction->user?->email,
                 'service' => $transaction->booking?->service?->name,
                 'booking_id' => $transaction->booking_id,
+                'booking_route_key' => $transaction->booking?->getRouteKey(),
                 'stripe_payment_intent_id' => $transaction->stripe_payment_intent_id,
                 'paid_at' => $transaction->paid_at?->toDateTimeString(),
                 'created_at' => $transaction->created_at->toDateTimeString(),

@@ -38,7 +38,7 @@ class TransactionReceivedNotification extends Notification
                 $customerName,
                 $this->transaction->booking_id,
             ),
-            'url' => route('admin.bookings.show', $this->transaction->booking_id),
+            'url' => route('admin.bookings.show', $this->transaction->booking),
         ];
     }
 }

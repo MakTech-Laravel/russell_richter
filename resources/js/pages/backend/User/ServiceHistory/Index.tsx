@@ -11,6 +11,7 @@ import UserLayout from '@/layouts/user-layout';
 
 interface HistoryItem {
     id: number;
+    route_key: string;
     completed_at: string | null;
     scheduled_at: string;
     total_price: string | number | null;
@@ -43,7 +44,7 @@ export default function Index({ history }: IndexProps) {
             ) : (
                 <div className="space-y-4">
                     {history.map((item) => (
-                        <Link key={item.id} href={route('bookings.show', item.id)} className="block">
+                        <Link key={item.id} href={route('bookings.show', item.route_key)} className="block">
                             <DashboardCard className="transition hover:border-gold-500/20">
                                 <DashboardCardHeader
                                     title={

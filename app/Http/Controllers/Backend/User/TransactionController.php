@@ -14,7 +14,7 @@ class TransactionController extends Controller
     {
         $transactions = $request->user()
             ->transactions()
-            ->with(['booking.service:id,name', 'booking.vehicle:id,year,make,model'])
+            ->with(['booking.service:id,name', 'booking.vehicle:id,year,make,model', 'booking'])
             ->latest()
             ->paginate(15)
             ->withQueryString()
@@ -27,6 +27,7 @@ class TransactionController extends Controller
                 'service' => $transaction->booking?->service?->name,
                 'vehicle' => $transaction->booking?->vehicle?->display_name,
                 'booking_id' => $transaction->booking_id,
+                'booking_route_key' => $transaction->booking?->getRouteKey(),
                 'paid_at' => $transaction->paid_at?->toDateTimeString(),
                 'created_at' => $transaction->created_at->toDateTimeString(),
             ]);

@@ -18,8 +18,10 @@ interface Recommendation {
 
 interface Job {
     id: number;
+    route_key: string;
     route_order: number | null;
     status: string;
+    status_label: string;
     scheduled_at: string;
     customer: string | null;
     customer_phone: string | null;
@@ -67,7 +69,7 @@ export default function Index({ jobs }: IndexProps) {
                                         </div>
                                     </div>
                                 }
-                                actions={<StatusPill status={job.status} />}
+                                actions={<StatusPill status={job.status} label={job.status_label} />}
                             />
                             <DashboardCardContent className="space-y-4">
                                 <div className="grid gap-2 text-sm text-slate-400 sm:grid-cols-2">
@@ -113,13 +115,13 @@ export default function Index({ jobs }: IndexProps) {
                                 )}
 
                                 <div className="flex flex-wrap gap-3 pt-2">
-                                    <Form action={route('technician.jobs.update', job.id)} method="patch">
+                                    <Form action={route('technician.jobs.update', job.route_key)} method="patch">
                                         <input type="hidden" name="status" value="in_progress" />
                                         <button type="submit" className="ml-btn-outline inline-flex">
                                             <Play className="h-4 w-4" /> Start Job
                                         </button>
                                     </Form>
-                                    <Form action={route('technician.jobs.update', job.id)} method="patch">
+                                    <Form action={route('technician.jobs.update', job.route_key)} method="patch">
                                         <input type="hidden" name="status" value="completed" />
                                         <button type="submit" className="ml-btn-primary inline-flex">
                                             <CheckCircle className="h-4 w-4" /> Complete Job

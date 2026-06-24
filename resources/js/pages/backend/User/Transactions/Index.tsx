@@ -20,6 +20,7 @@ interface TransactionRow {
     service: string | null;
     vehicle: string | null;
     booking_id: number;
+    booking_route_key: string | null;
     paid_at: string | null;
     created_at: string;
 }
@@ -87,7 +88,7 @@ export default function Index({ transactions }: IndexProps) {
                                             <td className="py-3 pr-4 text-slate-400">{tx.paid_at ?? tx.created_at}</td>
                                             <td className="py-3">
                                                 <Link
-                                                    href={route('bookings.show', tx.booking_id)}
+                                                    href={route('bookings.show', tx.booking_route_key ?? tx.booking_id)}
                                                     className="text-gold-400 hover:underline"
                                                 >
                                                     View booking

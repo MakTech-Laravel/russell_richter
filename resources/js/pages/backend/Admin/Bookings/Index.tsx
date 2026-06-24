@@ -12,9 +12,11 @@ import {
     dashboardTableRowClass,
 } from '@/components/dashboard/dashboard-ui';
 import AdminLayout from '@/layouts/admin-layout';
+import { cn } from '@/lib/utils';
 
 interface BookingRow {
     id: number;
+    route_key: string;
     customer: string | null;
     customer_email: string | null;
     vehicle: string | null;
@@ -107,12 +109,21 @@ export default function Index({ bookings, filters, statuses }: IndexProps) {
                             </thead>
                             <tbody>
                                 {bookings.data.map((booking) => (
-                                    <tr key={booking.id} className={dashboardTableRowClass()}>
-                                        <td className="py-3 pr-4">
-                                            <Link href={route('admin.bookings.show', booking.id)} className="text-gold-400 hover:underline">
-                                                #{booking.id}
-                                            </Link>
-                                        </td>
+                                    <tr
+                                        key={booking.id}
+                                        className={cn(dashboardTableRowClass(), 'cursor-pointer')}
+                                        onClick={() => router.visit(route('admin.bookings.show', booking.route_key))}
+                                        onKeyDown={(event) => {
+                                            if (event.key === 'Enter' || event.key === ' ') {
+                                                event.preventDefault();
+                                                router.visit(route('admin.bookings.show', booking.route_key));
+                                            }
+                                        }}
+                                        tabIndex={0}
+                                        role="link"
+                                        aria-label={`View booking #${booking.id}`}
+                                    >
+                                        <td className="py-3 pr-4 font-medium text-gold-400">#{booking.id}</td>
                                         <td className="py-3 pr-4">
                                             <div className="text-white">{booking.customer ?? '—'}</div>
                                             {booking.customer_email && (

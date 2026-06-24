@@ -22,11 +22,12 @@ class AdminBookingController extends Controller
     {
         $bookings = Booking::query()
             ->with(['user', 'vehicle', 'service', 'technician'])
-            ->when($request->string('status')->toString(), fn($q, $status) => $q->where('status', $status))
+            ->when($request->string('status')->toString(), fn ($q, $status) => $q->where('status', $status))
             ->latest('scheduled_at')
             ->paginate(15)
-            ->through(fn(Booking $b) => [
+            ->through(fn (Booking $b) => [
                 'id' => $b->id,
+                'route_key' => $b->getRouteKey(),
                 'customer' => $b->user?->name,
                 'customer_email' => $b->user?->email,
                 'vehicle' => $b->vehicle?->display_name,
@@ -45,7 +46,7 @@ class AdminBookingController extends Controller
         return Inertia::render('backend/Admin/Bookings/Index', [
             'bookings' => $bookings,
             'filters' => ['status' => $request->string('status')->toString()],
-            'statuses' => collect(BookingStatus::cases())->map(fn($s) => ['value' => $s->value, 'label' => $s->label()]),
+            'statuses' => collect(BookingStatus::cases())->map(fn ($s) => ['value' => $s->value, 'label' => $s->label()]),
             'technicians' => Technician::query()->where('is_active', true)->get(['id', 'name']),
         ]);
     }
@@ -57,7 +58,7 @@ class AdminBookingController extends Controller
         return Inertia::render('backend/Admin/Bookings/Show', [
             'booking' => $this->transform($booking),
             'technicians' => Technician::query()->where('is_active', true)->get(['id', 'name']),
-            'statuses' => collect(BookingStatus::cases())->map(fn($s) => ['value' => $s->value, 'label' => $s->label()]),
+            'statuses' => collect(BookingStatus::cases())->map(fn ($s) => ['value' => $s->value, 'label' => $s->label()]),
         ]);
     }
 
@@ -89,6 +90,7 @@ class AdminBookingController extends Controller
     {
         return [
             'id' => $booking->id,
+            'route_key' => $booking->getRouteKey(),
             'status' => $booking->status->value,
             'status_label' => $booking->status->label(),
             ...BookingPresenter::workMeta($booking->status),
@@ -127,7 +129,7 @@ class AdminBookingController extends Controller
                 'id' => $booking->technician->id,
                 'name' => $booking->technician->name,
             ] : null,
-            'recommendations' => $booking->recommendations->map(fn($r) => [
+            'recommendations' => $booking->recommendations->map(fn ($r) => [
                 'part_type_label' => $r->part_type->label(),
                 'part_name' => $r->part_name,
                 'specification' => $r->specification,
