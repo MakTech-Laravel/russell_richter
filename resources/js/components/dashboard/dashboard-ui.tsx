@@ -180,6 +180,22 @@ export function dashboardTableRowClass(): string {
     return 'border-b border-white/5 last:border-0 hover:bg-white/[0.02]';
 }
 
+export function dashboardButtonPrimaryClass(): string {
+    return 'ml-btn-primary';
+}
+
+export function dashboardButtonOutlineClass(): string {
+    return 'ml-btn-outline';
+}
+
+export function dashboardButtonIconClass(): string {
+    return 'ml-btn-icon';
+}
+
+export function dashboardButtonIconDangerClass(): string {
+    return 'ml-btn-icon-danger';
+}
+
 export function DashboardLink({ className, ...props }: React.ComponentProps<'a'>) {
     return <a className={cn('text-gold-400 hover:text-gold-300 hover:underline', className)} {...props} />;
 }

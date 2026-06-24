@@ -110,13 +110,13 @@ export default function Index({ customers, filters }: IndexProps) {
                                         key={index}
                                         href={link.url}
                                         preserveScroll
-                                        className={link.active ? 'ml-btn-primary px-3 py-1.5 text-xs' : 'ml-btn-outline px-3 py-1.5 text-xs'}
+                                        className={link.active ? 'ml-btn-primary ml-btn-sm' : 'ml-btn-outline ml-btn-sm'}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />
                                 ) : (
                                     <span
                                         key={index}
-                                        className="ml-btn-outline cursor-not-allowed px-3 py-1.5 text-xs opacity-40"
+                                        className="ml-btn-outline ml-btn-sm cursor-not-allowed opacity-40"
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />
                                 ),

@@ -68,7 +68,7 @@ export default function History({ history }: HistoryProps) {
                                         <td className="py-3 text-right">
                                             <Link
                                                 href={route('technician.jobs.show', item.route_key)}
-                                                className="ml-btn-outline inline-flex items-center gap-1.5 px-3 py-1.5 text-xs"
+                                                className="ml-btn-outline ml-btn-sm"
                                             >
                                                 <Eye className="h-3.5 w-3.5" />
                                                 View

@@ -68,7 +68,7 @@ it('moves completed jobs from active list to history', function () {
             'status' => 'completed',
             'technician_notes' => 'Service completed successfully.',
         ])
-        ->assertRedirect();
+        ->assertRedirect(route('technician.jobs.index'));
 
     $booking->refresh();
 
@@ -81,4 +81,45 @@ it('moves completed jobs from active list to history', function () {
     $this->actingAs($technician, 'technician')
         ->get(route('technician.jobs.history'))
         ->assertInertia(fn ($page) => $page->has('history', 1));
+});
+
+it('marks assigned jobs as in progress when started', function () {
+    $technician = Technician::factory()->create();
+    $booking = Booking::factory()->create([
+        'technician_id' => $technician->id,
+        'status' => BookingStatus::Assigned,
+    ]);
+
+    $this->actingAs($technician, 'technician')
+        ->patch(route('technician.jobs.update', $booking), [
+            'status' => 'in_progress',
+        ])
+        ->assertRedirect();
+
+    $booking->refresh();
+
+    expect($booking->status)->toBe(BookingStatus::InProgress);
+
+    $this->actingAs($technician, 'technician')
+        ->get(route('technician.jobs.index'))
+        ->assertInertia(fn ($page) => $page
+            ->has('jobs', 1)
+            ->where('jobs.0.status', BookingStatus::InProgress->value)
+            ->where('jobs.0.work_status_label', 'Work In Progress'));
+});
+
+it('requires a job to be started before it can be completed', function () {
+    $technician = Technician::factory()->create();
+    $booking = Booking::factory()->create([
+        'technician_id' => $technician->id,
+        'status' => BookingStatus::Assigned,
+    ]);
+
+    $this->actingAs($technician, 'technician')
+        ->patch(route('technician.jobs.update', $booking), [
+            'status' => 'completed',
+        ])
+        ->assertSessionHasErrors('status');
+
+    expect($booking->fresh()->status)->toBe(BookingStatus::Assigned);
 });

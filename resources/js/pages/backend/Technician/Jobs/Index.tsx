@@ -1,6 +1,9 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, usePage } from '@inertiajs/react';
 import { CheckCircle, MapPin, Play, Wrench } from 'lucide-react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
+import { BookingWorkProgress } from '@/components/dashboard/booking-work-progress';
 import {
     DashboardCard,
     DashboardCardContent,
@@ -9,6 +12,7 @@ import {
     StatusPill,
 } from '@/components/dashboard/dashboard-ui';
 import TechnicianLayout from '@/layouts/technician-layout';
+import { type SharedData } from '@/types';
 
 interface Recommendation {
     part_type_label: string;
@@ -22,6 +26,9 @@ interface Job {
     route_order: number | null;
     status: string;
     status_label: string;
+    work_status_label: string;
+    work_progress_step: number;
+    work_is_done: boolean;
     scheduled_at: string;
     customer: string | null;
     customer_phone: string | null;
@@ -37,7 +44,71 @@ interface IndexProps {
     jobs: Job[];
 }
 
+function canStartJob(status: string): boolean {
+    return ['pending', 'confirmed', 'assigned'].includes(status);
+}
+
+function canCompleteJob(status: string): boolean {
+    return status === 'in_progress';
+}
+
+function JobActions({ job }: { job: Job }) {
+    const showStart = canStartJob(job.status);
+    const showComplete = canCompleteJob(job.status);
+
+    if (!showStart && !showComplete) {
+        return null;
+    }
+
+    return (
+        <div className="flex flex-wrap gap-3 pt-2">
+            {showStart && (
+                <Form
+                    action={route('technician.jobs.update', job.route_key)}
+                    method="patch"
+                    onSuccess={() => toast.success('Job started — now in progress.')}
+                >
+                    {({ processing }) => (
+                        <>
+                            <input type="hidden" name="status" value="in_progress" />
+                            <button type="submit" disabled={processing} className="ml-btn-outline inline-flex">
+                                <Play className="h-4 w-4" />
+                                {processing ? 'Starting...' : 'Start Job'}
+                            </button>
+                        </>
+                    )}
+                </Form>
+            )}
+            {showComplete && (
+                <Form
+                    action={route('technician.jobs.update', job.route_key)}
+                    method="patch"
+                    onSuccess={() => toast.success('Job completed successfully.')}
+                >
+                    {({ processing }) => (
+                        <>
+                            <input type="hidden" name="status" value="completed" />
+                            <button type="submit" disabled={processing} className="ml-btn-primary inline-flex">
+                                <CheckCircle className="h-4 w-4" />
+                                {processing ? 'Completing...' : 'Complete Job'}
+                            </button>
+                        </>
+                    )}
+                </Form>
+            )}
+        </div>
+    );
+}
+
 export default function Index({ jobs }: IndexProps) {
+    const { flash } = usePage<SharedData>().props;
+
+    useEffect(() => {
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
+    }, [flash?.success]);
+
     return (
         <TechnicianLayout
             title="My Jobs"
@@ -69,9 +140,22 @@ export default function Index({ jobs }: IndexProps) {
                                         </div>
                                     </div>
                                 }
-                                actions={<StatusPill status={job.status} label={job.status_label} />}
+                                actions={
+                                    <StatusPill
+                                        status={job.status}
+                                        label={job.work_status_label}
+                                    />
+                                }
                             />
                             <DashboardCardContent className="space-y-4">
+                                <BookingWorkProgress
+                                    status={job.status}
+                                    workStatusLabel={job.work_status_label}
+                                    workProgressStep={job.work_progress_step}
+                                    workIsDone={job.work_is_done}
+                                    compact
+                                />
+
                                 <div className="grid gap-2 text-sm text-slate-400 sm:grid-cols-2">
                                     <span>Scheduled: {job.scheduled_at}</span>
                                     {job.customer_phone && (
@@ -114,20 +198,7 @@ export default function Index({ jobs }: IndexProps) {
                                     </div>
                                 )}
 
-                                <div className="flex flex-wrap gap-3 pt-2">
-                                    <Form action={route('technician.jobs.update', job.route_key)} method="patch">
-                                        <input type="hidden" name="status" value="in_progress" />
-                                        <button type="submit" className="ml-btn-outline inline-flex">
-                                            <Play className="h-4 w-4" /> Start Job
-                                        </button>
-                                    </Form>
-                                    <Form action={route('technician.jobs.update', job.route_key)} method="patch">
-                                        <input type="hidden" name="status" value="completed" />
-                                        <button type="submit" className="ml-btn-primary inline-flex">
-                                            <CheckCircle className="h-4 w-4" /> Complete Job
-                                        </button>
-                                    </Form>
-                                </div>
+                                <JobActions job={job} />
                             </DashboardCardContent>
                         </DashboardCard>
                     ))}

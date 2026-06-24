@@ -47,7 +47,7 @@ export function BookingWorkProgress({
                     <span
                         className={cn(
                             'text-[11px] font-semibold',
-                            workIsDone ? 'text-emerald-400' : 'text-gold-400',
+                            workIsDone || workProgressStep > 1 ? 'text-emerald-400' : 'text-gold-400',
                         )}
                     >
                         {workStatusLabel}
@@ -57,8 +57,8 @@ export function BookingWorkProgress({
                     <div
                         className={cn(
                             'h-full rounded-full transition-all duration-500',
-                            workIsDone
-                                ? 'bg-gradient-to-r from-emerald-400 to-emerald-500'
+                            workProgressStep > 1 || workIsDone
+                                ? 'bg-gradient-to-r from-emerald-500 to-emerald-400'
                                 : 'bg-gradient-to-r from-gold-500 to-gold-400',
                         )}
                         style={{ width: `${percent}%` }}
@@ -76,7 +76,7 @@ export function BookingWorkProgress({
                     <p
                         className={cn(
                             'mt-1 text-lg font-bold',
-                            workIsDone ? 'text-emerald-400' : 'text-gold-300',
+                            workIsDone || workProgressStep > 1 ? 'text-emerald-400' : 'text-gold-300',
                         )}
                     >
                         {workStatusLabel}
@@ -92,27 +92,30 @@ export function BookingWorkProgress({
 
             <div className="mt-6 grid grid-cols-4 gap-2">
                 {WORK_STEPS.map((item) => {
-                    const isComplete = workProgressStep > item.step || (workIsDone && item.step === 4);
+                    const isPast = workProgressStep > item.step || (workIsDone && item.step === 4);
                     const isCurrent = workProgressStep === item.step && !workIsDone;
+                    const showCheck = isPast || isCurrent;
+                    const isReached = showCheck;
 
                     return (
                         <div key={item.step} className="flex flex-col items-center gap-2 text-center">
                             <div
                                 className={cn(
                                     'flex h-8 w-8 items-center justify-center rounded-full border text-xs font-bold transition',
-                                    isComplete
-                                        ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-300'
-                                        : isCurrent
-                                            ? 'border-gold-500/50 bg-gold-500/20 text-gold-300 ring-2 ring-gold-500/20'
-                                            : 'border-white/10 bg-ink-800 text-slate-500',
+                                    isReached
+                                        ? cn(
+                                            'border-emerald-500/40 bg-emerald-500/20 text-emerald-300',
+                                            isCurrent && 'ring-2 ring-emerald-400/25',
+                                        )
+                                        : 'border-white/10 bg-ink-800 text-slate-500',
                                 )}
                             >
-                                {isComplete ? <Check className="h-4 w-4" /> : item.step}
+                                {showCheck ? <Check className="h-4 w-4" /> : item.step}
                             </div>
                             <span
                                 className={cn(
                                     'text-[10px] font-semibold uppercase leading-tight tracking-wide',
-                                    isComplete || isCurrent ? 'text-slate-200' : 'text-slate-500',
+                                    showCheck ? 'text-slate-200' : 'text-slate-500',
                                 )}
                             >
                                 {item.label}
@@ -126,8 +129,8 @@ export function BookingWorkProgress({
                 <div
                     className={cn(
                         'h-full rounded-full transition-all duration-500',
-                        workIsDone
-                            ? 'bg-gradient-to-r from-emerald-400 to-emerald-500'
+                        workProgressStep > 1 || workIsDone
+                            ? 'bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-300'
                             : 'bg-gradient-to-r from-gold-600 via-gold-400 to-gold-300',
                     )}
                     style={{

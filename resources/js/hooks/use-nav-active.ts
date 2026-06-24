@@ -2,26 +2,31 @@ import { usePage } from '@inertiajs/react';
 
 import type { DashboardNavItem } from '@/config/dashboard-nav';
 
+function navPathname(url: string): string {
+    return url.split('?')[0]?.split('#')[0] ?? url;
+}
+
 export function isNavItemActive(item: DashboardNavItem, currentUrl: string): boolean {
+    const pathname = navPathname(currentUrl);
     const patterns = item.match ?? [new URL(item.href, window.location.origin).pathname];
 
     return patterns.some((pattern) => {
         if (pattern.endsWith('*')) {
-            return currentUrl.startsWith(pattern.slice(0, -1));
+            return pathname.startsWith(pattern.slice(0, -1));
         }
 
         if (pattern === '/technician/jobs') {
-            return currentUrl === pattern;
+            return pathname === pattern;
         }
 
         if (pattern === '/bookings' || pattern === '/admin/bookings') {
             return (
-                currentUrl === pattern ||
-                (currentUrl.startsWith(`${pattern}/`) && !currentUrl.includes('/create'))
+                pathname === pattern ||
+                (pathname.startsWith(`${pattern}/`) && !pathname.includes('/create'))
             );
         }
 
-        return currentUrl === pattern || currentUrl.startsWith(`${pattern}/`);
+        return pathname === pattern || pathname.startsWith(`${pattern}/`);
     });
 }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Technician;
 use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Support\BookingPresenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,9 +84,23 @@ class TechnicianJobController extends Controller
             'technician_notes' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        $status = $validated['status'] === 'completed'
-            ? BookingStatus::Completed
-            : BookingStatus::InProgress;
+        if ($validated['status'] === 'in_progress') {
+            if (! in_array($job->status, [BookingStatus::Pending, BookingStatus::Confirmed, BookingStatus::Assigned], true)) {
+                return back()->withErrors([
+                    'status' => 'This job has already been started.',
+                ]);
+            }
+
+            $status = BookingStatus::InProgress;
+        } else {
+            if ($job->status !== BookingStatus::InProgress) {
+                return back()->withErrors([
+                    'status' => 'Start the job before marking it complete.',
+                ]);
+            }
+
+            $status = BookingStatus::Completed;
+        }
 
         $job->update([
             'status' => $status,
@@ -93,7 +108,13 @@ class TechnicianJobController extends Controller
             'completed_at' => $status === BookingStatus::Completed ? now() : null,
         ]);
 
-        return back()->with('success', 'Job status updated.');
+        if ($status === BookingStatus::Completed) {
+            return redirect()
+                ->route('technician.jobs.index')
+                ->with('success', 'Job marked as complete.');
+        }
+
+        return back()->with('success', 'Job started. Status updated to in progress.');
     }
 
     /**
@@ -107,6 +128,7 @@ class TechnicianJobController extends Controller
             'route_order' => $booking->route_order,
             'status' => $booking->status->value,
             'status_label' => $booking->status->label(),
+            ...BookingPresenter::workMeta($booking->status),
             'scheduled_at' => $booking->scheduled_at->toDateTimeString(),
             'completed_at' => $booking->completed_at?->toDateTimeString(),
             'customer' => $booking->user?->name,

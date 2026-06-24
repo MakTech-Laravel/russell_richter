@@ -39,6 +39,11 @@ export default function AdminLayout({
                 pendingBookings={portal?.pending_bookings ?? 0}
                 unreadNotifications={portal?.unread_notifications ?? 0}
                 showAdminNotifications
+                globalSearch={{
+                    href: route('admin.vehicles.index'),
+                    placeholder: 'Search VIN, make, model…',
+                    preserveQueryOnPath: '/admin/vehicles',
+                }}
             >
                 {children}
             </DashboardShell>

@@ -276,33 +276,15 @@ function AddServiceButton({
         <button
             type="button"
             onClick={onClick}
-            className={cn(
-                'group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-xl border border-gold-400/35 font-bold uppercase tracking-[0.14em] text-ink-900',
-                'bg-gradient-to-b from-[#ffe08a] via-gold-400 to-[#c97a00]',
-                'shadow-[0_4px_18px_-4px_rgba(255,184,32,0.55),inset_0_1px_0_rgba(255,255,255,0.45)]',
-                'transition-all duration-200 hover:-translate-y-px hover:border-gold-300/60',
-                'hover:shadow-[0_10px_28px_-6px_rgba(255,184,32,0.7),inset_0_1px_0_rgba(255,255,255,0.55)]',
-                'active:translate-y-0 active:shadow-[0_4px_14px_-4px_rgba(255,184,32,0.5)]',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900',
-                isLarge ? 'h-12 px-6 text-sm' : 'h-10 px-4 text-[11px]',
-            )}
+            className={cn('ml-btn-primary', isLarge ? 'ml-btn-lg' : 'ml-btn-sm')}
         >
-            <span
-                className={cn(
-                    'relative flex shrink-0 items-center justify-center rounded-lg bg-ink-900/15 ring-1 ring-ink-900/10 transition group-hover:bg-ink-900/20',
-                    isLarge ? 'h-7 w-7' : 'h-6 w-6',
-                )}
-            >
-                <Plus className={cn(isLarge ? 'h-4 w-4' : 'h-3.5 w-3.5')} strokeWidth={2.5} />
-            </span>
-            <span className="relative whitespace-nowrap">
-                {isLarge ? 'Add Service' : (
-                    <>
-                        <span className="hidden sm:inline">Add Service</span>
-                        <span className="sm:hidden">Add</span>
-                    </>
-                )}
-            </span>
+            <Plus className={cn(isLarge ? 'h-4 w-4' : 'h-3.5 w-3.5')} strokeWidth={2.5} />
+            {isLarge ? 'Add Service' : (
+                <>
+                    <span className="hidden sm:inline">Add Service</span>
+                    <span className="sm:hidden">Add</span>
+                </>
+            )}
         </button>
     );
 }
@@ -342,7 +324,7 @@ function ServicePackageCard({
                         <button
                             type="button"
                             onClick={() => onEdit(service)}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-slate-300 transition hover:border-gold-500/40 hover:text-gold-400"
+                            className="ml-btn-icon"
                             aria-label={`Edit ${service.name}`}
                         >
                             <Pencil className="h-4 w-4" />
@@ -355,7 +337,7 @@ function ServicePackageCard({
                                         router.delete(route('admin.services.destroy', service.id));
                                     }
                                 }}
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-500/20 text-red-400 transition hover:bg-red-500/10"
+                                className="ml-btn-icon-danger"
                                 aria-label={`Delete ${service.name}`}
                             >
                                 <Trash2 className="h-4 w-4" />
@@ -395,7 +377,7 @@ function ServicePackageCard({
                 <button
                     type="button"
                     onClick={() => onEdit(service)}
-                    className="text-xs font-semibold uppercase tracking-wider text-gold-400 hover:text-gold-300"
+                    className="ml-btn-text"
                 >
                     Edit
                 </button>

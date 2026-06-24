@@ -1,6 +1,6 @@
-import { Link, router } from '@inertiajs/react';
+import { Form, Link, router, usePage } from '@inertiajs/react';
 import { LogOut, Menu, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { CompactLogo } from '@/components/brand';
 import { AdminNotificationBell } from '@/components/dashboard/admin-notification-bell';
@@ -11,6 +11,12 @@ import { cn } from '@/lib/utils';
 interface DashboardUser {
     name: string;
     email: string;
+}
+
+interface GlobalSearchConfig {
+    href: string;
+    placeholder?: string;
+    preserveQueryOnPath?: string;
 }
 
 interface DashboardShellProps {
@@ -24,7 +30,28 @@ interface DashboardShellProps {
     pendingBookings?: number;
     unreadNotifications?: number;
     showAdminNotifications?: boolean;
+    globalSearch?: GlobalSearchConfig;
     children: React.ReactNode;
+}
+
+function useGlobalSearchValue(preserveQueryOnPath?: string): string {
+    const { url } = usePage();
+
+    return useMemo(() => {
+        if (!preserveQueryOnPath) {
+            return '';
+        }
+
+        const pathname = url.split('?')[0] ?? url;
+
+        if (pathname !== preserveQueryOnPath && !pathname.startsWith(`${preserveQueryOnPath}/`)) {
+            return '';
+        }
+
+        const query = url.includes('?') ? url.split('?')[1] : '';
+
+        return new URLSearchParams(query).get('search') ?? '';
+    }, [preserveQueryOnPath, url]);
 }
 
 function SidebarNavItem({
@@ -44,15 +71,16 @@ function SidebarNavItem({
         <Link
             href={item.href}
             onClick={onNavigate}
+            aria-current={active ? 'page' : undefined}
             className={cn(
-                'group relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition',
+                'group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition',
                 active
-                    ? 'bg-gradient-to-r from-gold-500/20 to-transparent text-gold-300'
+                    ? 'bg-gradient-to-r from-gold-500/25 via-gold-500/10 to-transparent text-gold-200 shadow-[inset_0_0_0_1px_rgba(255,184,32,0.2)]'
                     : 'text-slate-400 hover:bg-white/5 hover:text-white',
             )}
         >
             {active && (
-                <span className="absolute left-0 top-1/2 h-7 w-0.5 -translate-y-1/2 rounded-r bg-gradient-to-b from-gold-300 to-gold-600" />
+                <span className="absolute left-0 top-1/2 h-8 w-1 -translate-y-1/2 rounded-r bg-gradient-to-b from-gold-300 to-gold-600 shadow-[0_0_12px_rgba(255,184,32,0.45)]" />
             )}
             <span
                 className={cn(
@@ -88,9 +116,11 @@ export function DashboardShell({
     pendingBookings = 0,
     unreadNotifications = 0,
     showAdminNotifications = false,
+    globalSearch,
     children,
 }: DashboardShellProps) {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const globalSearchValue = useGlobalSearchValue(globalSearch?.preserveQueryOnPath);
     const initials = user.name
         .split(' ')
         .map((part) => part[0])
@@ -168,7 +198,7 @@ export function DashboardShell({
                         <div className="flex min-w-0 items-center gap-3">
                             <button
                                 type="button"
-                                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-slate-300 lg:hidden"
+                                className="ml-btn-icon lg:hidden"
                                 onClick={() => setMobileOpen((value) => !value)}
                                 aria-label="Toggle menu"
                             >
@@ -184,14 +214,34 @@ export function DashboardShell({
                             </div>
                         </div>
                         <div className="flex shrink-0 items-center gap-2">
-                            <div className="relative hidden md:block">
-                                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-                                <input
-                                    type="search"
-                                    placeholder="Search VIN, customer, booking…"
-                                    className="w-56 rounded-lg border border-white/10 bg-ink-800 py-2 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-gold-500 focus:bg-ink-700 focus:outline-none focus:ring-2 focus:ring-gold-500/30 xl:w-72"
-                                />
-                            </div>
+                            {globalSearch ? (
+                                <Form
+                                    action={globalSearch.href}
+                                    method="get"
+                                    className="relative hidden md:block"
+                                    onSubmit={(event) => {
+                                        event.preventDefault();
+                                        const formData = new FormData(event.currentTarget);
+                                        const search = String(formData.get('search') ?? '').trim();
+
+                                        if (search === '') {
+                                            return;
+                                        }
+
+                                        router.get(globalSearch.href, { search });
+                                    }}
+                                >
+                                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                    <input
+                                        type="search"
+                                        name="search"
+                                        key={globalSearchValue}
+                                        defaultValue={globalSearchValue}
+                                        placeholder={globalSearch.placeholder ?? 'Search VIN, customer, booking…'}
+                                        className="w-56 rounded-lg border border-white/10 bg-ink-800 py-2 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-gold-500 focus:bg-ink-700 focus:outline-none focus:ring-2 focus:ring-gold-500/30 xl:w-72"
+                                    />
+                                </Form>
+                            ) : null}
                             {showAdminNotifications ? (
                                 <AdminNotificationBell initialUnreadCount={unreadNotifications} />
                             ) : null}

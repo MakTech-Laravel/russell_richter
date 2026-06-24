@@ -194,7 +194,7 @@ export function AdminNotificationBell({ initialUnreadCount = 0 }: AdminNotificat
             <DropdownMenuTrigger asChild>
                 <button
                     type="button"
-                    className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-ink-800 text-slate-300 hover:bg-ink-700 hover:text-gold-400"
+                    className="ml-btn-icon relative"
                     aria-label="Notifications"
                 >
                     <Bell className="h-4 w-4" />

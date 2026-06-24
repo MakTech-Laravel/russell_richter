@@ -1,16 +1,13 @@
-import { Form, Head, Link } from '@inertiajs/react';
-import { Search } from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
 
 import {
     DashboardCard,
     DashboardCardContent,
     DashboardCardHeader,
     DashboardTable,
-    dashboardInputClass,
     dashboardTableHeadClass,
     dashboardTableRowClass,
 } from '@/components/dashboard/dashboard-ui';
-import { Input } from '@/components/ui/input';
 import AdminLayout from '@/layouts/admin-layout';
 
 interface VehicleRow {
@@ -41,24 +38,11 @@ interface IndexProps {
     filters: { search: string };
 }
 
-export default function Index({ vehicles, filters }: IndexProps) {
+export default function Index({ vehicles }: IndexProps) {
     return (
         <AdminLayout
             title="All Vehicles"
             subtitle={`${vehicles.total} vehicle(s) registered`}
-            actions={
-                <Form action={route('admin.vehicles.index')} method="get" className="flex w-full max-w-md gap-2">
-                    <Input
-                        name="search"
-                        defaultValue={filters.search}
-                        placeholder="Search VIN, make, model..."
-                        className={dashboardInputClass()}
-                    />
-                    <button type="submit" className="ml-btn-outline inline-flex shrink-0">
-                        <Search className="h-4 w-4" />
-                    </button>
-                </Form>
-            }
         >
             <Head title="Vehicles" />
 
@@ -102,13 +86,13 @@ export default function Index({ vehicles, filters }: IndexProps) {
                                         key={index}
                                         href={link.url}
                                         preserveScroll
-                                        className={link.active ? 'ml-btn-primary px-3 py-1.5 text-xs' : 'ml-btn-outline px-3 py-1.5 text-xs'}
+                                        className={link.active ? 'ml-btn-primary ml-btn-sm' : 'ml-btn-outline ml-btn-sm'}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />
                                 ) : (
                                     <span
                                         key={index}
-                                        className="ml-btn-outline cursor-not-allowed px-3 py-1.5 text-xs opacity-40"
+                                        className="ml-btn-outline ml-btn-sm cursor-not-allowed opacity-40"
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />
                                 ),

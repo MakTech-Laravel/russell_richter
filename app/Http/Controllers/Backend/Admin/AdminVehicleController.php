@@ -12,18 +12,24 @@ class AdminVehicleController extends Controller
 {
     public function index(Request $request): Response
     {
+        $search = trim($request->string('search')->toString());
+
         $vehicles = Vehicle::query()
             ->with('user')
-            ->when($request->string('search')->toString(), function ($query, $search) {
+            ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('vin', 'like', "%{$search}%")
                         ->orWhere('make', 'like', "%{$search}%")
-                        ->orWhere('model', 'like', "%{$search}%");
+                        ->orWhere('model', 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($userQuery) use ($search) {
+                            $userQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                        });
                 });
             })
             ->latest()
             ->paginate(15)
-            ->through(fn (Vehicle $vehicle) => [
+            ->through(fn(Vehicle $vehicle) => [
                 'id' => $vehicle->id,
                 'display_name' => $vehicle->display_name,
                 'vin' => $vehicle->vin,
@@ -34,7 +40,7 @@ class AdminVehicleController extends Controller
 
         return Inertia::render('backend/Admin/Vehicles/Index', [
             'vehicles' => $vehicles,
-            'filters' => ['search' => $request->string('search')->toString()],
+            'filters' => ['search' => $search],
         ]);
     }
 }

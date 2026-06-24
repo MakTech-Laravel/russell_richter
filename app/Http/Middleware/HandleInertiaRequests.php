@@ -72,6 +72,9 @@ class HandleInertiaRequests extends Middleware
                 'canVerifyEmail' => Features::enabled(Features::emailVerification()),
                 'canUseTwoFactorAuthentication' => Features::enabled(Features::twoFactorAuthentication()),
             ],
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+            ],
         ];
     }
 
