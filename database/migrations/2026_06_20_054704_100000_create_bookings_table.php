@@ -15,6 +15,10 @@ return new class extends Migration
             $table->foreignId('service_id')->constrained()->restrictOnDelete();
             $table->foreignId('technician_id')->nullable()->constrained()->nullOnDelete();
             $table->string('status')->default('pending');
+            $table->string('payment_status')->default('unpaid');
+            $table->string('stripe_checkout_session_id')->nullable()->unique();
+            $table->string('stripe_payment_intent_id')->nullable();
+            $table->timestamp('paid_at')->nullable();
             $table->dateTime('scheduled_at');
             $table->dateTime('completed_at')->nullable();
             $table->string('service_address');
