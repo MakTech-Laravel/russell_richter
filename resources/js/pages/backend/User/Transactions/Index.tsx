@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 
 import {
     DashboardCard,
@@ -10,6 +10,7 @@ import {
     dashboardTableRowClass,
 } from '@/components/dashboard/dashboard-ui';
 import UserLayout from '@/layouts/user-layout';
+import { cn } from '@/lib/utils';
 
 interface TransactionRow {
     id: number;
@@ -41,22 +42,87 @@ interface PaginatedTransactions {
 
 interface IndexProps {
     transactions: PaginatedTransactions;
+    filters: { status: string | null };
 }
 
-export default function Index({ transactions }: IndexProps) {
+const STATUS_OPTIONS = [
+    { value: null, label: 'All' },
+    { value: 'succeeded', label: 'Succeeded' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'failed', label: 'Failed' },
+    { value: 'refunded', label: 'Refunded' },
+] as const;
+
+function FilterChips({
+    options,
+    value,
+    onChange,
+}: {
+    options: readonly { value: string | null; label: string }[];
+    value: string | null;
+    onChange: (v: string | null) => void;
+}) {
+    return (
+        <div className="flex flex-wrap gap-2">
+            {options.map((opt) => (
+                <button
+                    key={opt.value ?? '__all__'}
+                    type="button"
+                    onClick={() => onChange(opt.value)}
+                    className={cn(
+                        'rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset transition',
+                        value === opt.value
+                            ? 'bg-gold-500/20 text-gold-300 ring-gold-500/40'
+                            : 'bg-white/5 text-slate-400 ring-white/10 hover:text-white hover:ring-white/20',
+                    )}
+                >
+                    {opt.label}
+                </button>
+            ))}
+        </div>
+    );
+}
+
+export default function Index({ transactions, filters }: IndexProps) {
+    function applyFilter(status: string | null) {
+        router.get(route('transactions.index'), status ? { status } : {}, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
+
     return (
         <UserLayout title="Transactions" subtitle="Your payment history and receipts.">
             <Head title="Transactions" />
+
+            <div className="mb-4">
+                <FilterChips options={STATUS_OPTIONS} value={filters.status} onChange={applyFilter} />
+            </div>
 
             <DashboardCard>
                 <DashboardCardHeader title={`${transactions.total} transaction(s)`} />
                 <DashboardCardContent>
                     {transactions.data.length === 0 ? (
                         <p className="text-sm text-slate-400">
-                            No transactions yet.{' '}
-                            <Link href={route('bookings.create')} className="text-gold-400 hover:underline">
-                                Book a service
-                            </Link>
+                            {filters.status ? (
+                                <>
+                                    No {filters.status} transactions.{' '}
+                                    <button
+                                        type="button"
+                                        onClick={() => applyFilter(null)}
+                                        className="text-gold-400 hover:underline"
+                                    >
+                                        Clear filter
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    No transactions yet.{' '}
+                                    <Link href={route('bookings.create')} className="text-gold-400 hover:underline">
+                                        Book a service
+                                    </Link>
+                                </>
+                            )}
                         </p>
                     ) : (
                         <>

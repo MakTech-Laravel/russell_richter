@@ -31,15 +31,22 @@ class BookingController extends Controller
 
     public function index(Request $request): Response
     {
-        $bookings = $request->user()
+        $status = $request->string('status')->toString();
+
+        $query = $request->user()
             ->bookings()
             ->with(['vehicle', 'service', 'technician', 'recommendations'])
-            ->latest('scheduled_at')
-            ->get()
-            ->map(fn (Booking $booking) => $this->transformBooking($booking));
+            ->latest('scheduled_at');
+
+        if ($status !== '' && in_array($status, BookingStatus::values(), true)) {
+            $query->where('status', $status);
+        }
+
+        $bookings = $query->get()->map(fn (Booking $booking) => $this->transformBooking($booking));
 
         return Inertia::render('backend/User/Bookings/Index', [
             'bookings' => $bookings,
+            'filters' => ['status' => $status !== '' ? $status : null],
         ]);
     }
 

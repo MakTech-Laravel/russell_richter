@@ -132,6 +132,7 @@ class AdminBookingController extends Controller
             'recommendations' => $booking->recommendations->map(fn ($r) => [
                 'part_type_label' => $r->part_type->label(),
                 'part_name' => $r->part_name,
+                'part_number' => $r->part_number,
                 'specification' => $r->specification,
                 'quantity' => $r->quantity,
                 'estimated_price' => $r->estimated_price,

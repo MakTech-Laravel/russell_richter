@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\Admin\AdminDashboardController;
 use App\Http\Controllers\Backend\Admin\AdminFaqController;
 use App\Http\Controllers\Backend\Admin\AdminLoginController;
 use App\Http\Controllers\Backend\Admin\AdminNotificationController;
+use App\Http\Controllers\Backend\Admin\AdminOilFitmentController;
 use App\Http\Controllers\Backend\Admin\AdminRouteController;
 use App\Http\Controllers\Backend\Admin\AdminServiceController;
 use App\Http\Controllers\Backend\Admin\AdminTechnicianController;
@@ -45,6 +46,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/routes', [AdminRouteController::class, 'index'])->name('routes.index');
         Route::post('/routes/optimize', [AdminRouteController::class, 'optimize'])->name('routes.optimize');
+
+        Route::get('/oil-fitments', [AdminOilFitmentController::class, 'index'])->name('oil-fitments.index');
+        Route::post('/oil-fitments', [AdminOilFitmentController::class, 'store'])->name('oil-fitments.store');
+        Route::patch('/oil-fitments/{oilFitment}', [AdminOilFitmentController::class, 'update'])->name('oil-fitments.update');
+        Route::delete('/oil-fitments/{oilFitment}', [AdminOilFitmentController::class, 'destroy'])->name('oil-fitments.destroy');
 
         Route::get('/faqs', [AdminFaqController::class, 'index'])->name('faqs.index');
         Route::post('/faqs', [AdminFaqController::class, 'store'])->name('faqs.store');

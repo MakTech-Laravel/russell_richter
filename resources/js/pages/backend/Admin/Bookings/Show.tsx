@@ -18,6 +18,7 @@ import AdminLayout from '@/layouts/admin-layout';
 interface Recommendation {
     part_type_label: string;
     part_name: string;
+    part_number: string | null;
     specification: string | null;
     quantity: number;
     estimated_price: string | number | null;
@@ -152,8 +153,14 @@ export default function Show({ booking, technicians, statuses }: ShowProps) {
                                                         <span className="text-gold-400">${Number(rec.estimated_price).toFixed(2)}</span>
                                                     )}
                                                 </div>
+                                                {rec.part_number && (
+                                                    <p className="mt-1.5 inline-flex rounded bg-white/5 px-2 py-0.5 font-mono text-xs text-gold-300">
+                                                        Part #: {rec.part_number}
+                                                    </p>
+                                                )}
                                                 {rec.specification && <p className="mt-1 text-sm text-slate-400">{rec.specification}</p>}
                                                 <p className="mt-1 text-xs text-slate-500">Qty: {rec.quantity}</p>
+                                                {rec.notes && <p className="mt-1 text-xs text-slate-500 italic">{rec.notes}</p>}
                                             </div>
                                         ))}
                                     </div>

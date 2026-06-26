@@ -2,6 +2,7 @@ import {
     Calendar,
     Car,
     CreditCard,
+    Database,
     FileText,
     Gauge,
     HelpCircle,
@@ -48,6 +49,7 @@ export const adminNav: DashboardNavItem[] = [
     { label: 'Vehicles', href: route('admin.vehicles.index'), icon: Car, match: ['/admin/vehicles'] },
     { label: 'Technicians', href: route('admin.technicians.index'), icon: Wrench, match: ['/admin/technicians'] },
     { label: 'Route Optimization', href: route('admin.routes.index'), icon: Route, match: ['/admin/routes'] },
+    { label: 'Oil Fitments', href: route('admin.oil-fitments.index'), icon: Database, match: ['/admin/oil-fitments'] },
     { label: 'FAQ', href: route('admin.faqs.index'), icon: HelpCircle, match: ['/admin/faqs'] },
 ];
 

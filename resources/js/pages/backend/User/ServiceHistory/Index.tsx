@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { CheckCircle, History } from 'lucide-react';
 
 import {
@@ -6,6 +6,7 @@ import {
     DashboardCardContent,
     DashboardCardHeader,
     DashboardEmptyState,
+    dashboardSelectClass,
 } from '@/components/dashboard/dashboard-ui';
 import UserLayout from '@/layouts/user-layout';
 
@@ -21,20 +22,59 @@ interface HistoryItem {
     recommendations_count: number;
 }
 
-interface IndexProps {
-    history: HistoryItem[];
+interface VehicleOption {
+    id: number;
+    display_name: string;
 }
 
-export default function Index({ history }: IndexProps) {
+interface IndexProps {
+    history: HistoryItem[];
+    vehicles: VehicleOption[];
+    filters: { vehicle_id: number | null };
+}
+
+export default function Index({ history, vehicles, filters }: IndexProps) {
+    function applyVehicleFilter(vehicleId: string) {
+        router.get(
+            route('service-history.index'),
+            vehicleId ? { vehicle_id: vehicleId } : {},
+            { preserveState: true, preserveScroll: true },
+        );
+    }
+
+    const showVehicleFilter = vehicles.length > 1;
+
     return (
         <UserLayout title="Service History" subtitle="View your completed mobile service appointments.">
             <Head title="Service History" />
 
+            {showVehicleFilter && (
+                <div className="mb-4 flex items-center gap-3">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Vehicle</label>
+                    <select
+                        value={filters.vehicle_id ?? ''}
+                        onChange={(e) => applyVehicleFilter(e.target.value)}
+                        className={dashboardSelectClass()}
+                    >
+                        <option value="">All Vehicles</option>
+                        {vehicles.map((v) => (
+                            <option key={v.id} value={v.id}>
+                                {v.display_name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
+
             {history.length === 0 ? (
                 <DashboardEmptyState
                     icon={History}
-                    title="No completed services yet"
-                    description="Your service history will appear here after your first appointment."
+                    title={filters.vehicle_id ? 'No completed services for this vehicle' : 'No completed services yet'}
+                    description={
+                        filters.vehicle_id
+                            ? 'Try selecting a different vehicle or clearing the filter.'
+                            : 'Your service history will appear here after your first appointment.'
+                    }
                     action={
                         <Link href={route('bookings.create')} className="ml-btn-primary inline-flex">
                             Book Service

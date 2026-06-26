@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\User;
 
+use App\Enums\TransactionStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -12,10 +13,18 @@ class TransactionController extends Controller
 {
     public function index(Request $request): Response
     {
-        $transactions = $request->user()
+        $status = $request->string('status')->toString();
+
+        $query = $request->user()
             ->transactions()
             ->with(['booking.service:id,name', 'booking.vehicle:id,year,make,model', 'booking'])
-            ->latest()
+            ->latest();
+
+        if ($status !== '' && in_array($status, array_column(TransactionStatus::cases(), 'value'), true)) {
+            $query->where('status', $status);
+        }
+
+        $transactions = $query
             ->paginate(15)
             ->withQueryString()
             ->through(fn (Transaction $transaction) => [
@@ -34,6 +43,7 @@ class TransactionController extends Controller
 
         return Inertia::render('backend/User/Transactions/Index', [
             'transactions' => $transactions,
+            'filters' => ['status' => $status !== '' ? $status : null],
         ]);
     }
 }

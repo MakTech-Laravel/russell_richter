@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Calendar, Plus } from 'lucide-react';
 
 import {
@@ -7,10 +7,10 @@ import {
     DashboardCardHeader,
     DashboardEmptyState,
     StatusPill,
-    dashboardRowLinkClass,
 } from '@/components/dashboard/dashboard-ui';
 import { BookingWorkProgress } from '@/components/dashboard/booking-work-progress';
 import UserLayout from '@/layouts/user-layout';
+import { cn } from '@/lib/utils';
 
 interface Booking {
     id: number;
@@ -31,9 +31,57 @@ interface Booking {
 
 interface IndexProps {
     bookings: Booking[];
+    filters: { status: string | null };
 }
 
-export default function Index({ bookings }: IndexProps) {
+const STATUS_OPTIONS = [
+    { value: null, label: 'All' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'confirmed', label: 'Confirmed' },
+    { value: 'assigned', label: 'Assigned' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'cancelled', label: 'Cancelled' },
+] as const;
+
+function FilterChips({
+    options,
+    value,
+    onChange,
+}: {
+    options: readonly { value: string | null; label: string }[];
+    value: string | null;
+    onChange: (v: string | null) => void;
+}) {
+    return (
+        <div className="flex flex-wrap gap-2">
+            {options.map((opt) => (
+                <button
+                    key={opt.value ?? '__all__'}
+                    type="button"
+                    onClick={() => onChange(opt.value)}
+                    className={cn(
+                        'rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset transition',
+                        value === opt.value
+                            ? 'bg-gold-500/20 text-gold-300 ring-gold-500/40'
+                            : 'bg-white/5 text-slate-400 ring-white/10 hover:text-white hover:ring-white/20',
+                    )}
+                >
+                    {opt.label}
+                </button>
+            ))}
+        </div>
+    );
+}
+
+export default function Index({ bookings, filters }: IndexProps) {
+    function applyFilter(status: string | null) {
+        router.get(route('bookings.index'), status ? { status } : {}, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
+
     return (
         <UserLayout
             title="My Bookings"
@@ -46,11 +94,19 @@ export default function Index({ bookings }: IndexProps) {
         >
             <Head title="My Bookings" />
 
+            <div className="mb-4">
+                <FilterChips options={STATUS_OPTIONS} value={filters.status} onChange={applyFilter} />
+            </div>
+
             {bookings.length === 0 ? (
                 <DashboardEmptyState
                     icon={Calendar}
-                    title="No bookings yet"
-                    description="Schedule your first mobile oil change today."
+                    title={filters.status ? `No ${filters.status.replace('_', ' ')} bookings` : 'No bookings yet'}
+                    description={
+                        filters.status
+                            ? 'Try a different filter or book a new service.'
+                            : 'Schedule your first mobile oil change today.'
+                    }
                     action={
                         <Link href={route('bookings.create')} className="ml-btn-primary inline-flex">
                             Book Service
