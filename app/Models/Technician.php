@@ -18,6 +18,10 @@ class Technician extends Authenticatable
         'email',
         'password',
         'phone',
+        'address',
+        'city',
+        'state',
+        'zip',
         'is_active',
     ];
 

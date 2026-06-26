@@ -12,7 +12,7 @@ import { TestimonialsSection } from '@/components/frontend/testimonials-section'
 import { TrustBarSection } from '@/components/frontend/trust-bar-section';
 import { WhyChooseSection } from '@/components/frontend/why-choose-section';
 import FrontendLayout from '@/layouts/frontend-layout';
-import { FAQ_ITEMS, MOBILE_LUBE, SERVICE_HIGHLIGHTS, WHY_CHOOSE } from '@/lib/mobile-lube';
+import { MOBILE_LUBE, SERVICE_HIGHLIGHTS, WHY_CHOOSE } from '@/lib/mobile-lube';
 
 interface PricingPackage {
     id: number;
@@ -29,12 +29,18 @@ interface AddOnService {
     note: string | null;
 }
 
+interface FaqItem {
+    question: string;
+    answer: string;
+}
+
 interface HomeProps {
     pricingPackages: PricingPackage[];
     addOnServices: AddOnService[];
+    faqs: FaqItem[];
 }
 
-export default function Home({ pricingPackages, addOnServices }: HomeProps) {
+export default function Home({ pricingPackages, addOnServices, faqs }: HomeProps) {
     return (
         <FrontendLayout>
             <Head title={`${MOBILE_LUBE.name} | Mobile Oil Change in ${MOBILE_LUBE.serviceArea}`}>
@@ -54,7 +60,7 @@ export default function Home({ pricingPackages, addOnServices }: HomeProps) {
             <TestimonialsSection />
             <AreasServedSection />
             <FleetSection />
-            <FaqSection items={FAQ_ITEMS} />
+            <FaqSection items={faqs} />
             <CtaSection />
         </FrontendLayout>
     );

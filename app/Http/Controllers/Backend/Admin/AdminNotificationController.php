@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Booking;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
@@ -25,7 +26,7 @@ class AdminNotificationController extends Controller
             ->latest()
             ->limit(20)
             ->get()
-            ->map(fn(DatabaseNotification $notification) => $this->transform($notification))
+            ->map(fn (DatabaseNotification $notification) => $this->transform($notification))
             ->values();
 
         return response()->json([
@@ -74,9 +75,24 @@ class AdminNotificationController extends Controller
             'type' => $data['type'] ?? 'general',
             'title' => $data['title'] ?? 'Notification',
             'message' => $data['message'] ?? '',
-            'url' => $data['url'] ?? route('admin.dashboard'),
+            'url' => $this->toRelativePath($data['url'] ?? route('admin.dashboard', [], false)),
             'read_at' => $notification->read_at?->toIso8601String(),
             'created_at' => $notification->created_at?->diffForHumans() ?? '',
         ];
+    }
+
+    private function toRelativePath(string $url): string
+    {
+        $path = str_starts_with($url, '/') ? $url : (parse_url($url, PHP_URL_PATH) ?? '/');
+        $query = parse_url($url, PHP_URL_QUERY);
+        $fragment = parse_url($url, PHP_URL_FRAGMENT);
+        $relative = $path.($query ? '?'.$query : '').($fragment ? '#'.$fragment : '');
+
+        // Auto-upgrade legacy booking URLs that still use plain integer IDs.
+        if (preg_match('#^/admin/bookings/(\d+)$#', $relative, $matches)) {
+            return route('admin.bookings.show', ['booking' => Booking::encryptRouteKey((int) $matches[1])], false);
+        }
+
+        return $relative;
     }
 }

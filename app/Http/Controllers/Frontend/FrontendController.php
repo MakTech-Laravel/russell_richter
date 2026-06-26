@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Faq;
 use App\Support\ServicePresenter;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,6 +15,11 @@ class FrontendController extends Controller
         return Inertia::render('frontend/home', [
             'pricingPackages' => ServicePresenter::pricingPackages(),
             'addOnServices' => ServicePresenter::addOnServices(),
+            'faqs' => Faq::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get(['question', 'answer']),
         ]);
     }
 }

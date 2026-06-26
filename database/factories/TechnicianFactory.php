@@ -17,6 +17,10 @@ class TechnicianFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'password' => 'password',
             'phone' => fake()->phoneNumber(),
+            'address' => fake()->streetAddress(),
+            'city' => fake()->city(),
+            'state' => fake()->stateAbbr(),
+            'zip' => fake()->postcode(),
             'is_active' => true,
         ];
     }

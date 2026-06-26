@@ -1,5 +1,5 @@
-import { Form, Head, router } from '@inertiajs/react';
-import { Pencil, Plus, Trash2, User } from 'lucide-react';
+import { Form, Head, Link, router } from '@inertiajs/react';
+import { Eye, Pencil, Plus, Trash2, User } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -32,6 +32,10 @@ interface Technician {
     name: string;
     email: string;
     phone: string | null;
+    address: string | null;
+    city: string | null;
+    state: string | null;
+    zip: string | null;
     is_active: boolean;
     bookings_count: number;
 }
@@ -113,6 +117,48 @@ function TechnicianFormFields({
                     className={dashboardInputClass()}
                 />
                 <InputError message={errors.phone} />
+            </div>
+            <div className="space-y-2">
+                <label htmlFor="address" className={dashboardLabelClass()}>Address</label>
+                <Input
+                    id="address"
+                    name="address"
+                    defaultValue={technician?.address ?? ''}
+                    className={dashboardInputClass()}
+                />
+                <InputError message={errors.address} />
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+                <div className="col-span-1 space-y-2">
+                    <label htmlFor="city" className={dashboardLabelClass()}>City</label>
+                    <Input
+                        id="city"
+                        name="city"
+                        defaultValue={technician?.city ?? ''}
+                        className={dashboardInputClass()}
+                    />
+                    <InputError message={errors.city} />
+                </div>
+                <div className="space-y-2">
+                    <label htmlFor="state" className={dashboardLabelClass()}>State</label>
+                    <Input
+                        id="state"
+                        name="state"
+                        defaultValue={technician?.state ?? ''}
+                        className={dashboardInputClass()}
+                    />
+                    <InputError message={errors.state} />
+                </div>
+                <div className="space-y-2">
+                    <label htmlFor="zip" className={dashboardLabelClass()}>Zip</label>
+                    <Input
+                        id="zip"
+                        name="zip"
+                        defaultValue={technician?.zip ?? ''}
+                        className={dashboardInputClass()}
+                    />
+                    <InputError message={errors.zip} />
+                </div>
             </div>
             <div className="space-y-2">
                 <label htmlFor="password" className={dashboardLabelClass()}>
@@ -226,6 +272,13 @@ function TechnicianRowActions({
 }) {
     return (
         <div className="flex items-center justify-end gap-1.5">
+            <Link
+                href={route('admin.technicians.show', technician.id)}
+                className="ml-btn-icon"
+                aria-label={`View ${technician.name}`}
+            >
+                <Eye className="h-3.5 w-3.5" />
+            </Link>
             <button
                 type="button"
                 onClick={() => onEdit(technician)}
@@ -234,20 +287,18 @@ function TechnicianRowActions({
             >
                 <Pencil className="h-3.5 w-3.5" />
             </button>
-            {technician.bookings_count === 0 && (
-                <button
-                    type="button"
-                    onClick={() => {
-                        if (confirm('Delete this technician?')) {
-                            router.delete(route('admin.technicians.destroy', technician.id));
-                        }
-                    }}
-                    className="ml-btn-icon-danger"
-                    aria-label={`Delete ${technician.name}`}
-                >
-                    <Trash2 className="h-3.5 w-3.5" />
-                </button>
-            )}
+            <button
+                type="button"
+                onClick={() => {
+                    if (confirm('Delete this technician?')) {
+                        router.delete(route('admin.technicians.destroy', technician.id));
+                    }
+                }}
+                className="ml-btn-icon-danger"
+                aria-label={`Delete ${technician.name}`}
+            >
+                <Trash2 className="h-3.5 w-3.5" />
+            </button>
         </div>
     );
 }

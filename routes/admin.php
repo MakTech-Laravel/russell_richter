@@ -4,6 +4,7 @@ use App\Http\Controllers\Backend\Admin\AdminBookingController;
 use App\Http\Controllers\Backend\Admin\AdminContactMessageController;
 use App\Http\Controllers\Backend\Admin\AdminCustomerController;
 use App\Http\Controllers\Backend\Admin\AdminDashboardController;
+use App\Http\Controllers\Backend\Admin\AdminFaqController;
 use App\Http\Controllers\Backend\Admin\AdminLoginController;
 use App\Http\Controllers\Backend\Admin\AdminNotificationController;
 use App\Http\Controllers\Backend\Admin\AdminRouteController;
@@ -38,11 +39,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/technicians', [AdminTechnicianController::class, 'index'])->name('technicians.index');
         Route::post('/technicians', [AdminTechnicianController::class, 'store'])->name('technicians.store');
+        Route::get('/technicians/{technician}', [AdminTechnicianController::class, 'show'])->name('technicians.show');
         Route::patch('/technicians/{technician}', [AdminTechnicianController::class, 'update'])->name('technicians.update');
         Route::delete('/technicians/{technician}', [AdminTechnicianController::class, 'destroy'])->name('technicians.destroy');
 
         Route::get('/routes', [AdminRouteController::class, 'index'])->name('routes.index');
         Route::post('/routes/optimize', [AdminRouteController::class, 'optimize'])->name('routes.optimize');
+
+        Route::get('/faqs', [AdminFaqController::class, 'index'])->name('faqs.index');
+        Route::post('/faqs', [AdminFaqController::class, 'store'])->name('faqs.store');
+        Route::patch('/faqs/{faq}', [AdminFaqController::class, 'update'])->name('faqs.update');
+        Route::delete('/faqs/{faq}', [AdminFaqController::class, 'destroy'])->name('faqs.destroy');
 
         Route::get('/services', [AdminServiceController::class, 'index'])->name('services.index');
         Route::post('/services', [AdminServiceController::class, 'store'])->name('services.store');
