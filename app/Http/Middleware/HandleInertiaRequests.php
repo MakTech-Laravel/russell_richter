@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;
+use App\Models\ContactMessage;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Laravel\Fortify\Features;
@@ -84,7 +85,7 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * @return array{pending_bookings: int, unread_notifications?: int}|null
+     * @return array{pending_bookings: int, unread_notifications?: int, unread_contact_messages?: int}|null
      */
     private function portalMeta(Request $request): ?array
     {
@@ -105,6 +106,7 @@ class HandleInertiaRequests extends Middleware
                     ->where('status', BookingStatus::Pending)
                     ->count(),
                 'unread_notifications' => $request->user('admin')->unreadNotifications()->count(),
+                'unread_contact_messages' => ContactMessage::query()->unread()->count(),
             ];
         }
 

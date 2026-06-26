@@ -6,6 +6,7 @@ import {
     Gauge,
     History,
     LayoutDashboard,
+    Mail,
     MapPin,
     Package,
     PlusCircle,
@@ -23,7 +24,7 @@ export interface DashboardNavItem {
     href: string;
     icon: LucideIcon;
     match?: string[];
-    badgeKey?: 'pending_bookings';
+    badgeKey?: 'pending_bookings' | 'unread_contact_messages';
 }
 
 export const customerNav: DashboardNavItem[] = [
@@ -42,6 +43,7 @@ export const adminNav: DashboardNavItem[] = [
     { label: 'Service Packages', href: route('admin.services.index'), icon: Package, match: ['/admin/services'] },
     { label: 'Transactions', href: route('admin.transactions.index'), icon: CreditCard, match: ['/admin/transactions'] },
     { label: 'Customers', href: route('admin.customers.index'), icon: Users, match: ['/admin/customers'] },
+    { label: 'Contact Inbox', href: route('admin.contacts.index'), icon: Mail, match: ['/admin/contacts'], badgeKey: 'unread_contact_messages' },
     { label: 'Vehicles', href: route('admin.vehicles.index'), icon: Car, match: ['/admin/vehicles'] },
     { label: 'Technicians', href: route('admin.technicians.index'), icon: Wrench, match: ['/admin/technicians'] },
     { label: 'Route Optimization', href: route('admin.routes.index'), icon: Route, match: ['/admin/routes'] },

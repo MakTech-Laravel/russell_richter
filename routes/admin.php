@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\Admin\AdminBookingController;
+use App\Http\Controllers\Backend\Admin\AdminContactMessageController;
 use App\Http\Controllers\Backend\Admin\AdminCustomerController;
 use App\Http\Controllers\Backend\Admin\AdminDashboardController;
 use App\Http\Controllers\Backend\Admin\AdminLoginController;
@@ -29,6 +30,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
         Route::get('/customers/{customer}', [AdminCustomerController::class, 'show'])->name('customers.show');
+
+        Route::get('/contacts', [AdminContactMessageController::class, 'index'])->name('contacts.index');
+        Route::get('/contacts/{contactMessage}', [AdminContactMessageController::class, 'show'])->name('contacts.show');
 
         Route::get('/vehicles', [AdminVehicleController::class, 'index'])->name('vehicles.index');
 

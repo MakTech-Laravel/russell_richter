@@ -29,6 +29,7 @@ interface DashboardShellProps {
     actions?: React.ReactNode;
     pendingBookings?: number;
     unreadNotifications?: number;
+    unreadContactMessages?: number;
     showAdminNotifications?: boolean;
     globalSearch?: GlobalSearchConfig;
     children: React.ReactNode;
@@ -58,13 +59,19 @@ function SidebarNavItem({
     item,
     onNavigate,
     pendingBookings,
+    unreadContactMessages,
 }: {
     item: DashboardNavItem;
     onNavigate: () => void;
     pendingBookings: number;
+    unreadContactMessages: number;
 }) {
     const active = useNavActive(item);
-    const badgeCount = item.badgeKey === 'pending_bookings' ? pendingBookings : 0;
+    const badgeCount = item.badgeKey === 'pending_bookings'
+        ? pendingBookings
+        : item.badgeKey === 'unread_contact_messages'
+            ? unreadContactMessages
+            : 0;
     const Icon = item.icon;
 
     return (
@@ -115,6 +122,7 @@ export function DashboardShell({
     actions,
     pendingBookings = 0,
     unreadNotifications = 0,
+    unreadContactMessages = 0,
     showAdminNotifications = false,
     globalSearch,
     children,
@@ -157,6 +165,7 @@ export function DashboardShell({
                                 key={item.label}
                                 item={item}
                                 pendingBookings={pendingBookings}
+                                unreadContactMessages={unreadContactMessages}
                                 onNavigate={() => setMobileOpen(false)}
                             />
                         ))}

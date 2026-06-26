@@ -47,6 +47,7 @@ export interface SharedData {
     portal?: {
         pending_bookings: number;
         unread_notifications?: number;
+        unread_contact_messages?: number;
     } | null;
     [key: string]: unknown;
 }

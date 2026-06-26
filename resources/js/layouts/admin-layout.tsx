@@ -38,6 +38,7 @@ export default function AdminLayout({
                 actions={actions}
                 pendingBookings={portal?.pending_bookings ?? 0}
                 unreadNotifications={portal?.unread_notifications ?? 0}
+                unreadContactMessages={portal?.unread_contact_messages ?? 0}
                 showAdminNotifications
                 globalSearch={{
                     href: route('admin.vehicles.index'),
