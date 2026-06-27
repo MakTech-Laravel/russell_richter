@@ -28,6 +28,7 @@ class BookingRecommendation extends Model
     {
         return [
             'part_type' => RecommendationPartType::class,
+            'quantity' => 'decimal:2',
             'estimated_price' => 'decimal:2',
         ];
     }

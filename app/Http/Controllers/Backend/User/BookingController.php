@@ -191,6 +191,7 @@ class BookingController extends Controller
                 'part_type' => $rec->part_type->value,
                 'part_type_label' => $rec->part_type->label(),
                 'part_name' => $rec->part_name,
+                'part_number' => $rec->part_number,
                 'specification' => $rec->specification,
                 'quantity' => $rec->quantity,
                 'estimated_price' => $rec->estimated_price,

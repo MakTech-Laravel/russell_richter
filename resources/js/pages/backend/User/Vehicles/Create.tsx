@@ -1,5 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Loader2, Search } from 'lucide-react';
+import { ArrowLeft, FlaskConical, Loader2, Search } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -30,6 +30,14 @@ interface DecodedVin {
     drive_type?: string;
 }
 
+interface OilSpec {
+    oil_grade: string;
+    oil_capacity_quarts: number;
+    oil_filter_part_no: string;
+    oil_filter_brand: string | null;
+    supports_synthetic: boolean;
+}
+
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
         vin: '',
@@ -49,6 +57,8 @@ export default function Create() {
 
     const [decoding, setDecoding] = useState(false);
     const [decodeError, setDecodeError] = useState('');
+    const [oilSpec, setOilSpec] = useState<OilSpec | null>(null);
+    const [decoded, setDecoded] = useState(false);
 
     const decodeVin = async (): Promise<void> => {
         if (data.vin.length !== 17) {
@@ -59,6 +69,8 @@ export default function Create() {
 
         setDecoding(true);
         setDecodeError('');
+        setOilSpec(null);
+        setDecoded(false);
 
         try {
             const response = await fetch(route('vin.decode'), {
@@ -80,19 +92,22 @@ export default function Create() {
                 return;
             }
 
-            const decoded = result.data as DecodedVin;
+            const decodedData = result.data as DecodedVin;
             setData((prev) => ({
                 ...prev,
                 vin: data.vin.toUpperCase(),
-                year: decoded.year ?? prev.year,
-                make: decoded.make ?? prev.make,
-                model: decoded.model ?? prev.model,
-                trim: decoded.trim ?? prev.trim,
-                engine: decoded.engine ?? prev.engine,
-                fuel_type: decoded.fuel_type ?? prev.fuel_type,
-                body_class: decoded.body_class ?? prev.body_class,
-                drive_type: decoded.drive_type ?? prev.drive_type,
+                year: decodedData.year ?? prev.year,
+                make: decodedData.make ?? prev.make,
+                model: decodedData.model ?? prev.model,
+                trim: decodedData.trim ?? prev.trim,
+                engine: decodedData.engine ?? prev.engine,
+                fuel_type: decodedData.fuel_type ?? prev.fuel_type,
+                body_class: decodedData.body_class ?? prev.body_class,
+                drive_type: decodedData.drive_type ?? prev.drive_type,
             }));
+
+            setOilSpec(result.oil_spec ?? null);
+            setDecoded(true);
         } catch {
             setDecodeError('Unable to decode VIN. Please enter details manually.');
         } finally {
@@ -124,7 +139,11 @@ export default function Create() {
                                     <Input
                                         id="vin"
                                         value={data.vin}
-                                        onChange={(e) => setData('vin', e.target.value.toUpperCase())}
+                                        onChange={(e) => {
+                                            setData('vin', e.target.value.toUpperCase());
+                                            setDecoded(false);
+                                            setOilSpec(null);
+                                        }}
                                         maxLength={17}
                                         placeholder="17-character VIN"
                                         className={dashboardInputClass()}
@@ -162,7 +181,7 @@ export default function Create() {
                                 </div>
                                 <div className="space-y-2">
                                     <label htmlFor="trim" className={dashboardLabelClass()}>Trim</label>
-                                    <Input id="trim" value={data.trim} onChange={(e) => setData('trim', e.target.value)} className={dashboardInputClass()} />
+                                    <Input id="trim" value={data.trim} onChange={(e) => setData('trim', e.target.value)} className={dashboardInputClass()} placeholder="Enter trim manually if blank" />
                                     <InputError message={errors.trim} />
                                 </div>
                                 <div className="space-y-2">
@@ -206,6 +225,69 @@ export default function Create() {
                         </form>
                     </DashboardCardContent>
                 </DashboardCard>
+
+                {/* Oil spec preview — shown immediately after VIN decode */}
+                {decoded && (
+                    <DashboardCard>
+                        <DashboardCardHeader
+                            title={
+                                <span className="flex items-center gap-2">
+                                    <FlaskConical className="h-4 w-4 text-gold-400" />
+                                    Oil Service Specifications
+                                </span>
+                            }
+                            subtitle={
+                                oilSpec
+                                    ? `OEM fitment data for ${data.year} ${data.make} ${data.model}`
+                                    : undefined
+                            }
+                        />
+                        <DashboardCardContent>
+                            {oilSpec ? (
+                                <div className="space-y-1">
+                                    <div className="flex items-center justify-between border-b border-white/5 py-3">
+                                        <span className="text-slate-400">🛢️ Oil Grade</span>
+                                        <span className="rounded-md bg-gold-500/10 px-2 py-0.5 font-mono text-sm font-bold text-gold-300 ring-1 ring-gold-500/30">
+                                            {oilSpec.oil_grade}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between border-b border-white/5 py-3">
+                                        <span className="text-slate-400">🛢️ Oil Capacity</span>
+                                        <span className="font-semibold text-white">{oilSpec.oil_capacity_quarts} quarts</span>
+                                    </div>
+                                    <div className="flex items-center justify-between border-b border-white/5 py-3">
+                                        <span className="text-slate-400">Oil Type</span>
+                                        <span className={`text-sm font-semibold ${oilSpec.supports_synthetic ? 'text-emerald-400' : 'text-amber-400'}`}>
+                                            {oilSpec.supports_synthetic ? '✓ Full Synthetic Recommended' : 'Conventional'}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between py-3">
+                                        <span className="text-slate-400">🔩 Oil Filter (OEM)</span>
+                                        <div className="text-right">
+                                            <div className="inline-flex items-center gap-1.5 rounded-md border border-gold-500/30 bg-gold-500/10 px-2.5 py-1">
+                                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Part #</span>
+                                                <span className="font-mono text-sm font-bold tracking-wider text-gold-300">
+                                                    {oilSpec.oil_filter_part_no}
+                                                </span>
+                                            </div>
+                                            {oilSpec.oil_filter_brand && (
+                                                <p className="mt-1 text-xs text-slate-500">{oilSpec.oil_filter_brand}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center gap-2 py-6 text-center">
+                                    <FlaskConical className="h-7 w-7 text-slate-600" />
+                                    <p className="text-sm font-medium text-slate-300">No fitment data on file</p>
+                                    <p className="text-xs text-slate-500">
+                                        Your technician will verify the correct oil filter and grade on-site for this vehicle.
+                                    </p>
+                                </div>
+                            )}
+                        </DashboardCardContent>
+                    </DashboardCard>
+                )}
             </div>
         </UserLayout>
     );

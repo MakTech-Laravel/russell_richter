@@ -44,7 +44,12 @@ class VinDecoderService
             'year' => $this->toInt($results->get('Model Year')['Value'] ?? null),
             'make' => $this->toString($results->get('Make')['Value'] ?? null),
             'model' => $this->toString($results->get('Model')['Value'] ?? null),
-            'trim' => $this->toString($results->get('Trim')['Value'] ?? null),
+            'trim' => $this->toString(
+                $results->get('Trim')['Value']
+                ?? $results->get('Series')['Value']
+                ?? $results->get('Trim2')['Value']
+                ?? null
+            ),
             'engine' => $this->composeEngine($results),
             'fuel_type' => $this->toString($results->get('Fuel Type - Primary')['Value'] ?? null),
             'body_class' => $this->toString($results->get('Body Class')['Value'] ?? null),

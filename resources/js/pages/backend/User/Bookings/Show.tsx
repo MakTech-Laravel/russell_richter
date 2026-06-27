@@ -1,5 +1,5 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { ArrowLeft, CreditCard, Edit, Wrench } from 'lucide-react';
+import { ArrowLeft, CreditCard, Edit, FlaskConical, Wrench } from 'lucide-react';
 
 import {
     DashboardCard,
@@ -15,6 +15,7 @@ interface Recommendation {
     part_type: string;
     part_type_label: string;
     part_name: string;
+    part_number: string | null;
     specification: string | null;
     quantity: number;
     estimated_price: string | number | null;
@@ -64,6 +65,13 @@ function DetailRow({ label, value }: { label: string; value: string | number | n
         </div>
     );
 }
+
+const PART_TYPE_ICONS: Record<string, string> = {
+    oil: '🛢️',
+    oil_filter: '🔩',
+    cabin_filter: '💨',
+    wiper: '🌧️',
+};
 
 export default function Show({ booking }: ShowProps) {
     const canEdit = !['completed', 'cancelled'].includes(booking.status);
@@ -118,6 +126,12 @@ export default function Show({ booking }: ShowProps) {
                             <DetailRow label="Paid At" value={booking.paid_at} />
                             <DetailRow label="Completed" value={booking.completed_at} />
                             <DetailRow label="Vehicle" value={booking.vehicle?.display_name} />
+                            {booking.vehicle?.vin && (
+                                <div className="flex justify-between border-b border-white/5 py-3 last:border-0">
+                                    <span className="text-slate-400">VIN</span>
+                                    <span className="font-mono text-xs tracking-widest text-slate-300">{booking.vehicle.vin}</span>
+                                </div>
+                            )}
                             <DetailRow label="Technician" value={booking.technician?.name} />
                             <DetailRow label="Mileage" value={booking.mileage_at_service != null ? `${booking.mileage_at_service.toLocaleString()} mi` : null} />
                             <DetailRow label="Total" value={booking.total_price != null ? `$${Number(booking.total_price).toFixed(2)}` : null} />
@@ -132,35 +146,70 @@ export default function Show({ booking }: ShowProps) {
                             title={
                                 <span className="flex items-center gap-2">
                                     <Wrench className="h-4 w-4 text-gold-400" />
-                                    Recommended Parts
+                                    Oil &amp; Parts Recommendations
                                 </span>
                             }
+                            subtitle={booking.vehicle ? `Based on your ${booking.vehicle.display_name}` : undefined}
                         />
                         <DashboardCardContent>
                             {booking.recommendations.length === 0 ? (
-                                <p className="text-sm text-slate-400">No recommendations yet. Parts will be suggested based on your vehicle.</p>
+                                <div className="flex flex-col items-center gap-3 py-6 text-center">
+                                    <FlaskConical className="h-8 w-8 text-slate-600" />
+                                    <p className="text-sm text-slate-400">
+                                        No recommendations yet. Parts will be suggested based on your vehicle's VIN once the booking is confirmed.
+                                    </p>
+                                </div>
                             ) : (
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     {booking.recommendations.map((rec) => (
                                         <div key={rec.id} className="rounded-xl border border-white/5 bg-ink-900/40 p-4">
                                             <div className="flex items-start justify-between gap-2">
-                                                <div>
-                                                    <p className="font-medium text-white">{rec.part_name}</p>
-                                                    <p className="text-xs text-gold-400">{rec.part_type_label}</p>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        <span className="text-base">
+                                                            {PART_TYPE_ICONS[rec.part_type] ?? '🔧'}
+                                                        </span>
+                                                        <p className="font-semibold text-white">{rec.part_name}</p>
+                                                    </div>
+                                                    <p className="mt-0.5 text-xs font-medium text-gold-400">{rec.part_type_label}</p>
+
+                                                    {rec.part_number && (
+                                                        <div className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-gold-500/30 bg-gold-500/10 px-2 py-1">
+                                                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Part #</span>
+                                                            <span className="font-mono text-xs font-bold tracking-wider text-gold-300">
+                                                                {rec.part_number}
+                                                            </span>
+                                                        </div>
+                                                    )}
+
+                                                    {rec.specification && (
+                                                        <p className="mt-2 text-sm text-slate-300">
+                                                            <span className="text-slate-500">Spec: </span>{rec.specification}
+                                                        </p>
+                                                    )}
+
+                                                    <p className="mt-1 text-xs text-slate-500">
+                                                        {rec.part_type === 'oil'
+                                                            ? `${parseFloat(String(rec.quantity))} qt`
+                                                            : `Qty: ${parseFloat(String(rec.quantity))}`}
+                                                    </p>
+
+                                                    {rec.notes && (
+                                                        <p className="mt-1.5 text-xs italic text-slate-500">{rec.notes}</p>
+                                                    )}
                                                 </div>
                                                 {rec.estimated_price != null && (
-                                                    <span className="text-sm font-medium text-gold-400">
+                                                    <span className="shrink-0 text-sm font-bold text-gold-400">
                                                         ${Number(rec.estimated_price).toFixed(2)}
                                                     </span>
                                                 )}
                                             </div>
-                                            {rec.specification && (
-                                                <p className="mt-1 text-sm text-slate-400">{rec.specification}</p>
-                                            )}
-                                            <p className="mt-1 text-xs text-slate-500">Qty: {rec.quantity}</p>
-                                            {rec.notes && <p className="mt-2 text-xs text-slate-500">{rec.notes}</p>}
                                         </div>
                                     ))}
+
+                                    <p className="pt-1 text-center text-[11px] text-slate-600">
+                                        Recommendations generated from your vehicle's VIN &amp; fitment data
+                                    </p>
                                 </div>
                             )}
                         </DashboardCardContent>

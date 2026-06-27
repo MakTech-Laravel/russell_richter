@@ -11,6 +11,9 @@ class OilFitmentSeeder extends Seeder
     {
         $fitments = [
             // ─── Ford F-150 ────────────────────────────────────────────────
+            ['make' => 'Ford', 'model' => 'F-150', 'year_from' => 2004, 'year_to' => 2008, 'engine' => '5.4L 8-Cylinder', 'oil_filter_part_no' => 'FL-820-S',  'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Ford', 'model' => 'F-150', 'year_from' => 2009, 'year_to' => 2014, 'engine' => '5.0L 8-Cylinder', 'oil_filter_part_no' => 'FL-500-S',  'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Ford', 'model' => 'F-150', 'year_from' => 2011, 'year_to' => 2014, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => 'FL-820-S',  'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
             ['make' => 'Ford', 'model' => 'F-150', 'year_from' => 2015, 'year_to' => 2020, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => 'FL-820-S',  'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
             ['make' => 'Ford', 'model' => 'F-150', 'year_from' => 2015, 'year_to' => 2020, 'engine' => '5.0L 8-Cylinder', 'oil_filter_part_no' => 'FL-500-S',  'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 6.0],
             ['make' => 'Ford', 'model' => 'F-150', 'year_from' => 2015, 'year_to' => 2020, 'engine' => '2.7L 6-Cylinder', 'oil_filter_part_no' => 'FL-820-S',  'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 5.5],
@@ -31,12 +34,17 @@ class OilFitmentSeeder extends Seeder
             ['make' => 'Ford', 'model' => 'Escape', 'year_from' => 2020, 'year_to' => 2024, 'engine' => null, 'oil_filter_part_no' => 'FL-500-S', 'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.5],
 
             // ─── Toyota Camry ──────────────────────────────────────────────
+            ['make' => 'Toyota', 'model' => 'Camry', 'year_from' => 2002, 'year_to' => 2006, 'engine' => '2.4L 4-Cylinder', 'oil_filter_part_no' => '90915-YZZD1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.5],
+            ['make' => 'Toyota', 'model' => 'Camry', 'year_from' => 2007, 'year_to' => 2011, 'engine' => '2.4L 4-Cylinder', 'oil_filter_part_no' => '90915-YZZD1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.5],
+            ['make' => 'Toyota', 'model' => 'Camry', 'year_from' => 2012, 'year_to' => 2014, 'engine' => '2.5L 4-Cylinder', 'oil_filter_part_no' => '90915-YZZD1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.5],
             ['make' => 'Toyota', 'model' => 'Camry', 'year_from' => 2015, 'year_to' => 2017, 'engine' => '2.5L 4-Cylinder', 'oil_filter_part_no' => '90915-YZZD1',  'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.5],
             ['make' => 'Toyota', 'model' => 'Camry', 'year_from' => 2018, 'year_to' => 2024, 'engine' => '2.5L 4-Cylinder', 'oil_filter_part_no' => '04152-YZZA1',  'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.8],
             ['make' => 'Toyota', 'model' => 'Camry', 'year_from' => 2015, 'year_to' => 2017, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => '90915-YZZD4',  'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.4],
             ['make' => 'Toyota', 'model' => 'Camry', 'year_from' => 2018, 'year_to' => 2024, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => '90915-YZZD4',  'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 6.4],
 
             // ─── Toyota Corolla ────────────────────────────────────────────
+            ['make' => 'Toyota', 'model' => 'Corolla', 'year_from' => 2003, 'year_to' => 2008, 'engine' => null, 'oil_filter_part_no' => '90915-YZZN1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 3.9],
+            ['make' => 'Toyota', 'model' => 'Corolla', 'year_from' => 2009, 'year_to' => 2013, 'engine' => null, 'oil_filter_part_no' => '90915-YZZN1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.4],
             ['make' => 'Toyota', 'model' => 'Corolla', 'year_from' => 2014, 'year_to' => 2018, 'engine' => null, 'oil_filter_part_no' => '90915-YZZN1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.4],
             ['make' => 'Toyota', 'model' => 'Corolla', 'year_from' => 2019, 'year_to' => 2024, 'engine' => null, 'oil_filter_part_no' => '04152-YZZA1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '0W-16', 'oil_capacity_quarts' => 4.4],
 
@@ -49,25 +57,79 @@ class OilFitmentSeeder extends Seeder
             ['make' => 'Toyota', 'model' => 'Highlander', 'year_from' => 2020, 'year_to' => 2024, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => '90915-YZZD4', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 6.4],
 
             // ─── Honda Civic ───────────────────────────────────────────────
+            ['make' => 'Honda', 'model' => 'Civic', 'year_from' => 2001, 'year_to' => 2005, 'engine' => null, 'oil_filter_part_no' => '15410-MBW-J01', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 3.5],
+            ['make' => 'Honda', 'model' => 'Civic', 'year_from' => 2006, 'year_to' => 2011, 'engine' => null, 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 3.9],
+            ['make' => 'Honda', 'model' => 'Civic', 'year_from' => 2012, 'year_to' => 2015, 'engine' => null, 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 3.9],
             ['make' => 'Honda', 'model' => 'Civic', 'year_from' => 2016, 'year_to' => 2021, 'engine' => null, 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 3.7],
             ['make' => 'Honda', 'model' => 'Civic', 'year_from' => 2022, 'year_to' => 2024, 'engine' => null, 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 3.7],
 
             // ─── Honda Accord ──────────────────────────────────────────────
+            ['make' => 'Honda', 'model' => 'Accord', 'year_from' => 2003, 'year_to' => 2007, 'engine' => null, 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 4.5],
+            ['make' => 'Honda', 'model' => 'Accord', 'year_from' => 2008, 'year_to' => 2017, 'engine' => null, 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 4.5],
             ['make' => 'Honda', 'model' => 'Accord', 'year_from' => 2018, 'year_to' => 2022, 'engine' => '1.5L 4-Cylinder', 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 3.7],
             ['make' => 'Honda', 'model' => 'Accord', 'year_from' => 2018, 'year_to' => 2022, 'engine' => '2.0L 4-Cylinder', 'oil_filter_part_no' => '15400-RTA-003', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 5.7],
             ['make' => 'Honda', 'model' => 'Accord', 'year_from' => 2023, 'year_to' => 2024, 'engine' => null, 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 3.7],
 
+            // ─── Honda CR-V ────────────────────────────────────────────────
+            ['make' => 'Honda', 'model' => 'CR-V', 'year_from' => 2002, 'year_to' => 2011, 'engine' => null, 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 4.4],
+            ['make' => 'Honda', 'model' => 'CR-V', 'year_from' => 2012, 'year_to' => 2016, 'engine' => null, 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.4],
+            ['make' => 'Honda', 'model' => 'CR-V', 'year_from' => 2017, 'year_to' => 2022, 'engine' => null, 'oil_filter_part_no' => '15400-PLM-A02', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 3.7],
+
             // ─── Honda Pilot ───────────────────────────────────────────────
+            ['make' => 'Honda', 'model' => 'Pilot', 'year_from' => 2009, 'year_to' => 2015, 'engine' => null, 'oil_filter_part_no' => '15400-RTA-003', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 4.5],
             ['make' => 'Honda', 'model' => 'Pilot', 'year_from' => 2016, 'year_to' => 2022, 'engine' => null, 'oil_filter_part_no' => '15400-RTA-003', 'oil_filter_brand' => 'Honda OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 5.7],
 
-            // ─── Chevrolet Silverado 1500 ──────────────────────────────────
+            // ─── Chevrolet Silverado (NHTSA returns "Silverado") ───────────
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 1999, 'year_to' => 2006, 'engine' => '4.8L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 1999, 'year_to' => 2006, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 1999, 'year_to' => 2006, 'engine' => '6.0L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 2007, 'year_to' => 2013, 'engine' => '4.8L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 2007, 'year_to' => 2013, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 2007, 'year_to' => 2013, 'engine' => '6.0L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 2014, 'year_to' => 2018, 'engine' => '4.3L 6-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.5],
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 2014, 'year_to' => 2018, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 2014, 'year_to' => 2018, 'engine' => '6.2L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 8.0],
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 2019, 'year_to' => 2024, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Silverado', 'year_from' => 2019, 'year_to' => 2024, 'engine' => '6.2L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 8.0],
+
+            // ─── Chevrolet Silverado 1500 (some VINs return this model) ────
+            ['make' => 'Chevrolet', 'model' => 'Silverado 1500', 'year_from' => 1999, 'year_to' => 2006, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Silverado 1500', 'year_from' => 2007, 'year_to' => 2013, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
             ['make' => 'Chevrolet', 'model' => 'Silverado 1500', 'year_from' => 2014, 'year_to' => 2018, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
             ['make' => 'Chevrolet', 'model' => 'Silverado 1500', 'year_from' => 2019, 'year_to' => 2024, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
             ['make' => 'Chevrolet', 'model' => 'Silverado 1500', 'year_from' => 2019, 'year_to' => 2024, 'engine' => '6.2L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 8.0],
 
+            // ─── GMC Sierra (NHTSA returns "Sierra") ───────────────────────
+            ['make' => 'GMC', 'model' => 'Sierra', 'year_from' => 1999, 'year_to' => 2006, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'GMC', 'model' => 'Sierra', 'year_from' => 2007, 'year_to' => 2013, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'GMC', 'model' => 'Sierra', 'year_from' => 2014, 'year_to' => 2018, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'GMC', 'model' => 'Sierra', 'year_from' => 2019, 'year_to' => 2024, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+
             // ─── GMC Sierra 1500 ───────────────────────────────────────────
+            ['make' => 'GMC', 'model' => 'Sierra 1500', 'year_from' => 1999, 'year_to' => 2006, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
             ['make' => 'GMC', 'model' => 'Sierra 1500', 'year_from' => 2014, 'year_to' => 2018, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
             ['make' => 'GMC', 'model' => 'Sierra 1500', 'year_from' => 2019, 'year_to' => 2024, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+
+            // ─── Chevrolet Suburban / Tahoe ────────────────────────────────
+            ['make' => 'Chevrolet', 'model' => 'Suburban', 'year_from' => 2000, 'year_to' => 2006, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Suburban', 'year_from' => 2007, 'year_to' => 2014, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Suburban', 'year_from' => 2015, 'year_to' => 2024, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Tahoe', 'year_from' => 2000, 'year_to' => 2006, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Tahoe', 'year_from' => 2007, 'year_to' => 2014, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Chevrolet', 'model' => 'Tahoe', 'year_from' => 2015, 'year_to' => 2024, 'engine' => '5.3L 8-Cylinder', 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 6.0],
+
+            // ─── Chevrolet Trailblazer / Traverse ─────────────────────────
+            ['make' => 'Chevrolet', 'model' => 'Trailblazer', 'year_from' => 2002, 'year_to' => 2009, 'engine' => null, 'oil_filter_part_no' => 'PF48E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 7.0],
+            ['make' => 'Chevrolet', 'model' => 'Traverse', 'year_from' => 2009, 'year_to' => 2017, 'engine' => null, 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 5.5],
+            ['make' => 'Chevrolet', 'model' => 'Traverse', 'year_from' => 2018, 'year_to' => 2024, 'engine' => null, 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 5.5],
+
+            // ─── Toyota Tundra ─────────────────────────────────────────────
+            ['make' => 'Toyota', 'model' => 'Tundra', 'year_from' => 2007, 'year_to' => 2013, 'engine' => '5.7L 8-Cylinder', 'oil_filter_part_no' => '90915-YZZD4', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 7.4],
+            ['make' => 'Toyota', 'model' => 'Tundra', 'year_from' => 2014, 'year_to' => 2021, 'engine' => '5.7L 8-Cylinder', 'oil_filter_part_no' => '90915-YZZD4', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 7.4],
+            ['make' => 'Toyota', 'model' => 'Tundra', 'year_from' => 2022, 'year_to' => 2024, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => '04152-YZZA1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 6.6],
+
+            // ─── Ram 1500 Classic ──────────────────────────────────────────
+            ['make' => 'Ram', 'model' => '1500 Classic', 'year_from' => 2019, 'year_to' => 2024, 'engine' => '5.7L 8-Cylinder', 'oil_filter_part_no' => 'MO388', 'oil_filter_brand' => 'Mopar', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 7.0],
 
             // ─── Chevrolet Equinox ─────────────────────────────────────────
             ['make' => 'Chevrolet', 'model' => 'Equinox', 'year_from' => 2018, 'year_to' => 2024, 'engine' => null, 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.2],
@@ -93,8 +155,41 @@ class OilFitmentSeeder extends Seeder
             ['make' => 'Dodge', 'model' => 'Charger', 'year_from' => 2015, 'year_to' => 2023, 'engine' => '5.7L 8-Cylinder', 'oil_filter_part_no' => 'MO388', 'oil_filter_brand' => 'Mopar', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 7.0],
 
             // ─── Nissan Altima ─────────────────────────────────────────────
+            ['make' => 'Nissan', 'model' => 'Altima', 'year_from' => 2002, 'year_to' => 2006, 'engine' => null, 'oil_filter_part_no' => '15208-65F00', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.2],
+            ['make' => 'Nissan', 'model' => 'Altima', 'year_from' => 2007, 'year_to' => 2012, 'engine' => null, 'oil_filter_part_no' => '15208-65F0A', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.9],
+            ['make' => 'Nissan', 'model' => 'Altima', 'year_from' => 2013, 'year_to' => 2018, 'engine' => '2.5L 4-Cylinder', 'oil_filter_part_no' => '15208-65F0A', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.2],
             ['make' => 'Nissan', 'model' => 'Altima', 'year_from' => 2019, 'year_to' => 2024, 'engine' => '2.5L 4-Cylinder', 'oil_filter_part_no' => '15208-65F0A', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.2],
-            ['make' => 'Nissan', 'model' => 'Altima', 'year_from' => 2015, 'year_to' => 2018, 'engine' => '2.5L 4-Cylinder', 'oil_filter_part_no' => '15208-65F0A', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.2],
+
+            // ─── Nissan Sentra ─────────────────────────────────────────────
+            ['make' => 'Nissan', 'model' => 'Sentra', 'year_from' => 2000, 'year_to' => 2006, 'engine' => null, 'oil_filter_part_no' => '15208-65F00', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 3.4],
+            ['make' => 'Nissan', 'model' => 'Sentra', 'year_from' => 2007, 'year_to' => 2012, 'engine' => null, 'oil_filter_part_no' => '15208-65F0A', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 3.5],
+            ['make' => 'Nissan', 'model' => 'Sentra', 'year_from' => 2013, 'year_to' => 2019, 'engine' => null, 'oil_filter_part_no' => '15208-65F0A', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 3.7],
+
+            // ─── Nissan Maxima ─────────────────────────────────────────────
+            ['make' => 'Nissan', 'model' => 'Maxima', 'year_from' => 2004, 'year_to' => 2008, 'engine' => null, 'oil_filter_part_no' => '15208-31U01', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.2],
+            ['make' => 'Nissan', 'model' => 'Maxima', 'year_from' => 2009, 'year_to' => 2015, 'engine' => null, 'oil_filter_part_no' => '15208-31U01', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.9],
+
+            // ─── Nissan Rogue ──────────────────────────────────────────────
+            ['make' => 'Nissan', 'model' => 'Rogue', 'year_from' => 2008, 'year_to' => 2013, 'engine' => null, 'oil_filter_part_no' => '15208-65F0A', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.2],
+            ['make' => 'Nissan', 'model' => 'Rogue', 'year_from' => 2014, 'year_to' => 2020, 'engine' => null, 'oil_filter_part_no' => '15208-65F0A', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.4],
+
+            // ─── Toyota RAV4 ───────────────────────────────────────────────
+            ['make' => 'Toyota', 'model' => 'RAV4', 'year_from' => 2006, 'year_to' => 2012, 'engine' => null, 'oil_filter_part_no' => '90915-YZZN1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 4.4],
+            ['make' => 'Toyota', 'model' => 'RAV4', 'year_from' => 2013, 'year_to' => 2018, 'engine' => null, 'oil_filter_part_no' => '90915-YZZN1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.4],
+            ['make' => 'Toyota', 'model' => 'RAV4', 'year_from' => 2019, 'year_to' => 2024, 'engine' => null, 'oil_filter_part_no' => '04152-YZZA1', 'oil_filter_brand' => 'Toyota OEM', 'oil_grade' => '0W-16', 'oil_capacity_quarts' => 4.4],
+
+            // ─── Chevrolet Malibu ──────────────────────────────────────────
+            ['make' => 'Chevrolet', 'model' => 'Malibu', 'year_from' => 2004, 'year_to' => 2012, 'engine' => null, 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 5.0],
+            ['make' => 'Chevrolet', 'model' => 'Malibu', 'year_from' => 2013, 'year_to' => 2024, 'engine' => null, 'oil_filter_part_no' => 'PF63E', 'oil_filter_brand' => 'ACDelco', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 5.0],
+
+            // ─── Ford Fusion ───────────────────────────────────────────────
+            ['make' => 'Ford', 'model' => 'Fusion', 'year_from' => 2006, 'year_to' => 2012, 'engine' => null, 'oil_filter_part_no' => 'FL-500-S', 'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 5.0],
+            ['make' => 'Ford', 'model' => 'Fusion', 'year_from' => 2013, 'year_to' => 2020, 'engine' => null, 'oil_filter_part_no' => 'FL-500-S', 'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 5.7],
+
+            // ─── Ford Mustang ──────────────────────────────────────────────
+            ['make' => 'Ford', 'model' => 'Mustang', 'year_from' => 2005, 'year_to' => 2010, 'engine' => '4.6L 8-Cylinder', 'oil_filter_part_no' => 'FL-820-S', 'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 6.0],
+            ['make' => 'Ford', 'model' => 'Mustang', 'year_from' => 2011, 'year_to' => 2014, 'engine' => '5.0L 8-Cylinder', 'oil_filter_part_no' => 'FL-500-S', 'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-20', 'oil_capacity_quarts' => 8.0],
+            ['make' => 'Ford', 'model' => 'Mustang', 'year_from' => 2015, 'year_to' => 2023, 'engine' => '5.0L 8-Cylinder', 'oil_filter_part_no' => 'FL-500-S', 'oil_filter_brand' => 'Motorcraft', 'oil_grade' => '5W-50', 'oil_capacity_quarts' => 8.0],
 
             // ─── Nissan Frontier ───────────────────────────────────────────
             ['make' => 'Nissan', 'model' => 'Frontier', 'year_from' => 2016, 'year_to' => 2021, 'engine' => '4.0L 6-Cylinder', 'oil_filter_part_no' => '15208-31U01', 'oil_filter_brand' => 'Nissan OEM', 'oil_grade' => '5W-30', 'oil_capacity_quarts' => 5.4],

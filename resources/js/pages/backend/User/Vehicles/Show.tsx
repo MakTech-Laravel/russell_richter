@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Edit } from 'lucide-react';
+import { ArrowLeft, Edit, FlaskConical } from 'lucide-react';
 
 import {
     DashboardCard,
@@ -26,8 +26,17 @@ interface Vehicle {
     decoded_at: string | null;
 }
 
+interface OilSpec {
+    oil_grade: string;
+    oil_capacity_quarts: number;
+    oil_filter_part_no: string;
+    oil_filter_brand: string | null;
+    supports_synthetic: boolean;
+}
+
 interface ShowProps {
     vehicle: Vehicle;
+    oilSpec: OilSpec | null;
 }
 
 function DetailRow({ label, value }: { label: string; value: string | number | null | undefined }) {
@@ -43,7 +52,7 @@ function DetailRow({ label, value }: { label: string; value: string | number | n
     );
 }
 
-export default function Show({ vehicle }: ShowProps) {
+export default function Show({ vehicle, oilSpec }: ShowProps) {
     return (
         <UserLayout
             title={vehicle.display_name}
@@ -78,6 +87,80 @@ export default function Show({ vehicle }: ShowProps) {
                         <DetailRow label="Mileage" value={vehicle.mileage != null ? `${vehicle.mileage.toLocaleString()} mi` : null} />
                         <DetailRow label="License Plate" value={vehicle.license_plate} />
                         <DetailRow label="Color" value={vehicle.color} />
+                    </DashboardCardContent>
+                </DashboardCard>
+
+                {/* Oil Service Spec Card */}
+                <DashboardCard>
+                    <DashboardCardHeader
+                        title={
+                            <span className="flex items-center gap-2">
+                                <FlaskConical className="h-4 w-4 text-gold-400" />
+                                Oil Service Specifications
+                            </span>
+                        }
+                        subtitle={oilSpec ? `OEM fitment data for your ${vehicle.display_name}` : undefined}
+                    />
+                    <DashboardCardContent>
+                        {oilSpec ? (
+                            <div className="space-y-1">
+                                {/* Oil Grade */}
+                                <div className="flex items-center justify-between border-b border-white/5 py-3">
+                                    <span className="text-slate-400">🛢️ Oil Grade</span>
+                                    <span className="rounded-md bg-gold-500/10 px-2 py-0.5 font-mono text-sm font-bold text-gold-300 ring-1 ring-gold-500/30">
+                                        {oilSpec.oil_grade}
+                                    </span>
+                                </div>
+
+                                {/* Oil Capacity */}
+                                <div className="flex items-center justify-between border-b border-white/5 py-3">
+                                    <span className="text-slate-400">🛢️ Oil Capacity</span>
+                                    <span className="font-semibold text-white">
+                                        {oilSpec.oil_capacity_quarts} quarts
+                                    </span>
+                                </div>
+
+                                {/* Synthetic */}
+                                <div className="flex items-center justify-between border-b border-white/5 py-3">
+                                    <span className="text-slate-400">Oil Type</span>
+                                    <span className={`text-sm font-semibold ${oilSpec.supports_synthetic ? 'text-emerald-400' : 'text-amber-400'}`}>
+                                        {oilSpec.supports_synthetic ? '✓ Full Synthetic Recommended' : 'Conventional'}
+                                    </span>
+                                </div>
+
+                                {/* Oil Filter */}
+                                <div className="flex items-center justify-between py-3">
+                                    <span className="text-slate-400">🔩 Oil Filter (OEM)</span>
+                                    <div className="text-right">
+                                        <div className="inline-flex items-center gap-1.5 rounded-md border border-gold-500/30 bg-gold-500/10 px-2.5 py-1">
+                                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Part #</span>
+                                            <span className="font-mono text-sm font-bold tracking-wider text-gold-300">
+                                                {oilSpec.oil_filter_part_no}
+                                            </span>
+                                        </div>
+                                        {oilSpec.oil_filter_brand && (
+                                            <p className="mt-1 text-xs text-slate-500">{oilSpec.oil_filter_brand}</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center gap-3 py-6 text-center">
+                                <FlaskConical className="h-8 w-8 text-slate-600" />
+                                <div>
+                                    <p className="text-sm font-medium text-slate-300">No fitment data on file</p>
+                                    <p className="mt-1 text-xs text-slate-500">
+                                        Your technician will verify the correct oil filter and grade on-site.
+                                        {vehicle.year && vehicle.make && vehicle.model && (
+                                            <span> ({vehicle.year} {vehicle.make} {vehicle.model})</span>
+                                        )}
+                                    </p>
+                                </div>
+                                <Link href={route('bookings.create')} className="ml-btn-primary inline-flex text-sm">
+                                    Book Service Anyway
+                                </Link>
+                            </div>
+                        )}
                     </DashboardCardContent>
                 </DashboardCard>
 
