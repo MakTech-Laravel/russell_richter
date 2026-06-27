@@ -6,6 +6,7 @@ use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Technician;
+use App\Services\OilFitmentLookupService;
 use App\Services\RecommendationService;
 use App\Support\BookingPresenter;
 use Illuminate\Http\RedirectResponse;
@@ -16,7 +17,10 @@ use Inertia\Response;
 
 class AdminBookingController extends Controller
 {
-    public function __construct(private RecommendationService $recommendationService) {}
+    public function __construct(
+        private RecommendationService $recommendationService,
+        private OilFitmentLookupService $fitmentLookup,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -55,10 +59,19 @@ class AdminBookingController extends Controller
     {
         $booking->load(['user', 'vehicle', 'service', 'technician', 'recommendations']);
 
+        $fitment = $booking->vehicle ? $this->fitmentLookup->find($booking->vehicle) : null;
+
         return Inertia::render('backend/Admin/Bookings/Show', [
             'booking' => $this->transform($booking),
             'technicians' => Technician::query()->where('is_active', true)->get(['id', 'name']),
             'statuses' => collect(BookingStatus::cases())->map(fn ($s) => ['value' => $s->value, 'label' => $s->label()]),
+            'oilSpec' => $fitment ? [
+                'oil_grade' => $fitment->oil_grade,
+                'oil_capacity_quarts' => (float) $fitment->oil_capacity_quarts,
+                'oil_filter_part_no' => $fitment->oil_filter_part_no,
+                'oil_filter_brand' => $fitment->oil_filter_brand,
+                'supports_synthetic' => $fitment->supports_synthetic,
+            ] : null,
         ]);
     }
 

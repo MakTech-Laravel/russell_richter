@@ -1,5 +1,5 @@
 import { Form, Head, Link, router } from '@inertiajs/react';
-import { ArrowLeft, Wrench } from 'lucide-react';
+import { ArrowLeft, FlaskConical, Wrench } from 'lucide-react';
 
 import {
     DashboardCard,
@@ -60,10 +60,19 @@ interface StatusOption {
     label: string;
 }
 
+interface OilSpec {
+    oil_grade: string;
+    oil_capacity_quarts: number;
+    oil_filter_part_no: string;
+    oil_filter_brand: string | null;
+    supports_synthetic: boolean;
+}
+
 interface ShowProps {
     booking: Booking;
     technicians: Array<{ id: number; name: string }>;
     statuses: StatusOption[];
+    oilSpec: OilSpec | null;
 }
 
 function DetailRow({ label, value }: { label: string; value: string | number | null | undefined }) {
@@ -79,7 +88,7 @@ function DetailRow({ label, value }: { label: string; value: string | number | n
     );
 }
 
-export default function Show({ booking, technicians, statuses }: ShowProps) {
+export default function Show({ booking, technicians, statuses, oilSpec }: ShowProps) {
     const fullAddress = `${booking.service_address}, ${booking.service_city}, ${booking.service_state} ${booking.service_zip}`;
 
     return (
@@ -125,6 +134,59 @@ export default function Show({ booking, technicians, statuses }: ShowProps) {
                                 <DetailRow label="Route Order" value={booking.route_order} />
                                 <DetailRow label="Total" value={booking.total_price != null ? `$${Number(booking.total_price).toFixed(2)}` : null} />
                                 <DetailRow label="Customer Notes" value={booking.customer_notes} />
+                            </DashboardCardContent>
+                        </DashboardCard>
+
+                        <DashboardCard>
+                            <DashboardCardHeader
+                                title={
+                                    <span className="flex items-center gap-2">
+                                        <FlaskConical className="h-4 w-4 text-gold-400" />
+                                        Oil Service Specifications
+                                    </span>
+                                }
+                                subtitle={oilSpec && booking.vehicle ? `OEM fitment data for ${booking.vehicle.display_name}` : undefined}
+                            />
+                            <DashboardCardContent>
+                                {oilSpec ? (
+                                    <div className="space-y-1">
+                                        <div className="flex items-center justify-between border-b border-white/5 py-3">
+                                            <span className="text-slate-400">🛢️ Oil Grade</span>
+                                            <span className="rounded-md bg-gold-500/10 px-2 py-0.5 font-mono text-sm font-bold text-gold-300 ring-1 ring-gold-500/30">
+                                                {oilSpec.oil_grade}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between border-b border-white/5 py-3">
+                                            <span className="text-slate-400">🛢️ Oil Capacity</span>
+                                            <span className="font-semibold text-white">{oilSpec.oil_capacity_quarts} quarts</span>
+                                        </div>
+                                        <div className="flex items-center justify-between border-b border-white/5 py-3">
+                                            <span className="text-slate-400">Oil Type</span>
+                                            <span className={`text-sm font-semibold ${oilSpec.supports_synthetic ? 'text-emerald-400' : 'text-amber-400'}`}>
+                                                {oilSpec.supports_synthetic ? '✓ Full Synthetic' : 'Conventional'}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between py-3">
+                                            <span className="text-slate-400">🔩 Oil Filter (OEM)</span>
+                                            <div className="text-right">
+                                                <div className="inline-flex items-center gap-1.5 rounded-md border border-gold-500/30 bg-gold-500/10 px-2.5 py-1">
+                                                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Part #</span>
+                                                    <span className="font-mono text-sm font-bold tracking-wider text-gold-300">
+                                                        {oilSpec.oil_filter_part_no}
+                                                    </span>
+                                                </div>
+                                                {oilSpec.oil_filter_brand && (
+                                                    <p className="mt-1 text-xs text-slate-500">{oilSpec.oil_filter_brand}</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-3 py-4 text-slate-500">
+                                        <FlaskConical className="h-5 w-5 shrink-0" />
+                                        <p className="text-sm">No fitment data on file for this vehicle. Verify oil specs on-site.</p>
+                                    </div>
+                                )}
                             </DashboardCardContent>
                         </DashboardCard>
 
