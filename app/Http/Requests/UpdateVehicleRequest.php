@@ -30,6 +30,7 @@ class UpdateVehicleRequest extends FormRequest
             'mileage' => ['nullable', 'integer', 'min:0', 'max:999999'],
             'license_plate' => ['nullable', 'string', 'max:20'],
             'color' => ['nullable', 'string', 'max:50'],
+            'oil_preference_notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
 }

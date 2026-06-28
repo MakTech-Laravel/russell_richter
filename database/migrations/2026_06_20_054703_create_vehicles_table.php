@@ -23,6 +23,7 @@ return new class extends Migration
             $table->unsignedInteger('mileage')->nullable();
             $table->string('license_plate')->nullable();
             $table->string('color')->nullable();
+            $table->string('oil_preference_notes')->nullable();
             $table->json('vin_decode_data')->nullable();
             $table->timestamp('decoded_at')->nullable();
             $table->timestamps();

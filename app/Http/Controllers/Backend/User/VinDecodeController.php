@@ -29,6 +29,7 @@ class VinDecodeController extends Controller
                 'year' => $decoded['year'],
                 'make' => $decoded['make'],
                 'model' => $decoded['model'],
+                'trim' => $decoded['trim'],
                 'engine' => $decoded['engine'],
             ]);
 

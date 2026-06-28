@@ -127,6 +127,7 @@ class VehicleController extends Controller
             'mileage' => $vehicle->mileage,
             'license_plate' => $vehicle->license_plate,
             'color' => $vehicle->color,
+            'oil_preference_notes' => $vehicle->oil_preference_notes,
             'display_name' => $vehicle->display_name,
             'decoded_at' => $vehicle->decoded_at?->toDateTimeString(),
         ];

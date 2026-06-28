@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\OilFitment;
 use App\Models\Vehicle;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class OilFitmentLookupService
 {
@@ -19,22 +19,89 @@ class OilFitmentLookupService
         }
 
         $normMake = OilFitment::normalize($vehicle->make);
-        $normModel = OilFitment::normalize($vehicle->model);
+        $modelCandidates = $this->modelCandidates($vehicle);
 
-        $base = OilFitment::query()
-            ->whereRaw("LOWER(REPLACE(REPLACE(REPLACE(make, '-', ''), ' ', ''), '.', '')) = ?", [$normMake])
-            ->whereRaw("LOWER(REPLACE(REPLACE(REPLACE(model, '-', ''), ' ', ''), '.', '')) = ?", [$normModel])
+        $fitments = OilFitment::query()
             ->where('year_from', '<=', $vehicle->year)
-            ->where('year_to', '>=', $vehicle->year);
+            ->where('year_to', '>=', $vehicle->year)
+            ->whereRaw("LOWER(REPLACE(REPLACE(REPLACE(make, '-', ''), ' ', ''), '.', '')) = ?", [$normMake])
+            ->get()
+            ->filter(function (OilFitment $fitment) use ($modelCandidates): bool {
+                $fitmentModel = OilFitment::normalize($fitment->model);
 
-        // 1. Engine-specific match (partial string match on engine field)
-        if ($vehicle->engine) {
-            $engineMatch = (clone $base)
-                ->where(fn (Builder $q) => $q
-                    ->whereRaw('LOWER(engine) = ?', [strtolower($vehicle->engine)])
-                    ->orWhereRaw('LOWER(?) LIKE CONCAT("%", LOWER(engine), "%")', [$vehicle->engine])
-                )
-                ->orderByRaw('engine IS NULL ASC')
+                foreach ($modelCandidates as $candidate) {
+                    if ($this->modelsMatch($candidate, $fitmentModel)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+        if ($fitments->isEmpty()) {
+            return null;
+        }
+
+        return $this->selectBestEngineMatch($fitments, $vehicle->engine);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function modelCandidates(Vehicle $vehicle): array
+    {
+        $candidates = [OilFitment::normalize($vehicle->model)];
+
+        if ($vehicle->trim) {
+            $trim = trim((string) $vehicle->trim);
+            $candidates[] = OilFitment::normalize($vehicle->model.$trim);
+            $candidates[] = OilFitment::normalize($vehicle->model.' '.$trim);
+            $candidates[] = OilFitment::normalize($trim);
+        }
+
+        return array_values(array_unique(array_filter($candidates)));
+    }
+
+    private function modelsMatch(string $candidate, string $fitmentModel): bool
+    {
+        if ($candidate === $fitmentModel) {
+            return true;
+        }
+
+        // NHTSA often returns a short model (e.g. "RX") while fitments use "RX350".
+        if (strlen($candidate) >= 2 && str_starts_with($fitmentModel, $candidate)) {
+            return true;
+        }
+
+        // Some VINs return "Silverado 1500" while fitments use "Silverado".
+        if (strlen($fitmentModel) >= 2 && str_starts_with($candidate, $fitmentModel)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param  Collection<int, OilFitment>  $fitments
+     */
+    private function selectBestEngineMatch(Collection $fitments, ?string $engine): ?OilFitment
+    {
+        if ($engine) {
+            $engineLower = strtolower($engine);
+
+            $engineMatch = $fitments
+                ->filter(function (OilFitment $fitment) use ($engineLower): bool {
+                    if ($fitment->engine === null) {
+                        return false;
+                    }
+
+                    $fitmentEngine = strtolower($fitment->engine);
+
+                    return $fitmentEngine === $engineLower
+                        || str_contains($engineLower, $fitmentEngine)
+                        || str_contains($fitmentEngine, $engineLower);
+                })
+                ->sortByDesc(fn (OilFitment $fitment): int => strlen((string) $fitment->engine))
                 ->first();
 
             if ($engineMatch) {
@@ -42,13 +109,11 @@ class OilFitmentLookupService
             }
         }
 
-        // 2. Generic row (engine IS NULL = applies to all engines of this make/model/year)
-        $generic = (clone $base)->whereNull('engine')->first();
+        $generic = $fitments->firstWhere('engine', null);
         if ($generic) {
             return $generic;
         }
 
-        // 3. Last resort: any row for this make/model/year range
-        return $base->first();
+        return $fitments->first();
     }
 }

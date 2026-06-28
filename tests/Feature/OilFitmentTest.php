@@ -12,8 +12,10 @@ use App\Services\RecommendationService;
 
 it('finds exact engine-specific fitment', function () {
     OilFitment::factory()->create([
-        'make' => 'Ford', 'model' => 'F-150',
-        'year_from' => 2015, 'year_to' => 2020,
+        'make' => 'Ford',
+        'model' => 'F-150',
+        'year_from' => 2015,
+        'year_to' => 2020,
         'engine' => '3.5L 6-Cylinder',
         'oil_filter_part_no' => 'FL-820-S',
         'oil_grade' => '5W-30',
@@ -21,7 +23,9 @@ it('finds exact engine-specific fitment', function () {
     ]);
 
     $vehicle = Vehicle::factory()->make([
-        'make' => 'Ford', 'model' => 'F-150', 'year' => 2018,
+        'make' => 'Ford',
+        'model' => 'F-150',
+        'year' => 2018,
         'engine' => '3.5L 6-Cylinder',
     ]);
 
@@ -34,8 +38,10 @@ it('finds exact engine-specific fitment', function () {
 
 it('falls back to generic (null engine) row when engine does not match', function () {
     OilFitment::factory()->create([
-        'make' => 'Honda', 'model' => 'Civic',
-        'year_from' => 2016, 'year_to' => 2021,
+        'make' => 'Honda',
+        'model' => 'Civic',
+        'year_from' => 2016,
+        'year_to' => 2021,
         'engine' => null,
         'oil_filter_part_no' => '15400-PLM-A02',
         'oil_grade' => '0W-20',
@@ -43,7 +49,9 @@ it('falls back to generic (null engine) row when engine does not match', functio
     ]);
 
     $vehicle = Vehicle::factory()->make([
-        'make' => 'Honda', 'model' => 'Civic', 'year' => 2019,
+        'make' => 'Honda',
+        'model' => 'Civic',
+        'year' => 2019,
         'engine' => '1.5L 4-Cylinder',
     ]);
 
@@ -55,8 +63,10 @@ it('falls back to generic (null engine) row when engine does not match', functio
 
 it('normalizes make/model with dashes and spaces', function () {
     OilFitment::factory()->create([
-        'make' => 'Ford', 'model' => 'F-150',
-        'year_from' => 2015, 'year_to' => 2020,
+        'make' => 'Ford',
+        'model' => 'F-150',
+        'year_from' => 2015,
+        'year_to' => 2020,
         'engine' => null,
         'oil_filter_part_no' => 'FL-820-S',
         'oil_grade' => '5W-30',
@@ -65,7 +75,10 @@ it('normalizes make/model with dashes and spaces', function () {
 
     // NHTSA may return "F 150" or "F150" — both should match "F-150"
     $vehicle = Vehicle::factory()->make([
-        'make' => 'Ford', 'model' => 'F 150', 'year' => 2017, 'engine' => null,
+        'make' => 'Ford',
+        'model' => 'F 150',
+        'year' => 2017,
+        'engine' => null,
     ]);
 
     $result = app(OilFitmentLookupService::class)->find($vehicle);
@@ -74,16 +87,74 @@ it('normalizes make/model with dashes and spaces', function () {
         ->and($result->oil_filter_part_no)->toBe('FL-820-S');
 });
 
-it('returns null when year is outside range', function () {
+it('matches short NHTSA model names with trim suffix fitments', function () {
     OilFitment::factory()->create([
-        'make' => 'Toyota', 'model' => 'Camry',
-        'year_from' => 2018, 'year_to' => 2024,
-        'engine' => null, 'oil_filter_part_no' => '04152-YZZA1',
-        'oil_grade' => '0W-20', 'oil_capacity_quarts' => 4.8,
+        'make' => 'Lexus',
+        'model' => 'RX350',
+        'year_from' => 2010,
+        'year_to' => 2015,
+        'engine' => '3.5L 6-Cylinder',
+        'oil_filter_part_no' => '90915-YZZD4',
+        'oil_grade' => '0W-20',
+        'oil_capacity_quarts' => 6.4,
     ]);
 
     $vehicle = Vehicle::factory()->make([
-        'make' => 'Toyota', 'model' => 'Camry', 'year' => 2010, 'engine' => null,
+        'make' => 'Lexus',
+        'model' => 'RX',
+        'trim' => '350',
+        'year' => 2012,
+        'engine' => '3.5L 6-Cylinder',
+    ]);
+
+    $result = app(OilFitmentLookupService::class)->find($vehicle);
+
+    expect($result)->not->toBeNull()
+        ->and($result->oil_filter_part_no)->toBe('90915-YZZD4');
+});
+
+it('matches longer NHTSA model names to shorter fitment records', function () {
+    OilFitment::factory()->create([
+        'make' => 'Chevrolet',
+        'model' => 'Silverado',
+        'year_from' => 2019,
+        'year_to' => 2024,
+        'engine' => '5.3L 8-Cylinder',
+        'oil_filter_part_no' => 'PF63E',
+        'oil_grade' => '5W-30',
+        'oil_capacity_quarts' => 6.0,
+    ]);
+
+    $vehicle = Vehicle::factory()->make([
+        'make' => 'Chevrolet',
+        'model' => 'Silverado 1500',
+        'year' => 2020,
+        'engine' => '5.3L 8-Cylinder',
+    ]);
+
+    $result = app(OilFitmentLookupService::class)->find($vehicle);
+
+    expect($result)->not->toBeNull()
+        ->and($result->oil_filter_part_no)->toBe('PF63E');
+});
+
+it('returns null when year is outside range', function () {
+    OilFitment::factory()->create([
+        'make' => 'Toyota',
+        'model' => 'Camry',
+        'year_from' => 2018,
+        'year_to' => 2024,
+        'engine' => null,
+        'oil_filter_part_no' => '04152-YZZA1',
+        'oil_grade' => '0W-20',
+        'oil_capacity_quarts' => 4.8,
+    ]);
+
+    $vehicle = Vehicle::factory()->make([
+        'make' => 'Toyota',
+        'model' => 'Camry',
+        'year' => 2010,
+        'engine' => null,
     ]);
 
     expect(app(OilFitmentLookupService::class)->find($vehicle))->toBeNull();
@@ -99,8 +170,10 @@ it('returns null when vehicle has no make/model/year', function () {
 
 it('generates oil filter with real part number when fitment record exists', function () {
     OilFitment::factory()->create([
-        'make' => 'Toyota', 'model' => 'Camry',
-        'year_from' => 2018, 'year_to' => 2024,
+        'make' => 'Toyota',
+        'model' => 'Camry',
+        'year_from' => 2018,
+        'year_to' => 2024,
         'engine' => '2.5L 4-Cylinder',
         'oil_filter_part_no' => '04152-YZZA1',
         'oil_filter_brand' => 'Toyota OEM',
@@ -109,8 +182,11 @@ it('generates oil filter with real part number when fitment record exists', func
     ]);
 
     $vehicle = Vehicle::factory()->make([
-        'make' => 'Toyota', 'model' => 'Camry', 'year' => 2021,
-        'engine' => '2.5L 4-Cylinder', 'fuel_type' => 'Gasoline',
+        'make' => 'Toyota',
+        'model' => 'Camry',
+        'year' => 2021,
+        'engine' => '2.5L 4-Cylinder',
+        'fuel_type' => 'Gasoline',
     ]);
 
     $service = Service::factory()->make(['slug' => 'full-synthetic-oil-change', 'base_price' => 120, 'included_quarts' => 6]);
@@ -125,8 +201,10 @@ it('generates oil filter with real part number when fitment record exists', func
 
 it('oil recommendation uses fitment grade and capacity', function () {
     OilFitment::factory()->create([
-        'make' => 'Honda', 'model' => 'Civic',
-        'year_from' => 2016, 'year_to' => 2021,
+        'make' => 'Honda',
+        'model' => 'Civic',
+        'year_from' => 2016,
+        'year_to' => 2021,
         'engine' => null,
         'oil_filter_part_no' => '15400-PLM-A02',
         'oil_filter_brand' => 'Honda OEM',
@@ -135,8 +213,11 @@ it('oil recommendation uses fitment grade and capacity', function () {
     ]);
 
     $vehicle = Vehicle::factory()->make([
-        'make' => 'Honda', 'model' => 'Civic', 'year' => 2019,
-        'engine' => '1.5L 4-Cylinder', 'fuel_type' => 'Gasoline',
+        'make' => 'Honda',
+        'model' => 'Civic',
+        'year' => 2019,
+        'engine' => '1.5L 4-Cylinder',
+        'fuel_type' => 'Gasoline',
     ]);
 
     $service = Service::factory()->make(['slug' => 'full-synthetic-oil-change', 'base_price' => 120, 'included_quarts' => 6]);
@@ -150,8 +231,11 @@ it('oil recommendation uses fitment grade and capacity', function () {
 
 it('graceful fallback when no fitment record exists', function () {
     $vehicle = Vehicle::factory()->make([
-        'make' => 'Ferrari', 'model' => '488', 'year' => 2020,
-        'engine' => '3.9L V8', 'fuel_type' => 'Gasoline',
+        'make' => 'Ferrari',
+        'model' => '488',
+        'year' => 2020,
+        'engine' => '3.9L V8',
+        'fuel_type' => 'Gasoline',
     ]);
 
     $service = Service::factory()->make(['slug' => 'full-synthetic-oil-change', 'base_price' => 120, 'included_quarts' => 6]);
@@ -172,9 +256,10 @@ it('admin can view oil fitments index', function () {
     $this->actingAs($admin, 'admin')
         ->get(route('admin.oil-fitments.index'))
         ->assertSuccessful()
-        ->assertInertia(fn ($page) => $page
-            ->component('backend/Admin/OilFitments/Index')
-            ->has('fitments', 3)
+        ->assertInertia(
+            fn ($page) => $page
+                ->component('backend/Admin/OilFitments/Index')
+                ->has('fitments', 3)
         );
 });
 
@@ -183,8 +268,10 @@ it('admin can create an oil fitment', function () {
 
     $this->actingAs($admin, 'admin')
         ->post(route('admin.oil-fitments.store'), [
-            'make' => 'BMW', 'model' => '3 Series',
-            'year_from' => 2019, 'year_to' => 2023,
+            'make' => 'BMW',
+            'model' => '3 Series',
+            'year_from' => 2019,
+            'year_to' => 2023,
             'engine' => '2.0L 4-Cylinder',
             'oil_filter_part_no' => '11428575211',
             'oil_filter_brand' => 'BMW OEM',

@@ -22,6 +22,7 @@ interface Vehicle {
     mileage: number | null;
     license_plate: string | null;
     color: string | null;
+    oil_preference_notes: string | null;
     display_name: string;
     decoded_at: string | null;
 }
@@ -159,6 +160,12 @@ export default function Show({ vehicle, oilSpec }: ShowProps) {
                                 <Link href={route('bookings.create')} className="ml-btn-primary inline-flex text-sm">
                                     Book Service Anyway
                                 </Link>
+                            </div>
+                        )}
+                        {vehicle.oil_preference_notes && (
+                            <div className="mt-4 rounded-xl border border-gold-500/20 bg-gold-500/5 p-4">
+                                <p className="text-xs font-bold uppercase tracking-wider text-gold-400">Your Oil &amp; Filter Preferences</p>
+                                <p className="mt-2 text-sm text-slate-300">{vehicle.oil_preference_notes}</p>
                             </div>
                         )}
                     </DashboardCardContent>

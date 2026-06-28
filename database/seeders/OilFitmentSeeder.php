@@ -206,6 +206,17 @@ class OilFitmentSeeder extends Seeder
             // ─── Subaru Outback ────────────────────────────────────────────
             ['make' => 'Subaru', 'model' => 'Outback', 'year_from' => 2015, 'year_to' => 2019, 'engine' => '2.5L 4-Cylinder', 'oil_filter_part_no' => '15208AA100', 'oil_filter_brand' => 'Subaru OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 5.1],
             ['make' => 'Subaru', 'model' => 'Outback', 'year_from' => 2020, 'year_to' => 2024, 'engine' => '2.5L 4-Cylinder', 'oil_filter_part_no' => '15208AA170', 'oil_filter_brand' => 'Subaru OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 5.1],
+
+            // ─── Lexus RX (NHTSA returns model "RX" + trim "350") ──────────
+            ['make' => 'Lexus', 'model' => 'RX350', 'year_from' => 2010, 'year_to' => 2015, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => '90915-YZZD4', 'oil_filter_brand' => 'Lexus OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 6.4],
+            ['make' => 'Lexus', 'model' => 'RX350', 'year_from' => 2016, 'year_to' => 2019, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => '90915-YZZD4', 'oil_filter_brand' => 'Lexus OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 6.4],
+            ['make' => 'Lexus', 'model' => 'RX350', 'year_from' => 2020, 'year_to' => 2024, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => '04152-YZZA1', 'oil_filter_brand' => 'Lexus OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 6.4],
+            ['make' => 'Lexus', 'model' => 'RX450h', 'year_from' => 2010, 'year_to' => 2015, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => '90915-YZZD4', 'oil_filter_brand' => 'Lexus OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 6.4],
+            ['make' => 'Lexus', 'model' => 'RX', 'year_from' => 2010, 'year_to' => 2015, 'engine' => null, 'oil_filter_part_no' => '90915-YZZD4', 'oil_filter_brand' => 'Lexus OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 6.4],
+
+            // ─── Lexus ES ──────────────────────────────────────────────────
+            ['make' => 'Lexus', 'model' => 'ES350', 'year_from' => 2013, 'year_to' => 2018, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => '90915-YZZD4', 'oil_filter_brand' => 'Lexus OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 6.4],
+            ['make' => 'Lexus', 'model' => 'ES350', 'year_from' => 2019, 'year_to' => 2024, 'engine' => '3.5L 6-Cylinder', 'oil_filter_part_no' => '04152-YZZA1', 'oil_filter_brand' => 'Lexus OEM', 'oil_grade' => '0W-20', 'oil_capacity_quarts' => 6.4],
         ];
 
         foreach ($fitments as $row) {

@@ -49,7 +49,7 @@ interface Booking {
     technician_notes: string | null;
     route_order: number | null;
     customer: { id: number; name: string; email: string; phone: string | null } | null;
-    vehicle: { id: number; display_name: string; vin: string; mileage: number | null } | null;
+    vehicle: { id: number; display_name: string; vin: string; mileage: number | null; oil_preference_notes: string | null } | null;
     service: { id: number; name: string } | null;
     technician: { id: number; name: string } | null;
     recommendations: Recommendation[];
@@ -185,6 +185,13 @@ export default function Show({ booking, technicians, statuses, oilSpec }: ShowPr
                                     <div className="flex items-center gap-3 py-4 text-slate-500">
                                         <FlaskConical className="h-5 w-5 shrink-0" />
                                         <p className="text-sm">No fitment data on file for this vehicle. Verify oil specs on-site.</p>
+                                    </div>
+                                )}
+
+                                {booking.vehicle?.oil_preference_notes && (
+                                    <div className="mt-4 rounded-xl border border-gold-500/20 bg-gold-500/5 p-4">
+                                        <p className="text-xs font-bold uppercase tracking-wider text-gold-400">Customer Oil &amp; Filter Preferences</p>
+                                        <p className="mt-2 text-sm text-slate-300">{booking.vehicle.oil_preference_notes}</p>
                                     </div>
                                 )}
                             </DashboardCardContent>

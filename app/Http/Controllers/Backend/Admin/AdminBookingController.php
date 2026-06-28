@@ -133,6 +133,7 @@ class AdminBookingController extends Controller
                 'display_name' => $booking->vehicle->display_name,
                 'vin' => $booking->vehicle->vin,
                 'mileage' => $booking->vehicle->mileage,
+                'oil_preference_notes' => $booking->vehicle->oil_preference_notes,
             ] : null,
             'service' => $booking->service ? [
                 'id' => $booking->service->id,

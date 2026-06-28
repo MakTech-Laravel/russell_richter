@@ -28,6 +28,7 @@ interface Job {
     customer_phone: string | null;
     vehicle: string | null;
     vehicle_vin: string | null;
+    vehicle_oil_preference_notes: string | null;
     service: string | null;
     address: string;
     service_address: string;
@@ -114,6 +115,13 @@ export default function Show({ job }: ShowProps) {
                             <div className="rounded-xl border border-white/5 bg-ink-900/50 p-4">
                                 <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Customer Notes</p>
                                 <p className="mt-2 text-sm text-slate-300">{job.customer_notes}</p>
+                            </div>
+                        )}
+
+                        {job.vehicle_oil_preference_notes && (
+                            <div className="rounded-xl border border-gold-500/20 bg-gold-500/5 p-4">
+                                <p className="text-xs font-bold uppercase tracking-wider text-gold-400">Oil &amp; Filter Preferences</p>
+                                <p className="mt-2 text-sm text-slate-300">{job.vehicle_oil_preference_notes}</p>
                             </div>
                         )}
 

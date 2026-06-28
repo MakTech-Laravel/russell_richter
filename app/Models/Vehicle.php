@@ -27,6 +27,7 @@ class Vehicle extends Model
         'mileage',
         'license_plate',
         'color',
+        'oil_preference_notes',
         'vin_decode_data',
         'decoded_at',
     ];

@@ -1,5 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, FlaskConical, Loader2, Search } from 'lucide-react';
+import { ArrowLeft, FlaskConical, Loader2, Search, X } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -11,7 +11,9 @@ import {
 } from '@/components/dashboard/dashboard-ui';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import UserLayout from '@/layouts/user-layout';
+import { cn } from '@/lib/utils';
 
 function getCsrfToken(): string {
     const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
@@ -52,6 +54,7 @@ export default function Create() {
         mileage: '' as string | number,
         license_plate: '',
         color: '',
+        oil_preference_notes: '',
         decode_vin: true,
     });
 
@@ -115,6 +118,24 @@ export default function Create() {
         }
     };
 
+    const clearVin = (): void => {
+        setData((prev) => ({
+            ...prev,
+            vin: '',
+            year: '',
+            make: '',
+            model: '',
+            trim: '',
+            engine: '',
+            fuel_type: '',
+            body_class: '',
+            drive_type: '',
+        }));
+        setDecoded(false);
+        setOilSpec(null);
+        setDecodeError('');
+    };
+
     const submit = (e: React.FormEvent): void => {
         e.preventDefault();
         post(route('vehicles.store'));
@@ -136,19 +157,32 @@ export default function Create() {
                             <div className="space-y-2">
                                 <label htmlFor="vin" className={dashboardLabelClass()}>VIN</label>
                                 <div className="flex gap-2">
-                                    <Input
-                                        id="vin"
-                                        value={data.vin}
-                                        onChange={(e) => {
-                                            setData('vin', e.target.value.toUpperCase());
-                                            setDecoded(false);
-                                            setOilSpec(null);
-                                        }}
-                                        maxLength={17}
-                                        placeholder="17-character VIN"
-                                        className={dashboardInputClass()}
-                                        required
-                                    />
+                                    <div className="relative min-w-0 flex-1">
+                                        <Input
+                                            id="vin"
+                                            value={data.vin}
+                                            onChange={(e) => {
+                                                setData('vin', e.target.value.toUpperCase());
+                                                setDecoded(false);
+                                                setOilSpec(null);
+                                                setDecodeError('');
+                                            }}
+                                            maxLength={17}
+                                            placeholder="17-character VIN"
+                                            className={cn(dashboardInputClass(), data.vin && 'pr-9')}
+                                            required
+                                        />
+                                        {data.vin.length > 0 && (
+                                            <button
+                                                type="button"
+                                                onClick={clearVin}
+                                                className="absolute top-1/2 right-2 -translate-y-1/2 rounded-md p-1 text-slate-400 transition-colors hover:bg-white/5 hover:text-slate-200"
+                                                aria-label="Clear VIN"
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </button>
+                                        )}
+                                    </div>
                                     <button
                                         type="button"
                                         onClick={decodeVin}
@@ -212,6 +246,24 @@ export default function Create() {
                                     <Input id="color" value={data.color} onChange={(e) => setData('color', e.target.value)} className={dashboardInputClass()} />
                                     <InputError message={errors.color} />
                                 </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="oil_preference_notes" className={dashboardLabelClass()}>
+                                    Oil &amp; Filter Preferences (optional)
+                                </label>
+                                <Textarea
+                                    id="oil_preference_notes"
+                                    value={data.oil_preference_notes}
+                                    onChange={(e) => setData('oil_preference_notes', e.target.value)}
+                                    rows={3}
+                                    placeholder="e.g. Prefer Mobil 1 full synthetic only, or request a specific oil filter brand."
+                                    className={dashboardInputClass()}
+                                />
+                                <p className="text-xs text-slate-400">
+                                    We stock our recommended brand by default. Use this field if you prefer a specific oil or filter.
+                                </p>
+                                <InputError message={errors.oil_preference_notes} />
                             </div>
 
                             <div className="flex gap-3">

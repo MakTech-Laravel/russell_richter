@@ -136,6 +136,7 @@ class TechnicianJobController extends Controller
             'customer_phone' => $booking->user?->phone,
             'vehicle' => $booking->vehicle?->display_name,
             'vehicle_vin' => $booking->vehicle?->vin,
+            'vehicle_oil_preference_notes' => $booking->vehicle?->oil_preference_notes,
             'service' => $booking->service?->name,
             'address' => "{$booking->service_address}, {$booking->service_city}, {$booking->service_state} {$booking->service_zip}",
             'service_address' => $booking->service_address,

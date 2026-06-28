@@ -10,6 +10,7 @@ import {
 } from '@/components/dashboard/dashboard-ui';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import UserLayout from '@/layouts/user-layout';
 
 interface Vehicle {
@@ -19,6 +20,7 @@ interface Vehicle {
     mileage: number | null;
     license_plate: string | null;
     color: string | null;
+    oil_preference_notes: string | null;
 }
 
 interface EditProps {
@@ -80,6 +82,24 @@ export default function Edit({ vehicle }: EditProps) {
                                             className={dashboardInputClass()}
                                         />
                                         <InputError message={errors.color} />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="oil_preference_notes" className={dashboardLabelClass()}>
+                                            Oil &amp; Filter Preferences
+                                        </label>
+                                        <Textarea
+                                            id="oil_preference_notes"
+                                            name="oil_preference_notes"
+                                            rows={3}
+                                            defaultValue={vehicle.oil_preference_notes ?? ''}
+                                            placeholder="e.g. Prefer Mobil 1 full synthetic only, or request a specific oil filter brand."
+                                            className={dashboardInputClass()}
+                                        />
+                                        <p className="text-xs text-slate-500">
+                                            We stock our recommended brand by default. Use this field if you prefer a specific oil or filter.
+                                        </p>
+                                        <InputError message={errors.oil_preference_notes} />
                                     </div>
 
                                     <div className="flex gap-3">
