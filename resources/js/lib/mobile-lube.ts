@@ -22,7 +22,7 @@ export const NAV_LINKS = [
 ] as const;
 
 export const TRUST_STATS = [
-    { value: '12k+', label: 'Vehicles Serviced' },
+    { value: 'Family Owned', label: '& Operated' },
     { value: '4.9★', label: 'Avg. Rating' },
     { value: '30 min', label: 'Avg. Oil Change' },
     { value: '100%', label: 'Spill-Free Tech' },
@@ -38,7 +38,7 @@ export const TESTIMONIALS = [
     {
         name: 'Jessica R.',
         date: 'April 2026',
-        text: 'They came out to my house the same day I called and changed my brakes. The convenience alone was amazing — friendly, professional, and very knowledgeable. Will absolutely use again!',
+        text: 'They came out to my house the same day I called. The convenience alone was amazing — friendly, professional, and very knowledgeable. Will absolutely use again!',
     },
     {
         name: 'Taylor Miller',
@@ -53,7 +53,7 @@ export const TESTIMONIALS = [
     {
         name: 'Holli Carroll',
         date: 'Feb 2026',
-        text: 'Jeep needed brakes and an oil change. Showed up on time, fast, efficient, and professional. The system is clean — no mess. Five stars all the way.',
+        text: 'Jeep needed an oil change. Showed up on time, fast, efficient, and professional. The system is clean — no mess. Five stars all the way.',
     },
 ] as const;
 

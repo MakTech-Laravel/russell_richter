@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\User\BookingAvailabilityController;
 use App\Http\Controllers\Backend\User\BookingController;
 use App\Http\Controllers\Backend\User\BookingPaymentController;
 use App\Http\Controllers\Backend\User\ServiceHistoryController;
@@ -17,6 +18,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/profile', [UserProfileController::class, 'update'])->name('user-profile.update');
 
     Route::resource('vehicles', VehicleController::class);
+    Route::get('/bookings/availability', BookingAvailabilityController::class)->name('bookings.availability');
+
     Route::resource('bookings', BookingController::class)->except(['edit', 'update']);
     Route::get('/bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
     Route::put('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');

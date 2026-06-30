@@ -180,7 +180,7 @@ it('creates a booking notification when a customer books', function () {
         ->post(route('bookings.store'), [
             'vehicle_id' => $vehicle->id,
             'service_id' => $service->id,
-            'scheduled_at' => now()->addDay()->format('Y-m-d H:i:s'),
+            'scheduled_at' => nextBusinessDayAt(10)->format('Y-m-d H:i:s'),
             'service_address' => '123 Main St',
             'service_city' => 'Victoria',
             'service_state' => 'TX',

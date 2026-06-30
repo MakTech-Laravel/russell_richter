@@ -59,6 +59,7 @@ export default function Edit({ booking }: EditProps) {
                                 <>
                                     <BookingScheduleField
                                         defaultValue={booking.scheduled_at}
+                                        bookingId={booking.id}
                                         error={errors.scheduled_at}
                                     />
 

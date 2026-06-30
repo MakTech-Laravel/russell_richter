@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\AvailableBookingSlot;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -20,10 +21,10 @@ class StoreBookingRequest extends FormRequest
         return [
             'vehicle_id' => [
                 'required',
-                Rule::exists('vehicles', 'id')->where(fn ($query) => $query->where('user_id', $this->user()->id)),
+                Rule::exists('vehicles', 'id')->where(fn($query) => $query->where('user_id', $this->user()->id)),
             ],
             'service_id' => ['required', Rule::exists('services', 'id')->where('is_active', true)],
-            'scheduled_at' => ['required', 'date', 'after:now'],
+            'scheduled_at' => ['required', 'date', 'after:now', new AvailableBookingSlot],
             'service_address' => ['required', 'string', 'max:255'],
             'service_city' => ['required', 'string', 'max:100'],
             'service_state' => ['required', 'string', 'size:2'],

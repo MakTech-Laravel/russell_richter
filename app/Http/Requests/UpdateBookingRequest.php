@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\BookingStatus;
+use App\Rules\AvailableBookingSlot;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,7 +20,7 @@ class UpdateBookingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'scheduled_at' => ['sometimes', 'date', 'after:now'],
+            'scheduled_at' => ['sometimes', 'date', 'after:now', new AvailableBookingSlot($this->route('booking'))],
             'service_address' => ['sometimes', 'string', 'max:255'],
             'service_city' => ['sometimes', 'string', 'max:100'],
             'service_state' => ['sometimes', 'string', 'size:2'],

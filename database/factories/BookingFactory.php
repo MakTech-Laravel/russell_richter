@@ -31,4 +31,11 @@ class BookingFactory extends Factory
             'total_price' => fake()->randomFloat(2, 99, 180),
         ];
     }
+
+    public function cancelled(): static
+    {
+        return $this->state(fn(): array => [
+            'status' => BookingStatus::Cancelled,
+        ]);
+    }
 }
