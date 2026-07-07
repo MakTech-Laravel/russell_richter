@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateCustomerRequest;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -28,7 +30,10 @@ class AdminCustomerController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
+                'address_line' => $user->address_line,
                 'city' => $user->city,
+                'state' => $user->state,
+                'zip' => $user->zip,
                 'vehicles_count' => $user->vehicles_count,
                 'bookings_count' => $user->bookings_count,
                 'created_at' => $user->created_at?->toDateTimeString(),
@@ -70,5 +75,29 @@ class AdminCustomerController extends Controller
                 'scheduled_at' => $b->scheduled_at->toDateTimeString(),
             ]),
         ]);
+    }
+
+    public function update(UpdateCustomerRequest $request, User $customer): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        if (blank($validated['password'] ?? null)) {
+            unset($validated['password']);
+        }
+
+        unset($validated['password_confirmation']);
+
+        $customer->update($validated);
+
+        return back()->with('success', 'Customer updated successfully.');
+    }
+
+    public function destroy(User $customer): RedirectResponse
+    {
+        $customer->delete();
+
+        return redirect()
+            ->route('admin.customers.index')
+            ->with('success', 'Customer removed.');
     }
 }

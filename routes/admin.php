@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\Admin\AdminAccountController;
 use App\Http\Controllers\Backend\Admin\AdminBookingController;
 use App\Http\Controllers\Backend\Admin\AdminContactMessageController;
 use App\Http\Controllers\Backend\Admin\AdminCustomerController;
@@ -32,6 +33,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
         Route::get('/customers/{customer}', [AdminCustomerController::class, 'show'])->name('customers.show');
+        Route::patch('/customers/{customer}', [AdminCustomerController::class, 'update'])->name('customers.update');
+        Route::delete('/customers/{customer}', [AdminCustomerController::class, 'destroy'])->name('customers.destroy');
+
+        Route::get('/account', [AdminAccountController::class, 'edit'])->name('account.edit');
+        Route::patch('/account', [AdminAccountController::class, 'update'])->name('account.update');
+        Route::put('/account/password', [AdminAccountController::class, 'updatePassword'])->name('account.password.update');
 
         Route::get('/contacts', [AdminContactMessageController::class, 'index'])->name('contacts.index');
         Route::get('/contacts/{contactMessage}', [AdminContactMessageController::class, 'show'])->name('contacts.show');

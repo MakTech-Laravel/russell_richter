@@ -51,6 +51,7 @@ export const adminNav: DashboardNavItem[] = [
     { label: 'Route Optimization', href: route('admin.routes.index'), icon: Route, match: ['/admin/routes'] },
     { label: 'Oil Fitments', href: route('admin.oil-fitments.index'), icon: Database, match: ['/admin/oil-fitments'] },
     { label: 'FAQ', href: route('admin.faqs.index'), icon: HelpCircle, match: ['/admin/faqs'] },
+    { label: 'Account', href: route('admin.account.edit'), icon: Settings, match: ['/admin/account'] },
 ];
 
 export const technicianNav: DashboardNavItem[] = [
