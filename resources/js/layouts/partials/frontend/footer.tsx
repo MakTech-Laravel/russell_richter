@@ -3,6 +3,7 @@ import { Clock, Mail, MapPin, Phone } from 'lucide-react';
 
 import { FullLogo } from '@/components/brand';
 import { FrontendContainer } from '@/components/frontend/frontend-container';
+import { SocialLinks } from '@/components/frontend/social-links';
 import { MOBILE_LUBE, NAV_LINKS } from '@/lib/mobile-lube';
 
 export function FrontendFooter() {
@@ -10,7 +11,7 @@ export function FrontendFooter() {
         <footer className="border-t border-white/5 bg-ink-900">
             <FrontendContainer className="py-12 md:py-16">
                 <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-                    <div className="lg:col-span-5">
+                    <div className="lg:col-span-4">
                         <Link href="/">
                             <FullLogo />
                         </Link>
@@ -63,7 +64,7 @@ export function FrontendFooter() {
                             </li>
                         </ul>
                     </div>
-                    <div className="lg:col-span-4">
+                    <div className="lg:col-span-3">
                         <h4 className="text-xs font-bold uppercase tracking-widest text-gold-400">Company</h4>
                         <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm text-slate-400 sm:grid-cols-1">
                             {NAV_LINKS.map((link) => (
@@ -75,17 +76,13 @@ export function FrontendFooter() {
                             ))}
                         </ul>
                     </div>
+                    <div className="flex flex-col items-start lg:col-span-2 lg:items-end">
+                        <h4 className="text-xs font-bold uppercase tracking-widest text-gold-400">Follow Us</h4>
+                        <SocialLinks className="mt-4" iconClassName="h-[18px] w-[18px]" />
+                    </div>
                 </div>
-                <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/5 pt-6 text-xs text-slate-500 sm:flex-row">
-                    <div>
-                        &copy; {new Date().getFullYear()} {MOBILE_LUBE.name}. All rights reserved.
-                    </div>
-                    <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-end">
-                        {/* <span>{MOBILE_LUBE.domain}</span> */}
-                        <a href={MOBILE_LUBE.emailHref} className="hover:text-gold-300">
-                            {MOBILE_LUBE.email}
-                        </a>
-                    </div>
+                <div className="mt-10 border-t border-white/5 pt-6 text-center text-xs text-slate-500 sm:text-left">
+                    &copy; {new Date().getFullYear()} {MOBILE_LUBE.name}. All rights reserved.
                 </div>
             </FrontendContainer>
         </footer>
