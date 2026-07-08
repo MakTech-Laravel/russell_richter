@@ -48,4 +48,12 @@ return [
         'currency' => env('STRIPE_CURRENCY', 'usd'),
     ],
 
+    'google' => [
+        'places_api_key' => env('GOOGLE_PLACES_API_KEY'),
+        'place_id' => env('GOOGLE_PLACE_ID'),
+        'write_review_url' => env('GOOGLE_WRITE_REVIEW_URL'),
+        'business_search_query' => env('GOOGLE_BUSINESS_SEARCH_QUERY', 'Mobile Lube, LLC Victoria, TX'),
+        'cache_ttl' => env('GOOGLE_REVIEWS_CACHE_TTL', 86_400),
+    ],
+
 ];

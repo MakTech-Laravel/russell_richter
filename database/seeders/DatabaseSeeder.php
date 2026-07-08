@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             TechnicianSeeder::class,
             UserSeeder::class,
             FaqSeeder::class,
+            ReviewSeeder::class,
             OilFitmentSeeder::class,
         ]);
     }

@@ -4,14 +4,20 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Faq;
+use App\Services\GoogleReviewsService;
+use App\Support\ReviewPresenter;
 use App\Support\ServicePresenter;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class FrontendController extends Controller
 {
+    public function __construct(private GoogleReviewsService $googleReviews) {}
+
     public function index(): Response
     {
+        $googleReviewSummary = $this->googleReviews->getHomepageSummary();
+
         return Inertia::render('frontend/home', [
             'pricingPackages' => ServicePresenter::pricingPackages(),
             'addOnServices' => ServicePresenter::addOnServices(),
@@ -20,6 +26,8 @@ class FrontendController extends Controller
                 ->orderBy('sort_order')
                 ->orderBy('id')
                 ->get(['question', 'answer']),
+            'googleReviews' => ReviewPresenter::forHomepage(),
+            'googleReviewSummary' => $googleReviewSummary,
         ]);
     }
 }

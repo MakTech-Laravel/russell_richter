@@ -9,6 +9,7 @@ import { HowItWorksSection } from '@/components/frontend/how-it-works-section';
 import { PricingSection } from '@/components/frontend/pricing-section';
 import { ServicesSection } from '@/components/frontend/services-section';
 import { TestimonialsSection } from '@/components/frontend/testimonials-section';
+import type { GoogleReview, GoogleReviewSummary } from '@/components/frontend/testimonials-section';
 import { TrustBarSection } from '@/components/frontend/trust-bar-section';
 import { WhyChooseSection } from '@/components/frontend/why-choose-section';
 import FrontendLayout from '@/layouts/frontend-layout';
@@ -38,9 +39,11 @@ interface HomeProps {
     pricingPackages: PricingPackage[];
     addOnServices: AddOnService[];
     faqs: FaqItem[];
+    googleReviews: GoogleReview[];
+    googleReviewSummary: GoogleReviewSummary;
 }
 
-export default function Home({ pricingPackages, addOnServices, faqs }: HomeProps) {
+export default function Home({ pricingPackages, addOnServices, faqs, googleReviews, googleReviewSummary }: HomeProps) {
     return (
         <FrontendLayout>
             <Head title={`${MOBILE_LUBE.name} | Mobile Oil Change in ${MOBILE_LUBE.serviceArea}`}>
@@ -52,12 +55,12 @@ export default function Home({ pricingPackages, addOnServices, faqs }: HomeProps
             </Head>
 
             <HeroSection />
-            <TrustBarSection />
+            <TrustBarSection googleReviewSummary={googleReviewSummary} />
             <ServicesSection services={SERVICE_HIGHLIGHTS} />
             <PricingSection packages={pricingPackages} addOns={addOnServices} />
             <WhyChooseSection items={WHY_CHOOSE} />
             <HowItWorksSection />
-            <TestimonialsSection />
+            <TestimonialsSection reviews={googleReviews} summary={googleReviewSummary} />
             <AreasServedSection />
             <FleetSection />
             <FaqSection items={faqs} />

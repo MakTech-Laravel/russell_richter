@@ -34,29 +34,6 @@ export const HOW_IT_WORKS = [
     { num: '03', title: 'Get back to your day', description: 'Spill-free service, digital invoice, and service history tracking.' },
 ] as const;
 
-export const TESTIMONIALS = [
-    {
-        name: 'Jessica R.',
-        date: 'April 2026',
-        text: 'They came out to my house the same day I called. The convenience alone was amazing — friendly, professional, and very knowledgeable. Will absolutely use again!',
-    },
-    {
-        name: 'Taylor Miller',
-        date: 'March 2026',
-        text: 'Highly recommend for your next oil change! Handled my truck with total professionalism — incredibly fast. No fighting traffic or sitting in a waiting room.',
-    },
-    {
-        name: 'Papa Jon',
-        date: 'March 2026',
-        text: 'Fantastic! Professional and knowledgeable. I use Mobile Lube for all 3 of my family vehicles AND our church buses and vans.',
-    },
-    {
-        name: 'Holli Carroll',
-        date: 'Feb 2026',
-        text: 'Jeep needed an oil change. Showed up on time, fast, efficient, and professional. The system is clean — no mess. Five stars all the way.',
-    },
-] as const;
-
 export const SERVICE_AREAS = [
     'Victoria, TX',
     'Port Lavaca, TX',
