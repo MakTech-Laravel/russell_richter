@@ -142,13 +142,18 @@ php artisan key:generate --show
 
 1. Coolify-তে **Deploy** চাপুন
 2. Build শেষ হলে container চালু হবে
-3. Entrypoint স্বয়ংক্রিয়ভাবে করবে:
-   - Database wait
-   - `php artisan migrate --force`
-   - `php artisan storage:link`
-   - Config/route/view cache
-   - Google reviews sync (API key থাকলে)
-   - Nginx + PHP-FPM + Queue worker + Scheduler
+3. Supervisor স্বয়ংক্রিয়ভাবে চালাবে:
+   - Nginx + PHP-FPM
+   - Queue worker
+   - Scheduler
+   - **Google reviews sync** (৪৫ সেকেন্ড পর প্রথমবার, তারপর প্রতি ৬ ঘণ্টা)
+
+> **প্রথম deploy-এ** Coolify terminal থেকে একবার চালান:
+> ```bash
+> php artisan migrate --force
+> php artisan db:seed --force
+> php artisan storage:link
+> ```
 
 ---
 
@@ -225,7 +230,8 @@ Nginx (:80)
   └── PHP-FPM
 Supervisor
   ├── Queue Worker (x2)
-  └── Scheduler (reviews:sync-google daily)
+  ├── Scheduler (daily tasks)
+  └── Google Reviews Sync (every 6 hours)
 ```
 
-Health check: `GET /up` (Laravel built-in)
+Health check: `GET /up` (nginx static OK)
