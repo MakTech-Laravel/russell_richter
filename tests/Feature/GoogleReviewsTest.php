@@ -11,6 +11,7 @@ beforeEach(function () {
     config([
         'services.google.places_api_key' => null,
         'services.google.place_id' => null,
+        'services.google.write_review_url' => null,
         'services.google.business_search_query' => 'Mobile Lube, LLC Victoria, TX',
         'services.google.cache_ttl' => 86_400,
     ]);
@@ -61,7 +62,8 @@ it('syncs google reviews into the database', function () {
     expect(app(GoogleReviewsService::class)->syncFromGoogle())->toBeTrue();
 
     expect(Review::query()->where('source', 'google')->count())->toBe(1)
-        ->and(Review::query()->where('author_name', 'Alex Johnson')->exists())->toBeTrue();
+        ->and(Review::query()->where('author_name', 'Alex Johnson')->exists())->toBeTrue()
+        ->and(Review::query()->where('source', 'manual')->where('is_active', true)->count())->toBe(0);
 });
 
 it('falls back to local reviews when google sync fails', function () {
@@ -69,6 +71,7 @@ it('falls back to local reviews when google sync fails', function () {
         'author_name' => 'Local Customer',
         'review_text' => 'Great local service.',
         'reviewed_at' => 'May 2026',
+        'rating' => 5,
         'source' => 'manual',
         'is_active' => true,
     ]);
@@ -108,12 +111,41 @@ it('homepage serves reviews from the database', function () {
     $this->get(route('home'))
         ->assertSuccessful()
         ->assertInertia(
-            fn ($page) => $page
+            fn($page) => $page
                 ->has('googleReviews', 1)
                 ->where('googleReviews.0.name', 'Maria Garcia')
                 ->where('googleReviews.0.text', 'Best oil change in Victoria!')
                 ->where('googleReviewSummary.source', 'google')
                 ->where('googleReviewSummary.writeReviewUrl', 'https://search.google.com/local/writereview?placeid=ChIJTestPlaceId')
+        );
+});
+
+it('homepage serves only google reviews when google reviews exist', function () {
+    Review::query()->delete();
+
+    Review::factory()->create([
+        'author_name' => 'Jessica R.',
+        'review_text' => 'Manual review',
+        'reviewed_at' => 'April 2026',
+        'source' => 'manual',
+        'is_active' => true,
+    ]);
+
+    Review::factory()->create([
+        'author_name' => 'Wasif Ahmed',
+        'review_text' => 'This is a good service provider',
+        'reviewed_at' => 'in the last week',
+        'source' => 'google',
+        'is_active' => true,
+    ]);
+
+    $this->get(route('home'))
+        ->assertSuccessful()
+        ->assertInertia(
+            fn($page) => $page
+                ->has('googleReviews', 1)
+                ->where('googleReviews.0.name', 'Wasif Ahmed')
+                ->where('googleReviewSummary.source', 'google')
         );
 });
 
@@ -123,7 +155,7 @@ it('homepage serves seeded local reviews when google is not configured', functio
     $this->get(route('home'))
         ->assertSuccessful()
         ->assertInertia(
-            fn ($page) => $page
+            fn($page) => $page
                 ->has('googleReviews', 4)
                 ->where('googleReviewSummary.source', 'local')
                 ->where('googleReviews.0.name', 'Jessica R.')
@@ -165,4 +197,10 @@ it('sync command succeeds when google returns reviews', function () {
         ->assertSuccessful();
 
     expect(Review::query()->where('author_name', 'Synced User')->exists())->toBeTrue();
+});
+
+it('schedules google reviews sync daily', function () {
+    $this->artisan('schedule:list')
+        ->assertSuccessful()
+        ->expectsOutputToContain('reviews:sync-google');
 });

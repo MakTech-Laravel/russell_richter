@@ -11,8 +11,14 @@ class ReviewPresenter
      */
     public static function forHomepage(): array
     {
+        $hasGoogleReviews = Review::query()
+            ->where('is_active', true)
+            ->where('source', 'google')
+            ->exists();
+
         return Review::query()
             ->where('is_active', true)
+            ->when($hasGoogleReviews, fn ($query) => $query->where('source', 'google'))
             ->orderBy('sort_order')
             ->orderByDesc('id')
             ->get()

@@ -78,9 +78,10 @@ class GoogleReviewsService
 
         foreach ($reviews as $index => $review) {
             $text = data_get($review, 'text.text');
+            $rating = (int) ($review['rating'] ?? 5);
 
             if (! is_string($text) || blank($text)) {
-                continue;
+                $text = "Left a {$rating}-star rating on Google.";
             }
 
             $externalId = is_string($review['name'] ?? null) ? $review['name'] : "google-review-{$index}";
@@ -106,6 +107,10 @@ class GoogleReviewsService
             Review::query()
                 ->where('source', 'google')
                 ->whereNotIn('external_id', $syncedExternalIds)
+                ->update(['is_active' => false]);
+
+            Review::query()
+                ->where('source', 'manual')
                 ->update(['is_active' => false]);
         }
 
