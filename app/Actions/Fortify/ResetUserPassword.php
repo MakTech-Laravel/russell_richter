@@ -4,12 +4,15 @@ namespace App\Actions\Fortify;
 
 use App\Concerns\PasswordValidationRules;
 use App\Models\User;
+use App\Services\BookingMailNotifier;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\ResetsUserPasswords;
 
 class ResetUserPassword implements ResetsUserPasswords
 {
     use PasswordValidationRules;
+
+    public function __construct(private BookingMailNotifier $bookingMailNotifier) {}
 
     /**
      * Validate and reset the user's forgotten password.
@@ -25,5 +28,7 @@ class ResetUserPassword implements ResetsUserPasswords
         $user->forceFill([
             'password' => $input['password'],
         ])->save();
+
+        $this->bookingMailNotifier->passwordChanged($user);
     }
 }

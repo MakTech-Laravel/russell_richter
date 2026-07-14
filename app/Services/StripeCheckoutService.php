@@ -7,6 +7,7 @@ use App\Enums\PaymentStatus;
 use App\Enums\TransactionStatus;
 use App\Models\Booking;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 use Stripe\Checkout\Session;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Stripe;
@@ -15,8 +16,10 @@ use UnexpectedValueException;
 
 class StripeCheckoutService
 {
-    public function __construct(private AdminNotifier $adminNotifier)
-    {
+    public function __construct(
+        private AdminNotifier $adminNotifier,
+        private BookingMailNotifier $bookingMailNotifier,
+    ) {
         Stripe::setApiKey(config('services.stripe.secret'));
     }
 
@@ -42,7 +45,7 @@ class StripeCheckoutService
                 ],
                 'quantity' => 1,
             ]],
-            'success_url' => route('bookings.payment.success', $booking) . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('bookings.payment.success', $booking).'?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('bookings.payment.cancel', $booking),
             'metadata' => [
                 'booking_id' => (string) $booking->id,
@@ -99,7 +102,7 @@ class StripeCheckoutService
 
         try {
             $event = Webhook::constructEvent($payload, $signature ?? '', $webhookSecret);
-        } catch (UnexpectedValueException | SignatureVerificationException) {
+        } catch (UnexpectedValueException|SignatureVerificationException) {
             throw new UnexpectedValueException('Invalid Stripe webhook payload.');
         }
 
@@ -144,31 +147,48 @@ class StripeCheckoutService
 
     private function markTransactionSucceeded(Booking $booking, Session $session, ?string $paymentIntentId): void
     {
-        $existing = Transaction::query()
+        $shouldNotify = false;
+
+        DB::transaction(function () use ($booking, $session, $paymentIntentId, &$shouldNotify): void {
+            $existing = Transaction::query()
+                ->where('booking_id', $booking->id)
+                ->where('stripe_checkout_session_id', $session->id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($existing?->status === TransactionStatus::Succeeded) {
+                return;
+            }
+
+            Transaction::query()->updateOrCreate(
+                [
+                    'booking_id' => $booking->id,
+                    'stripe_checkout_session_id' => $session->id,
+                ],
+                [
+                    'user_id' => $booking->user_id,
+                    'amount' => $booking->total_price,
+                    'currency' => config('services.stripe.currency', 'usd'),
+                    'status' => TransactionStatus::Succeeded,
+                    'stripe_payment_intent_id' => $paymentIntentId,
+                    'paid_at' => now(),
+                ],
+            );
+
+            $shouldNotify = true;
+        });
+
+        if (! $shouldNotify) {
+            return;
+        }
+
+        $transaction = Transaction::query()
             ->where('booking_id', $booking->id)
             ->where('stripe_checkout_session_id', $session->id)
-            ->first();
+            ->firstOrFail();
 
-        $wasAlreadySucceeded = $existing?->status === TransactionStatus::Succeeded;
-
-        $transaction = Transaction::query()->updateOrCreate(
-            [
-                'booking_id' => $booking->id,
-                'stripe_checkout_session_id' => $session->id,
-            ],
-            [
-                'user_id' => $booking->user_id,
-                'amount' => $booking->total_price,
-                'currency' => config('services.stripe.currency', 'usd'),
-                'status' => TransactionStatus::Succeeded,
-                'stripe_payment_intent_id' => $paymentIntentId,
-                'paid_at' => now(),
-            ],
-        );
-
-        if (! $wasAlreadySucceeded) {
-            $this->adminNotifier->transactionSucceeded($transaction);
-        }
+        $this->adminNotifier->transactionSucceeded($transaction);
+        $this->bookingMailNotifier->bookingConfirmed($booking->fresh(['user', 'service', 'vehicle', 'technician']));
     }
 
     private function amountInCents(float|string $amount): int

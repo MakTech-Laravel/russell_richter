@@ -5,6 +5,8 @@ namespace App\Actions\Fortify;
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Models\User;
+use App\Services\BookingMailNotifier;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
@@ -17,6 +19,8 @@ class CreateNewUser implements CreatesNewUsers
         ProfileValidationRules::profileRules as baseProfileRules;
         ProfileValidationRules::passwordConfirmationRules as profilePasswordConfirmationRules;
     }
+
+    public function __construct(private BookingMailNotifier $bookingMailNotifier) {}
 
     /**
      * Validate and create a newly registered user.
@@ -34,17 +38,21 @@ class CreateNewUser implements CreatesNewUsers
             'password_confirmation' => $this->profilePasswordConfirmationRules(),
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => $input['password'],
         ]);
+
+        $this->bookingMailNotifier->welcome($user);
+
+        return $user;
     }
 
     /**
      * Use Fortify's stronger password defaults for registration.
      *
-     * @return array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>
+     * @return array<int, Rule|array<mixed>|string>
      */
     protected function passwordRules(): array
     {

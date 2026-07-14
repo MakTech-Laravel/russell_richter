@@ -6,6 +6,7 @@ use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Technician;
+use App\Services\BookingMailNotifier;
 use App\Services\OilFitmentLookupService;
 use App\Services\RecommendationService;
 use App\Support\BookingPresenter;
@@ -20,6 +21,7 @@ class AdminBookingController extends Controller
     public function __construct(
         private RecommendationService $recommendationService,
         private OilFitmentLookupService $fitmentLookup,
+        private BookingMailNotifier $bookingMailNotifier,
     ) {}
 
     public function index(Request $request): Response
@@ -83,6 +85,9 @@ class AdminBookingController extends Controller
             'technician_notes' => ['nullable', 'string', 'max:2000'],
         ]);
 
+        $previousStatus = $booking->status;
+        $previousTechnicianId = $booking->technician_id;
+
         if ($validated['status'] === BookingStatus::Completed->value && ! $booking->completed_at) {
             $validated['completed_at'] = now();
         }
@@ -91,6 +96,17 @@ class AdminBookingController extends Controller
 
         if ($booking->wasChanged('status') || $booking->wasChanged('technician_id')) {
             $this->recommendationService->generateForBooking($booking->fresh(['vehicle', 'service']));
+        }
+
+        $booking = $booking->fresh(['user', 'service', 'vehicle', 'technician']);
+        $newStatus = $booking->status;
+
+        if ($newStatus === BookingStatus::Cancelled && $previousStatus !== BookingStatus::Cancelled) {
+            $this->bookingMailNotifier->bookingCancelled($booking);
+        } elseif ($booking->technician_id && $booking->technician_id !== $previousTechnicianId) {
+            $this->bookingMailNotifier->technicianAssigned($booking, $previousTechnicianId);
+        } elseif ($newStatus !== $previousStatus) {
+            $this->bookingMailNotifier->statusChanged($booking, $previousStatus);
         }
 
         return back()->with('success', 'Booking updated successfully.');

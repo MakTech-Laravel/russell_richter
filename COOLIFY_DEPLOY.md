@@ -84,18 +84,24 @@ CACHE_STORE=database
 FILESYSTEM_DISK=public
 ```
 
-### Mail
+### Mail (required for booking / auth emails)
+
+Hostinger SMTP (same credentials you use locally), plus Laravel 12 scheme:
 
 ```env
 MAIL_MAILER=smtp
-MAIL_HOST=<your-smtp-host>
-MAIL_PORT=587
-MAIL_USERNAME=<smtp-user>
-MAIL_PASSWORD=<smtp-password>
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=mobilelube0@gmail.com
+MAIL_HOST=smtp.hostinger.com
+MAIL_PORT=465
+MAIL_USERNAME=russell@mymobilelube.com
+MAIL_PASSWORD=<same-hostinger-password>
+MAIL_SCHEME=smtps
+MAIL_FROM_ADDRESS=russell@mymobilelube.com
 MAIL_FROM_NAME="Mobile Lube"
+MAIL_ADMIN_ADDRESS=russell@mymobilelube.com
 ```
+
+> Laravel 12 uses `MAIL_SCHEME=smtps` (not `MAIL_ENCRYPTION`).  
+> Queue worker runs inside Supervisor automatically — live-এ `php artisan queue:work` ম্যানুয়ালি চালানো লাগে না।
 
 ### Stripe (required for payments)
 
@@ -218,7 +224,8 @@ php artisan config:clear
 | 500 Error | `storage/logs/laravel.log` দেখুন |
 | CSS/JS load হয় না | `APP_URL` ও `ASSET_URL` domain match করছে কিনা |
 | Reviews দেখায় না | `GOOGLE_PLACES_API_KEY` সেট আছে কিনা; `php artisan reviews:sync-google` |
-| Queue কাজ করে না | `QUEUE_CONNECTION=database`; jobs table আছে কিনা |
+| Queue কাজ করে না | `QUEUE_CONNECTION=database`; jobs table আছে কিনা; Supervisor-এ `laravel-queue-worker` running কিনা (`storage/logs/queue-worker.log`) |
+| Mail যায় না | Coolify-তে `MAIL_*` + `MAIL_SCHEME=smtps` সেট আছে কিনা; `APP_URL` live domain; queue worker চলছে কিনা |
 | Upload কাজ করে না | Persistent storage mount করা আছে কিনা |
 
 ---

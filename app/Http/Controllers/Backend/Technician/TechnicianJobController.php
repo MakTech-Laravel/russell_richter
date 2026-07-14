@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Technician;
 use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Services\BookingMailNotifier;
 use App\Support\BookingPresenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ use Inertia\Response;
 
 class TechnicianJobController extends Controller
 {
+    public function __construct(private BookingMailNotifier $bookingMailNotifier) {}
+
     public function index(Request $request): Response
     {
         $technician = Auth::guard('technician')->user();
@@ -102,11 +105,18 @@ class TechnicianJobController extends Controller
             $status = BookingStatus::Completed;
         }
 
+        $previousStatus = $job->status;
+
         $job->update([
             'status' => $status,
             'technician_notes' => $validated['technician_notes'] ?? $job->technician_notes,
             'completed_at' => $status === BookingStatus::Completed ? now() : null,
         ]);
+
+        $this->bookingMailNotifier->statusChanged(
+            $job->fresh(['user', 'service', 'vehicle', 'technician']),
+            $previousStatus,
+        );
 
         if ($status === BookingStatus::Completed) {
             return redirect()

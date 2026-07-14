@@ -115,4 +115,16 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Notification Address
+    |--------------------------------------------------------------------------
+    |
+    | All admin-facing transactional emails (new paid bookings, cancellations,
+    | assignments, contact form inquiries, etc.) are delivered here.
+    |
+    */
+
+    'admin_address' => env('MAIL_ADMIN_ADDRESS', 'russell@mymobilelube.com'),
+
 ];

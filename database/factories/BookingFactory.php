@@ -34,8 +34,17 @@ class BookingFactory extends Factory
 
     public function cancelled(): static
     {
-        return $this->state(fn(): array => [
+        return $this->state(fn (): array => [
             'status' => BookingStatus::Cancelled,
+        ]);
+    }
+
+    public function paid(): static
+    {
+        return $this->state(fn (): array => [
+            'payment_status' => PaymentStatus::Paid,
+            'paid_at' => now(),
+            'status' => BookingStatus::Confirmed,
         ]);
     }
 }

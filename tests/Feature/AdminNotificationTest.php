@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TransactionStatus;
+use App\Mail\BookingConfirmedMail;
 use App\Models\Admin;
 use App\Models\Booking;
 use App\Models\Service;
@@ -10,6 +11,7 @@ use App\Models\Vehicle;
 use App\Services\AdminNotifier;
 use App\Services\GeocodingService;
 use App\Services\StripeCheckoutService;
+use Illuminate\Support\Facades\Mail;
 use Stripe\Checkout\Session;
 
 use function Pest\Laravel\mock;
@@ -25,7 +27,7 @@ function createTestTransaction(Booking $booking, TransactionStatus $status = Tra
         'amount' => $booking->total_price,
         'currency' => 'usd',
         'status' => $status,
-        'stripe_checkout_session_id' => 'cs_test_' . uniqid(),
+        'stripe_checkout_session_id' => 'cs_test_'.uniqid(),
         'paid_at' => $status === TransactionStatus::Succeeded ? now() : null,
     ]);
 }
@@ -125,11 +127,13 @@ it('shares unread notification count with admin inertia pages', function () {
     $this->actingAs($admin, 'admin')
         ->get(route('admin.dashboard'))
         ->assertSuccessful()
-        ->assertInertia(fn($page) => $page
+        ->assertInertia(fn ($page) => $page
             ->where('portal.unread_notifications', 1));
 });
 
 it('does not duplicate transaction notifications when payment is marked twice', function () {
+    Mail::fake();
+
     $admin = Admin::factory()->create();
     $booking = Booking::factory()->create();
     $session = Session::constructFrom([
@@ -153,6 +157,8 @@ it('does not duplicate transaction notifications when payment is marked twice', 
     $service->markBookingPaidFromSession($booking->fresh(), $session);
 
     expect($admin->fresh()->unreadNotifications)->toHaveCount(1);
+
+    Mail::assertQueued(BookingConfirmedMail::class, 2);
 });
 
 it('creates a booking notification when a customer books', function () {

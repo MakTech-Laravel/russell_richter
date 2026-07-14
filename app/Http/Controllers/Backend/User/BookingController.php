@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\User;
 
 use App\Enums\BookingStatus;
+use App\Enums\PaymentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBookingRequest;
 use App\Http\Requests\UpdateBookingRequest;
@@ -10,6 +11,7 @@ use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Vehicle;
 use App\Services\AdminNotifier;
+use App\Services\BookingMailNotifier;
 use App\Services\GeocodingService;
 use App\Services\RecommendationService;
 use App\Services\StripeCheckoutService;
@@ -27,6 +29,7 @@ class BookingController extends Controller
         private GeocodingService $geocodingService,
         private StripeCheckoutService $stripeCheckoutService,
         private AdminNotifier $adminNotifier,
+        private BookingMailNotifier $bookingMailNotifier,
     ) {}
 
     public function index(Request $request): Response
@@ -89,6 +92,7 @@ class BookingController extends Controller
             ...$data,
             ...$coordinates,
             'status' => BookingStatus::Pending,
+            'payment_status' => PaymentStatus::Unpaid,
             'total_price' => $service->base_price,
         ]);
 
@@ -124,7 +128,19 @@ class BookingController extends Controller
     {
         $this->authorize('update', $booking);
 
-        $booking->update($request->validated());
+        $validated = $request->validated();
+        $booking->update($validated);
+
+        $wasCancelled = ($validated['status'] ?? null) === BookingStatus::Cancelled->value;
+        $shouldNotifyUpdate = $booking->wasChanged([
+            'scheduled_at',
+            'service_address',
+            'service_city',
+            'service_state',
+            'service_zip',
+            'customer_notes',
+            'mileage_at_service',
+        ]);
 
         if ($request->hasAny(['service_address', 'service_city', 'service_state', 'service_zip'])) {
             $coordinates = $this->geocodingService->geocodeAddress(
@@ -136,6 +152,14 @@ class BookingController extends Controller
             $booking->update($coordinates);
         }
 
+        $booking = $booking->fresh(['user', 'service', 'vehicle', 'technician']);
+
+        if ($wasCancelled) {
+            $this->bookingMailNotifier->bookingCancelled($booking);
+        } elseif ($shouldNotifyUpdate) {
+            $this->bookingMailNotifier->bookingUpdated($booking);
+        }
+
         return redirect()->route('bookings.show', $booking)->with('success', 'Booking updated successfully.');
     }
 
@@ -144,6 +168,7 @@ class BookingController extends Controller
         $this->authorize('delete', $booking);
 
         $booking->update(['status' => BookingStatus::Cancelled]);
+        $this->bookingMailNotifier->bookingCancelled($booking->fresh(['user', 'service', 'vehicle', 'technician']));
 
         return redirect()->route('bookings.index')->with('success', 'Booking cancelled.');
     }
