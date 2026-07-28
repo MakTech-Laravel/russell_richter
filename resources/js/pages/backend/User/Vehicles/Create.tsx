@@ -257,7 +257,6 @@ export default function Create() {
                                     value={data.oil_preference_notes}
                                     onChange={(e) => setData('oil_preference_notes', e.target.value)}
                                     rows={3}
-                                    placeholder="e.g. Prefer Mobil 1 full synthetic only, or request a specific oil filter brand."
                                     className={dashboardInputClass()}
                                 />
                                 <p className="text-xs text-slate-400">

@@ -93,7 +93,6 @@ export default function Edit({ vehicle }: EditProps) {
                                             name="oil_preference_notes"
                                             rows={3}
                                             defaultValue={vehicle.oil_preference_notes ?? ''}
-                                            placeholder="e.g. Prefer Mobil 1 full synthetic only, or request a specific oil filter brand."
                                             className={dashboardInputClass()}
                                         />
                                         <p className="text-xs text-slate-500">

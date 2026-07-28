@@ -34,6 +34,7 @@ export default function Register() {
                                 type="text"
                                 required
                                 autoFocus
+                                autoComplete="name"
                                 placeholder="Jane Doe"
                                 className={authInputClass()}
                             />
@@ -50,6 +51,70 @@ export default function Register() {
                                 className={authInputClass()}
                             />
                         </AuthField>
+
+                        <AuthField id="phone" label="Phone number" error={errors.phone}>
+                            <Input
+                                id="phone"
+                                name="phone"
+                                type="tel"
+                                required
+                                autoComplete="tel"
+                                placeholder="(361) 555-0100"
+                                className={authInputClass()}
+                            />
+                        </AuthField>
+
+                        <AuthField id="address_line" label="Address" error={errors.address_line}>
+                            <Input
+                                id="address_line"
+                                name="address_line"
+                                type="text"
+                                required
+                                autoComplete="street-address"
+                                placeholder="123 Main St"
+                                className={authInputClass()}
+                            />
+                        </AuthField>
+
+                        <div className="grid gap-4 sm:grid-cols-3">
+                            <AuthField id="city" label="City" error={errors.city}>
+                                <Input
+                                    id="city"
+                                    name="city"
+                                    type="text"
+                                    required
+                                    autoComplete="address-level2"
+                                    placeholder="Victoria"
+                                    className={authInputClass()}
+                                />
+                            </AuthField>
+
+                            <AuthField id="state" label="State" error={errors.state}>
+                                <Input
+                                    id="state"
+                                    name="state"
+                                    type="text"
+                                    required
+                                    autoComplete="address-level1"
+                                    placeholder="TX"
+                                    maxLength={2}
+                                    className={authInputClass()}
+                                />
+                            </AuthField>
+
+                            <AuthField id="zip" label="ZIP" error={errors.zip}>
+                                <Input
+                                    id="zip"
+                                    name="zip"
+                                    type="text"
+                                    required
+                                    autoComplete="postal-code"
+                                    placeholder="77901"
+                                    maxLength={10}
+                                    className={authInputClass()}
+                                />
+                            </AuthField>
+                        </div>
 
                         <AuthField id="password" label="Password" error={errors.password}>
                             <PasswordInput

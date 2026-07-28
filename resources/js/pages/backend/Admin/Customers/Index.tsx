@@ -94,6 +94,7 @@ function CustomerFormFields({
                 <Input
                     id="phone"
                     name="phone"
+                    required
                     defaultValue={customer.phone ?? ''}
                     className={dashboardInputClass()}
                 />
@@ -104,6 +105,7 @@ function CustomerFormFields({
                 <Input
                     id="address_line"
                     name="address_line"
+                    required
                     defaultValue={customer.address_line ?? ''}
                     className={dashboardInputClass()}
                 />
@@ -115,6 +117,7 @@ function CustomerFormFields({
                     <Input
                         id="city"
                         name="city"
+                        required
                         defaultValue={customer.city ?? ''}
                         className={dashboardInputClass()}
                     />
@@ -125,6 +128,8 @@ function CustomerFormFields({
                     <Input
                         id="state"
                         name="state"
+                        required
+                        maxLength={2}
                         defaultValue={customer.state ?? ''}
                         className={dashboardInputClass()}
                     />
@@ -135,6 +140,8 @@ function CustomerFormFields({
                     <Input
                         id="zip"
                         name="zip"
+                        required
+                        maxLength={10}
                         defaultValue={customer.zip ?? ''}
                         className={dashboardInputClass()}
                     />

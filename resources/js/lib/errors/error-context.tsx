@@ -156,21 +156,44 @@ export function ErrorObservabilityProvider({ children }: ErrorObservabilityProvi
     }, [captureError]);
 
     useEffect(() => {
-        const removeInertiaListener = router.on('error', (event) => {
-            const detail = event.detail as { message?: string; page?: { component?: string; url?: string } };
-            const error = new Error(detail?.message || 'Inertia navigation failed');
+        // Inertia's `error` event is for form validation bags (422), not failures.
+        // Real navigation problems emit `invalid` (non-Inertia response) or `exception`.
+        const removeInvalidListener = router.on('invalid', (event) => {
+            const response = event.detail.response;
+            const status = response?.status;
+            const error = new Error(
+                status
+                    ? `Inertia received a non-Inertia response (${status})`
+                    : 'Inertia received a non-Inertia response',
+            );
+
             captureError(error, {
                 type: ErrorType.Inertia,
                 source: ErrorSource.InertiaListener,
-                inertiaDetails: {
-                    page: detail?.page?.component,
-                    url: detail?.page?.url,
+                networkDetails: {
+                    status,
+                    statusText: response?.statusText,
+                    url: response?.config?.url ?? window.location.href,
+                    method: response?.config?.method?.toUpperCase(),
                 },
             });
         });
 
+        const removeExceptionListener = router.on('exception', (event) => {
+            const exception = event.detail.exception;
+            const error = exception instanceof Error
+                ? exception
+                : new Error(String(exception) || 'Inertia navigation failed');
+
+            captureError(error, {
+                type: ErrorType.Inertia,
+                source: ErrorSource.InertiaListener,
+            });
+        });
+
         return () => {
-            removeInertiaListener();
+            removeInvalidListener();
+            removeExceptionListener();
         };
     }, [captureError]);
 

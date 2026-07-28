@@ -20,6 +20,15 @@ class ProfileUpdateRequest extends FormRequest
         $rules = $this->profileRules($this->user()->id);
         $rules['name'] = ['nullable', 'string', 'max:255'];
 
+        // Settings profile form only edits name/email/avatar/password.
+        unset(
+            $rules['phone'],
+            $rules['address_line'],
+            $rules['city'],
+            $rules['state'],
+            $rules['zip'],
+        );
+
         return $rules;
     }
 }

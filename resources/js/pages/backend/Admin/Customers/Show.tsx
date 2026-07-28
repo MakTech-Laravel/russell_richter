@@ -109,28 +109,28 @@ function CustomerEditModal({
                                 </div>
                                 <div className="space-y-2">
                                     <label htmlFor="phone" className={dashboardLabelClass()}>Phone</label>
-                                    <Input id="phone" name="phone" defaultValue={customer.phone ?? ''} className={dashboardInputClass()} />
+                                    <Input id="phone" name="phone" required defaultValue={customer.phone ?? ''} className={dashboardInputClass()} />
                                     <InputError message={errors.phone} />
                                 </div>
                                 <div className="space-y-2">
                                     <label htmlFor="address_line" className={dashboardLabelClass()}>Address</label>
-                                    <Input id="address_line" name="address_line" defaultValue={customer.address_line ?? ''} className={dashboardInputClass()} />
+                                    <Input id="address_line" name="address_line" required defaultValue={customer.address_line ?? ''} className={dashboardInputClass()} />
                                     <InputError message={errors.address_line} />
                                 </div>
                                 <div className="grid grid-cols-3 gap-3">
                                     <div className="col-span-1 space-y-2">
                                         <label htmlFor="city" className={dashboardLabelClass()}>City</label>
-                                        <Input id="city" name="city" defaultValue={customer.city ?? ''} className={dashboardInputClass()} />
+                                        <Input id="city" name="city" required defaultValue={customer.city ?? ''} className={dashboardInputClass()} />
                                         <InputError message={errors.city} />
                                     </div>
                                     <div className="space-y-2">
                                         <label htmlFor="state" className={dashboardLabelClass()}>State</label>
-                                        <Input id="state" name="state" defaultValue={customer.state ?? ''} className={dashboardInputClass()} />
+                                        <Input id="state" name="state" required maxLength={2} defaultValue={customer.state ?? ''} className={dashboardInputClass()} />
                                         <InputError message={errors.state} />
                                     </div>
                                     <div className="space-y-2">
                                         <label htmlFor="zip" className={dashboardLabelClass()}>Zip</label>
-                                        <Input id="zip" name="zip" defaultValue={customer.zip ?? ''} className={dashboardInputClass()} />
+                                        <Input id="zip" name="zip" required maxLength={10} defaultValue={customer.zip ?? ''} className={dashboardInputClass()} />
                                         <InputError message={errors.zip} />
                                     </div>
                                 </div>

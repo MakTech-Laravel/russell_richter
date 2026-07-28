@@ -17,10 +17,67 @@ trait ProfileValidationRules
         return [
             'name' => $this->nameRules(),
             'email' => $this->emailRules($userId),
+            ...$this->contactRules(),
             'avatar' => $this->avatarRules(),
             'password' => $this->passwordRules(),
             'password_confirmation' => $this->passwordConfirmationRules(),
         ];
+    }
+
+    /**
+     * Get the validation rules used to validate customer contact details.
+     *
+     * @return array<string, array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>>
+     */
+    protected function contactRules(): array
+    {
+        return [
+            'phone' => $this->phoneRules(),
+            'address_line' => $this->addressLineRules(),
+            'city' => $this->cityRules(),
+            'state' => $this->stateRules(),
+            'zip' => $this->zipRules(),
+        ];
+    }
+
+    /**
+     * @return array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>
+     */
+    protected function phoneRules(): array
+    {
+        return ['required', 'string', 'max:30'];
+    }
+
+    /**
+     * @return array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>
+     */
+    protected function addressLineRules(): array
+    {
+        return ['required', 'string', 'max:255'];
+    }
+
+    /**
+     * @return array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>
+     */
+    protected function cityRules(): array
+    {
+        return ['required', 'string', 'max:100'];
+    }
+
+    /**
+     * @return array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>
+     */
+    protected function stateRules(): array
+    {
+        return ['required', 'string', 'size:2'];
+    }
+
+    /**
+     * @return array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>
+     */
+    protected function zipRules(): array
+    {
+        return ['required', 'string', 'max:10'];
     }
 
     /**

@@ -13,6 +13,11 @@ test('welcome email is queued when a user registers', function () {
     $this->post(route('register.store'), [
         'name' => 'Test User',
         'email' => 'welcome@example.com',
+        'phone' => '(361) 555-0100',
+        'address_line' => '123 Main St',
+        'city' => 'Victoria',
+        'state' => 'TX',
+        'zip' => '77901',
         'password' => 'password',
         'password_confirmation' => 'password',
     ])->assertRedirect(route('dashboard', absolute: false));

@@ -20,11 +20,7 @@ class UpdateCustomerRequest extends FormRequest
         return [
             'name' => $this->nameRules(),
             'email' => $this->emailRules($customerId),
-            'phone' => ['nullable', 'string', 'max:30'],
-            'address_line' => ['nullable', 'string', 'max:255'],
-            'city' => ['nullable', 'string', 'max:100'],
-            'state' => ['nullable', 'string', 'max:50'],
-            'zip' => ['nullable', 'string', 'max:20'],
+            ...$this->contactRules(),
             'password' => $this->passwordRules(),
             'password_confirmation' => $this->passwordConfirmationRules(),
         ];

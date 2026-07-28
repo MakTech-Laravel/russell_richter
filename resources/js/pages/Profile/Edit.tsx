@@ -23,8 +23,13 @@ interface Props {
 
 export default function EditProfile({ user }: Props) {
     const { data, setData, post, processing, errors } = useForm({
-        name: user.name,
-        email: user.email,
+        name: user.name ?? '',
+        email: user.email ?? '',
+        phone: user.phone ?? '',
+        address_line: user.address_line ?? '',
+        city: user.city ?? '',
+        state: user.state ?? 'TX',
+        zip: user.zip ?? '',
         avatar: null as File | null,
         password: '',
         password_confirmation: '',
@@ -62,7 +67,7 @@ export default function EditProfile({ user }: Props) {
     };
 
     return (
-        <UserLayout title="Edit Profile" subtitle="Update your profile information">
+        <UserLayout title="Edit Profile" subtitle="Update your profile and contact information">
             <Head title="Edit Profile" />
 
             <div className="mx-auto max-w-2xl">
@@ -107,6 +112,7 @@ export default function EditProfile({ user }: Props) {
                                 <Input
                                     id="name"
                                     type="text"
+                                    required
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     className={dashboardInputClass()}
@@ -119,11 +125,94 @@ export default function EditProfile({ user }: Props) {
                                 <Input
                                     id="email"
                                     type="email"
+                                    required
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
                                     className={dashboardInputClass()}
                                 />
                                 <InputError message={errors.email} />
+                            </div>
+
+                            <div className="space-y-4 border-t border-white/5 pt-6">
+                                <h3 className="text-lg font-medium text-white">Contact Information</h3>
+                                <p className="text-sm text-slate-400">
+                                    Required so we can reach you during service.
+                                </p>
+
+                                <div className="space-y-2">
+                                    <label htmlFor="phone" className={dashboardLabelClass()}>Phone Number</label>
+                                    <Input
+                                        id="phone"
+                                        type="tel"
+                                        required
+                                        value={data.phone}
+                                        onChange={(e) => setData('phone', e.target.value)}
+                                        autoComplete="tel"
+                                        className={dashboardInputClass()}
+                                    />
+                                    <InputError message={errors.phone} />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label htmlFor="address_line" className={dashboardLabelClass()}>Address</label>
+                                    <Input
+                                        id="address_line"
+                                        type="text"
+                                        required
+                                        value={data.address_line}
+                                        onChange={(e) => setData('address_line', e.target.value)}
+                                        autoComplete="street-address"
+                                        className={dashboardInputClass()}
+                                    />
+                                    <InputError message={errors.address_line} />
+                                </div>
+
+                                <div className="grid gap-4 sm:grid-cols-3">
+                                    <div className="space-y-2">
+                                        <label htmlFor="city" className={dashboardLabelClass()}>City</label>
+                                        <Input
+                                            id="city"
+                                            type="text"
+                                            required
+                                            value={data.city}
+                                            onChange={(e) => setData('city', e.target.value)}
+                                            autoComplete="address-level2"
+                                            className={dashboardInputClass()}
+                                        />
+                                        <InputError message={errors.city} />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="state" className={dashboardLabelClass()}>State</label>
+                                        <Input
+                                            id="state"
+                                            type="text"
+                                            required
+                                            value={data.state}
+                                            onChange={(e) => setData('state', e.target.value)}
+                                            autoComplete="address-level1"
+                                            maxLength={2}
+                                            placeholder="TX"
+                                            className={dashboardInputClass()}
+                                        />
+                                        <InputError message={errors.state} />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="zip" className={dashboardLabelClass()}>ZIP</label>
+                                        <Input
+                                            id="zip"
+                                            type="text"
+                                            required
+                                            value={data.zip}
+                                            onChange={(e) => setData('zip', e.target.value)}
+                                            autoComplete="postal-code"
+                                            maxLength={10}
+                                            className={dashboardInputClass()}
+                                        />
+                                        <InputError message={errors.zip} />
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="space-y-4 border-t border-white/5 pt-6">

@@ -30,7 +30,7 @@ class CreateNewUser implements CreatesNewUsers
     public function create(array $input): User
     {
         $profileRules = $this->baseProfileRules();
-        unset($profileRules['password'], $profileRules['password_confirmation']);
+        unset($profileRules['password'], $profileRules['password_confirmation'], $profileRules['avatar']);
 
         Validator::make($input, [
             ...$profileRules,
@@ -41,6 +41,11 @@ class CreateNewUser implements CreatesNewUsers
         $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
+            'phone' => $input['phone'],
+            'address_line' => $input['address_line'],
+            'city' => $input['city'],
+            'state' => $input['state'],
+            'zip' => $input['zip'],
             'password' => $input['password'],
         ]);
 

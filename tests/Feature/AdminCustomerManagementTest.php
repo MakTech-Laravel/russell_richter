@@ -43,6 +43,11 @@ it('allows admin to reset a customer password', function () {
         ->patch(route('admin.customers.update', $customer), [
             'name' => $customer->name,
             'email' => $customer->email,
+            'phone' => $customer->phone,
+            'address_line' => $customer->address_line,
+            'city' => $customer->city,
+            'state' => $customer->state,
+            'zip' => $customer->zip,
             'password' => 'new-password-123',
             'password_confirmation' => 'new-password-123',
         ])
@@ -62,6 +67,11 @@ it('requires matching password confirmation when resetting a customer password',
         ->patch(route('admin.customers.update', $customer), [
             'name' => $customer->name,
             'email' => $customer->email,
+            'phone' => $customer->phone,
+            'address_line' => $customer->address_line,
+            'city' => $customer->city,
+            'state' => $customer->state,
+            'zip' => $customer->zip,
             'password' => 'new-password-123',
             'password_confirmation' => 'different-password',
         ])
@@ -70,6 +80,23 @@ it('requires matching password confirmation when resetting a customer password',
     $customer->refresh();
 
     expect($customer->password)->toBe($originalPassword);
+});
+
+it('requires phone and address when admin updates a customer', function () {
+    $admin = Admin::factory()->create();
+    $customer = User::factory()->create();
+
+    $this->actingAs($admin, 'admin')
+        ->patch(route('admin.customers.update', $customer), [
+            'name' => $customer->name,
+            'email' => $customer->email,
+            'phone' => '',
+            'address_line' => '',
+            'city' => '',
+            'state' => '',
+            'zip' => '',
+        ])
+        ->assertSessionHasErrors(['phone', 'address_line', 'city', 'state', 'zip']);
 });
 
 it('allows admin to delete customers', function () {
