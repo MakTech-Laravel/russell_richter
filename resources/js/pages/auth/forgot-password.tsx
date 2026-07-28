@@ -1,48 +1,63 @@
-import { Form, Head, Link } from '@inertiajs/react';
-import { LoaderCircle, ChevronLeft } from 'lucide-react';
+import { Form } from '@inertiajs/react';
 
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
+import { authInputClass, AuthField } from '@/components/auth/auth-field';
+import TextLink from '@/components/text-link';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/auth-layout';
 import { login } from '@/routes';
 import { email } from '@/routes/password';
 
 export default function ForgotPassword({ status }: { status?: string }) {
     return (
-        <AuthLayout title="Forgot password" description="We'll send you a link to reset your password.">
-            <Head title="Forgot password" />
+        <AuthLayout
+            title={
+                <>
+                    Forgot <span className="text-gold-grad">password</span>
+                </>
+            }
+            description="We'll send you a link to reset your password."
+            headTitle="Forgot password"
+            backHref={login.url()}
+        >
+            {status && (
+                <div className="mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-300">
+                    {status}
+                </div>
+            )}
 
-            <div className="mx-auto w-full max-w-md rounded-2xl border border-border/50 bg-card/50 p-8 shadow-xl backdrop-blur-sm">
-                {status && (
-                    <div className="mb-6 rounded-lg bg-emerald-500/10 p-3 text-center text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                        {status}
-                    </div>
+            <Form {...email.form()} className="space-y-4">
+                {({ processing, errors }) => (
+                    <>
+                        <AuthField id="email" label="Email address" error={errors.email}>
+                            <Input
+                                id="email"
+                                type="email"
+                                name="email"
+                                required
+                                autoFocus
+                                autoComplete="email"
+                                placeholder="you@example.com"
+                                className={authInputClass()}
+                            />
+                        </AuthField>
+
+                        <button
+                            type="submit"
+                            disabled={processing}
+                            className="ml-btn-primary flex h-12 w-full items-center justify-center gap-2 rounded-lg text-sm uppercase tracking-wider disabled:opacity-50"
+                        >
+                            {processing ? <Spinner className="h-4 w-4" /> : 'Send reset link'}
+                        </button>
+
+                        <p className="text-center text-xs text-slate-500">
+                            <TextLink href={login()} className="font-semibold text-gold-400">
+                                ← Back to log in
+                            </TextLink>
+                        </p>
+                    </>
                 )}
-
-                <Form {...email.form()} className="space-y-6">
-                    {({ processing, errors }) => (
-                        <>
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
-                                <Input id="email" type="email" name="email" autoFocus placeholder="name@company.com" className="bg-background/50" />
-                                <InputError message={errors.email} />
-                            </div>
-
-                            <Button className="w-full bg-violet-600" disabled={processing}>
-                                {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-                                Send Reset Link
-                            </Button>
-
-                            <Link href={login()} className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                                <ChevronLeft className="h-4 w-4" />
-                                Back to log in
-                            </Link>
-                        </>
-                    )}
-                </Form>
-            </div>
+            </Form>
         </AuthLayout>
     );
 }

@@ -35,7 +35,7 @@ export default function AuthLayout({
             <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-16">
                 <Link
                     href={backHref ?? home()}
-                    className="mb-8 inline-flex w-max items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-gold-400"
+                    className="mb-8 inline-flex w-max items-center gap-2 text-xs font-bold uppercase tracking-wider text-gold-400 hover:text-gold-300"
                 >
                     <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />

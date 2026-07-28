@@ -1,11 +1,12 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form } from '@inertiajs/react';
 
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
+import { authInputClass, AuthField } from '@/components/auth/auth-field';
+import TextLink from '@/components/text-link';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/auth-layout';
+import { login } from '@/routes';
 import { update } from '@/routes/password';
 
 interface ResetPasswordProps {
@@ -16,73 +17,75 @@ interface ResetPasswordProps {
 export default function ResetPassword({ token, email }: ResetPasswordProps) {
     return (
         <AuthLayout
-            title="Reset password"
-            description="Please enter your new password below"
+            title={
+                <>
+                    Reset <span className="text-gold-grad">password</span>
+                </>
+            }
+            description="Choose a new password for your account."
+            headTitle="Reset password"
+            backHref={login.url()}
         >
-            <Head title="Reset password" />
+            <Form
+                {...update.form()}
+                transform={(data) => ({ ...data, token, email })}
+                resetOnSuccess={['password', 'password_confirmation']}
+                className="space-y-4"
+            >
+                {({ processing, errors }) => (
+                    <>
+                        <AuthField id="email" label="Email" error={errors.email}>
+                            <Input
+                                id="email"
+                                type="email"
+                                name="email"
+                                autoComplete="email"
+                                value={email}
+                                readOnly
+                                className={authInputClass('cursor-not-allowed opacity-70')}
+                            />
+                        </AuthField>
 
-            <div className="mx-auto w-full max-w-md rounded-2xl border border-border/50 bg-card/50 p-8 shadow-xl backdrop-blur-sm">
-                <Form
-                    {...update.form()}
-                    transform={(data) => ({ ...data, token, email })}
-                    resetOnSuccess={['password', 'password_confirmation']}
-                >
-                    {({ processing, errors }) => (
-                        <div className="grid gap-5">
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    autoComplete="email"
-                                    value={email}
-                                    className="bg-muted/50 cursor-not-allowed text-muted-foreground"
-                                    readOnly
-                                />
-                                <InputError message={errors.email} />
-                            </div>
+                        <AuthField id="password" label="New password" error={errors.password}>
+                            <PasswordInput
+                                id="password"
+                                name="password"
+                                required
+                                autoFocus
+                                autoComplete="new-password"
+                                placeholder="Create a new password"
+                                className={authInputClass()}
+                            />
+                        </AuthField>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="password">New Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    name="password"
-                                    autoComplete="new-password"
-                                    autoFocus
-                                    placeholder="••••••••"
-                                    className="bg-background/50"
-                                />
-                                <InputError message={errors.password} />
-                            </div>
+                        <AuthField id="password_confirmation" label="Confirm password" error={errors.password_confirmation}>
+                            <PasswordInput
+                                id="password_confirmation"
+                                name="password_confirmation"
+                                required
+                                autoComplete="new-password"
+                                placeholder="Re-enter password"
+                                className={authInputClass()}
+                            />
+                        </AuthField>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="password_confirmation">Confirm password</Label>
-                                <Input
-                                    id="password_confirmation"
-                                    type="password"
-                                    name="password_confirmation"
-                                    autoComplete="new-password"
-                                    placeholder="••••••••"
-                                    className="bg-background/50"
-                                />
-                                <InputError message={errors.password_confirmation} />
-                            </div>
+                        <button
+                            type="submit"
+                            disabled={processing}
+                            data-test="reset-password-button"
+                            className="ml-btn-primary flex h-12 w-full items-center justify-center gap-2 rounded-lg text-sm uppercase tracking-wider disabled:opacity-50"
+                        >
+                            {processing ? <Spinner className="h-4 w-4" /> : 'Reset password'}
+                        </button>
 
-                            <Button
-                                type="submit"
-                                className="mt-2 w-full bg-violet-600 hover:bg-violet-700 shadow-lg"
-                                disabled={processing}
-                                data-test="reset-password-button"
-                            >
-                                {processing && <Spinner className="mr-2 h-4 w-4" />}
-                                Reset password
-                            </Button>
-                        </div>
-                    )}
-                </Form>
-            </div>
+                        <p className="text-center text-xs text-slate-500">
+                            <TextLink href={login()} className="font-semibold text-gold-400">
+                                ← Back to log in
+                            </TextLink>
+                        </p>
+                    </>
+                )}
+            </Form>
         </AuthLayout>
     );
 }

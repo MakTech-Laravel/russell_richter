@@ -1,6 +1,5 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Link } from '@inertiajs/react';
 
-import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/auth-layout';
 import { logout } from '@/routes';
@@ -8,31 +7,45 @@ import { send } from '@/routes/verification';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     return (
-        <AuthLayout title="Verify your email" description="Almost there! Please check your inbox for a verification link.">
-            <Head title="Email verification" />
+        <AuthLayout
+            title={
+                <>
+                    Verify your <span className="text-gold-grad">email</span>
+                </>
+            }
+            description="Almost there! Please check your inbox for a verification link."
+            headTitle="Email verification"
+        >
+            {status === 'verification-link-sent' && (
+                <div className="mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-300">
+                    A fresh link has been sent to your email address.
+                </div>
+            )}
 
-            <div className="mx-auto w-full max-w-md text-center rounded-2xl border border-border/50 bg-card/50 p-10 shadow-xl backdrop-blur-sm">
-                {status === 'verification-link-sent' && (
-                    <div className="mb-6 rounded-lg bg-emerald-500/10 p-4 text-sm font-medium text-emerald-600">
-                        A fresh link has been sent to your email address.
-                    </div>
-                )}
+            <Form {...send.form()} className="space-y-4">
+                {({ processing }) => (
+                    <>
+                        <button
+                            type="submit"
+                            disabled={processing}
+                            className="ml-btn-primary flex h-12 w-full items-center justify-center gap-2 rounded-lg text-sm uppercase tracking-wider disabled:opacity-50"
+                        >
+                            {processing ? <Spinner className="h-4 w-4" /> : 'Resend verification email'}
+                        </button>
 
-                <Form {...send.form()} className="space-y-6">
-                    {({ processing }) => (
-                        <>
-                            <Button disabled={processing} variant="default" className="w-full bg-violet-600 py-6 text-base shadow-lg hover:shadow-violet-500/20">
-                                {processing && <Spinner className="mr-2" />}
-                                Resend Verification Email
-                            </Button>
-
-                            <Link href={logout()} method="post" as="button" className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors">
+                        <p className="text-center text-xs text-slate-500">
+                            <Link
+                                href={logout()}
+                                method="post"
+                                as="button"
+                                className="font-semibold text-gold-400 hover:text-gold-300"
+                            >
                                 Log out
                             </Link>
-                        </>
-                    )}
-                </Form>
-            </div>
+                        </p>
+                    </>
+                )}
+            </Form>
         </AuthLayout>
     );
 }
