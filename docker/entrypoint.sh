@@ -8,7 +8,11 @@ mkdir -p \
     storage/framework/{cache,sessions,views} \
     storage/logs \
     bootstrap/cache \
-    /var/log/supervisor
+    /var/log/supervisor \
+    /var/run
+
+# Remove stale supervisor socket from a previous crash.
+rm -f /var/run/supervisor.sock /var/run/supervisord.pid
 
 # Coolify persistent volumes remount as root; keep Laravel writable for www-data.
 chown -R www-data:www-data storage bootstrap/cache || true

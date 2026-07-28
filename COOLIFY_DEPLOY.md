@@ -231,12 +231,19 @@ php artisan config:clear
 ### Queue worker চেক (Coolify terminal)
 
 ```bash
+# 1) Container PID 1 must be entrypoint/supervisord (not php-fpm alone)
+ps aux | head -n 20
+
+# 2) Supervisor status
+ls -la /var/run/supervisor.sock
 supervisorctl status
+
+# 3) Queue worker log
 cat /var/log/supervisor/queue-worker_00.log
 php artisan queue:failed
 ```
 
-Worker `FATAL`/`EXITED` হলে redeploy করুন — নতুন `entrypoint.sh` storage permission ঠিক করে worker অটো-স্টার্ট করে।
+`unix:///var/run/supervisor.sock no such file` মানে Supervisord চলছে না বা পুরনো image। Coolify-তে **Redeploy (rebuild)** করুন এবং Application → **Start Command** খালি রাখুন যাতে Dockerfile `CMD` (`entrypoint.sh`) ব্যবহার হয়।
 
 ---
 
