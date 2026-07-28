@@ -38,6 +38,12 @@ RUN APP_ENV=local SESSION_DRIVER=file CACHE_STORE=file QUEUE_CONNECTION=sync DB_
 
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY ./docker/queue-worker.sh /usr/local/bin/queue-worker.sh
+
+RUN mkdir -p /var/log/supervisor \
+    && chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/queue-worker.sh \
+    && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 EXPOSE 80
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/local/bin/entrypoint.sh"]

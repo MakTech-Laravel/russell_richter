@@ -101,7 +101,7 @@ MAIL_ADMIN_ADDRESS=russell@mymobilelube.com
 ```
 
 > Laravel 12 uses `MAIL_SCHEME=smtps` (not `MAIL_ENCRYPTION`).  
-> Queue worker runs inside Supervisor automatically — live-এ `php artisan queue:work` ম্যানুয়ালি চালানো লাগে না।
+> Queue worker Supervisor দিয়ে অটো চলে (`laravel-queue-worker_00`). Redeploy-এর পর Coolify terminal-এ `supervisorctl status` দিয়ে RUNNING কিনা ভেরিফাই করুন — ম্যানুয়ালি `queue:work` লাগে না।
 
 ### Stripe (required for payments)
 
@@ -224,9 +224,19 @@ php artisan config:clear
 | 500 Error | `storage/logs/laravel.log` দেখুন |
 | CSS/JS load হয় না | `APP_URL` ও `ASSET_URL` domain match করছে কিনা |
 | Reviews দেখায় না | `GOOGLE_PLACES_API_KEY` সেট আছে কিনা; `php artisan reviews:sync-google` |
-| Queue কাজ করে না | `QUEUE_CONNECTION=database`; jobs table আছে কিনা; Supervisor-এ `laravel-queue-worker` running কিনা (`storage/logs/queue-worker.log`) |
-| Mail যায় না | Coolify-তে `MAIL_*` + `MAIL_SCHEME=smtps` সেট আছে কিনা; `APP_URL` live domain; queue worker চলছে কিনা |
+| Queue কাজ করে না | `QUEUE_CONNECTION=database`; `jobs` table আছে কিনা; container-এ `supervisorctl status` দিয়ে `laravel-queue-worker_00` RUNNING কিনা দেখুন; লগ: `/var/log/supervisor/queue-worker_00.log` |
+| Mail যায় না | Coolify-তে `MAIL_*` + `MAIL_SCHEME=smtps` সেট আছে কিনা; `APP_URL` live domain; **queue worker RUNNING** কিনা (মেইল queue দিয়ে যায়) |
 | Upload কাজ করে না | Persistent storage mount করা আছে কিনা |
+
+### Queue worker চেক (Coolify terminal)
+
+```bash
+supervisorctl status
+cat /var/log/supervisor/queue-worker_00.log
+php artisan queue:failed
+```
+
+Worker `FATAL`/`EXITED` হলে redeploy করুন — নতুন `entrypoint.sh` storage permission ঠিক করে worker অটো-স্টার্ট করে।
 
 ---
 
