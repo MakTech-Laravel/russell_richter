@@ -8,8 +8,11 @@ use App\Enums\TransactionStatus;
 use App\Models\Booking;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 use Stripe\Checkout\Session;
+use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\SignatureVerificationException;
+use Stripe\Refund;
 use Stripe\Stripe;
 use Stripe\Webhook;
 use UnexpectedValueException;
@@ -23,9 +26,37 @@ class StripeCheckoutService
         Stripe::setApiKey(config('services.stripe.secret'));
     }
 
-    public function createCheckoutSession(Booking $booking): Session
+    public function createCheckoutSession(Booking $booking, ?float $amount = null): Session
     {
         $booking->loadMissing(['user', 'service', 'vehicle']);
+
+        if ($amount === null) {
+            $netPaid = $booking->netPaidAmount();
+            $amountDue = $booking->amountDue();
+            $isBalancePayment = $netPaid > 0 && $amountDue > 0;
+            $chargeAmount = $isBalancePayment
+                ? $amountDue
+                : round((float) $booking->total_price, 2);
+        } else {
+            $chargeAmount = round($amount, 2);
+            $isBalancePayment = $booking->netPaidAmount() > 0;
+        }
+
+        $productName = $isBalancePayment
+            ? 'Additional payment — ' . $booking->service->name
+            : $booking->service->name;
+
+        $productDescription = $isBalancePayment
+            ? sprintf(
+                'Balance due for mobile service on %s (%s)',
+                $booking->scheduled_at->format('M j, Y g:i A'),
+                $booking->vehicle->display_name,
+            )
+            : sprintf(
+                'Mobile service for %s on %s',
+                $booking->vehicle->display_name,
+                $booking->scheduled_at->format('M j, Y g:i A'),
+            );
 
         $session = Session::create([
             'mode' => 'payment',
@@ -33,23 +64,21 @@ class StripeCheckoutService
             'line_items' => [[
                 'price_data' => [
                     'currency' => config('services.stripe.currency', 'usd'),
-                    'unit_amount' => $this->amountInCents($booking->total_price),
+                    'unit_amount' => $this->amountInCents($chargeAmount),
                     'product_data' => [
-                        'name' => $booking->service->name,
-                        'description' => sprintf(
-                            'Mobile service for %s on %s',
-                            $booking->vehicle->display_name,
-                            $booking->scheduled_at->format('M j, Y g:i A')
-                        ),
+                        'name' => $productName,
+                        'description' => $productDescription,
                     ],
                 ],
                 'quantity' => 1,
             ]],
-            'success_url' => route('bookings.payment.success', $booking).'?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('bookings.payment.success', $booking) . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('bookings.payment.cancel', $booking),
             'metadata' => [
                 'booking_id' => (string) $booking->id,
                 'user_id' => (string) $booking->user_id,
+                'charge_amount' => number_format($chargeAmount, 2, '.', ''),
+                'is_balance_payment' => $isBalancePayment ? '1' : '0',
             ],
         ]);
 
@@ -57,9 +86,49 @@ class StripeCheckoutService
             'stripe_checkout_session_id' => $session->id,
         ]);
 
-        $this->upsertPendingTransaction($booking, $session);
+        $this->upsertPendingTransaction($booking, $session, $chargeAmount);
 
         return $session;
+    }
+
+    /**
+     * @throws ApiErrorException
+     * @throws RuntimeException
+     */
+    public function refundAmount(Booking $booking, float $amount, string $reason): Transaction
+    {
+        $amount = round($amount, 2);
+
+        if ($amount <= 0) {
+            throw new RuntimeException('Refund amount must be greater than zero.');
+        }
+
+        $paymentIntentId = $this->resolvablePaymentIntentId($booking);
+
+        if (! filled($paymentIntentId)) {
+            throw new RuntimeException('No Stripe payment intent is available to refund for this booking.');
+        }
+
+        $refund = Refund::create([
+            'payment_intent' => $paymentIntentId,
+            'amount' => $this->amountInCents($amount),
+            'reason' => 'requested_by_customer',
+            'metadata' => [
+                'booking_id' => (string) $booking->id,
+                'adjustment_reason' => mb_substr($reason, 0, 450),
+            ],
+        ]);
+
+        return Transaction::query()->create([
+            'booking_id' => $booking->id,
+            'user_id' => $booking->user_id,
+            'amount' => $amount,
+            'currency' => config('services.stripe.currency', 'usd'),
+            'status' => TransactionStatus::Refunded,
+            'stripe_payment_intent_id' => $paymentIntentId,
+            'stripe_checkout_session_id' => $refund->id,
+            'paid_at' => now(),
+        ]);
     }
 
     public function retrieveCheckoutSession(string $sessionId): Session
@@ -102,7 +171,7 @@ class StripeCheckoutService
 
         try {
             $event = Webhook::constructEvent($payload, $signature ?? '', $webhookSecret);
-        } catch (UnexpectedValueException|SignatureVerificationException) {
+        } catch (UnexpectedValueException | SignatureVerificationException) {
             throw new UnexpectedValueException('Invalid Stripe webhook payload.');
         }
 
@@ -129,7 +198,21 @@ class StripeCheckoutService
         return (string) ($session->metadata['booking_id'] ?? '') === (string) $booking->id;
     }
 
-    private function upsertPendingTransaction(Booking $booking, Session $session): Transaction
+    private function resolvablePaymentIntentId(Booking $booking): ?string
+    {
+        if (filled($booking->stripe_payment_intent_id)) {
+            return $booking->stripe_payment_intent_id;
+        }
+
+        return Transaction::query()
+            ->where('booking_id', $booking->id)
+            ->where('status', TransactionStatus::Succeeded)
+            ->whereNotNull('stripe_payment_intent_id')
+            ->latest('paid_at')
+            ->value('stripe_payment_intent_id');
+    }
+
+    private function upsertPendingTransaction(Booking $booking, Session $session, float $chargeAmount): Transaction
     {
         return Transaction::query()->updateOrCreate(
             [
@@ -138,7 +221,7 @@ class StripeCheckoutService
             ],
             [
                 'user_id' => $booking->user_id,
-                'amount' => $booking->total_price,
+                'amount' => $chargeAmount,
                 'currency' => config('services.stripe.currency', 'usd'),
                 'status' => TransactionStatus::Pending,
             ],
@@ -148,8 +231,10 @@ class StripeCheckoutService
     private function markTransactionSucceeded(Booking $booking, Session $session, ?string $paymentIntentId): void
     {
         $shouldNotify = false;
+        $isBalancePayment = ($session->metadata['is_balance_payment'] ?? '0') === '1';
+        $chargeAmount = $this->sessionChargeAmount($booking, $session);
 
-        DB::transaction(function () use ($booking, $session, $paymentIntentId, &$shouldNotify): void {
+        DB::transaction(function () use ($booking, $session, $paymentIntentId, $chargeAmount, &$shouldNotify): void {
             $existing = Transaction::query()
                 ->where('booking_id', $booking->id)
                 ->where('stripe_checkout_session_id', $session->id)
@@ -167,7 +252,7 @@ class StripeCheckoutService
                 ],
                 [
                     'user_id' => $booking->user_id,
-                    'amount' => $booking->total_price,
+                    'amount' => $chargeAmount,
                     'currency' => config('services.stripe.currency', 'usd'),
                     'status' => TransactionStatus::Succeeded,
                     'stripe_payment_intent_id' => $paymentIntentId,
@@ -187,8 +272,34 @@ class StripeCheckoutService
             ->where('stripe_checkout_session_id', $session->id)
             ->firstOrFail();
 
-        $this->adminNotifier->transactionSucceeded($transaction);
-        $this->bookingMailNotifier->bookingConfirmed($booking->fresh(['user', 'service', 'vehicle', 'technician']));
+        $transaction->ensureInvoiceNumber();
+
+        $this->adminNotifier->transactionSucceeded($transaction->fresh());
+
+        $freshBooking = $booking->fresh(['user', 'service', 'vehicle', 'technician']);
+
+        if ($isBalancePayment) {
+            $this->bookingMailNotifier->bookingUpdated($freshBooking);
+
+            return;
+        }
+
+        $this->bookingMailNotifier->bookingConfirmed($freshBooking);
+    }
+
+    private function sessionChargeAmount(Booking $booking, Session $session): float
+    {
+        if (isset($session->amount_total) && is_numeric($session->amount_total)) {
+            return round(((int) $session->amount_total) / 100, 2);
+        }
+
+        $metadataAmount = $session->metadata['charge_amount'] ?? null;
+
+        if (is_numeric($metadataAmount)) {
+            return round((float) $metadataAmount, 2);
+        }
+
+        return round((float) $booking->total_price, 2);
     }
 
     private function amountInCents(float|string $amount): int

@@ -4,9 +4,14 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateBookingPricingRequest;
 use App\Models\Booking;
+use App\Models\Service;
 use App\Models\Technician;
+use App\Rules\AvailableBookingSlot;
 use App\Services\BookingMailNotifier;
+use App\Services\BookingPriceAdjustmentService;
+use App\Services\BookingPricingService;
 use App\Services\OilFitmentLookupService;
 use App\Services\RecommendationService;
 use App\Support\BookingPresenter;
@@ -22,16 +27,18 @@ class AdminBookingController extends Controller
         private RecommendationService $recommendationService,
         private OilFitmentLookupService $fitmentLookup,
         private BookingMailNotifier $bookingMailNotifier,
+        private BookingPricingService $bookingPricingService,
+        private BookingPriceAdjustmentService $bookingPriceAdjustmentService,
     ) {}
 
     public function index(Request $request): Response
     {
         $bookings = Booking::query()
             ->with(['user', 'vehicle', 'service', 'technician'])
-            ->when($request->string('status')->toString(), fn ($q, $status) => $q->where('status', $status))
+            ->when($request->string('status')->toString(), fn($q, $status) => $q->where('status', $status))
             ->latest('scheduled_at')
             ->paginate(15)
-            ->through(fn (Booking $b) => [
+            ->through(fn(Booking $b) => [
                 'id' => $b->id,
                 'route_key' => $b->getRouteKey(),
                 'customer' => $b->user?->name,
@@ -52,7 +59,7 @@ class AdminBookingController extends Controller
         return Inertia::render('backend/Admin/Bookings/Index', [
             'bookings' => $bookings,
             'filters' => ['status' => $request->string('status')->toString()],
-            'statuses' => collect(BookingStatus::cases())->map(fn ($s) => ['value' => $s->value, 'label' => $s->label()]),
+            'statuses' => collect(BookingStatus::cases())->map(fn($s) => ['value' => $s->value, 'label' => $s->label()]),
             'technicians' => Technician::query()->where('is_active', true)->get(['id', 'name']),
         ]);
     }
@@ -66,7 +73,12 @@ class AdminBookingController extends Controller
         return Inertia::render('backend/Admin/Bookings/Show', [
             'booking' => $this->transform($booking),
             'technicians' => Technician::query()->where('is_active', true)->get(['id', 'name']),
-            'statuses' => collect(BookingStatus::cases())->map(fn ($s) => ['value' => $s->value, 'label' => $s->label()]),
+            'statuses' => collect(BookingStatus::cases())->map(fn($s) => ['value' => $s->value, 'label' => $s->label()]),
+            'services' => Service::query()
+                ->where('is_active', true)
+                ->where('service_type', 'package')
+                ->orderBy('sort_order')
+                ->get(['id', 'name', 'base_price', 'included_quarts', 'additional_quart_price']),
             'oilSpec' => $fitment ? [
                 'oil_grade' => $fitment->oil_grade,
                 'oil_capacity_quarts' => (float) $fitment->oil_capacity_quarts,
@@ -112,6 +124,43 @@ class AdminBookingController extends Controller
         return back()->with('success', 'Booking updated successfully.');
     }
 
+    public function updatePricing(UpdateBookingPricingRequest $request, Booking $booking): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        if (! empty($validated['scheduled_at'])) {
+            $request->validate([
+                'scheduled_at' => [new AvailableBookingSlot($booking)],
+            ]);
+        }
+
+        $service = $booking->service ?? Service::query()->findOrFail($booking->service_id);
+        $pricing = $this->bookingPricingService->calculate($service, $validated);
+
+        $booking->fill([
+            ...$pricing,
+            'scheduled_at' => $validated['scheduled_at'] ?? $booking->scheduled_at,
+            'service_address' => $validated['service_address'] ?? $booking->service_address,
+            'service_city' => $validated['service_city'] ?? $booking->service_city,
+            'service_state' => $validated['service_state'] ?? $booking->service_state,
+            'service_zip' => $validated['service_zip'] ?? $booking->service_zip,
+            'customer_notes' => array_key_exists('customer_notes', $validated)
+                ? $validated['customer_notes']
+                : $booking->customer_notes,
+        ])->save();
+
+        $booking = $booking->fresh(['user', 'service', 'vehicle', 'technician', 'transactions']);
+        $paymentSync = $this->bookingPriceAdjustmentService->syncPaidBookingBalance($booking);
+
+        if ($paymentSync['action'] === 'none') {
+            $this->bookingMailNotifier->bookingUpdated($booking);
+        }
+
+        $flashKey = $paymentSync['action'] === 'error' ? 'error' : 'success';
+
+        return back()->with($flashKey, $paymentSync['message']);
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -135,6 +184,13 @@ class AdminBookingController extends Controller
             'latitude' => $booking->latitude,
             'longitude' => $booking->longitude,
             'total_price' => $booking->total_price,
+            'package_price' => $booking->package_price,
+            'extra_quarts' => $booking->extra_quarts,
+            'extra_quarts_amount' => $booking->extra_quarts_amount,
+            'extra_charge_amount' => $booking->extra_charge_amount,
+            'extra_charge_label' => $booking->extra_charge_label,
+            'discount_percent' => $booking->discount_percent,
+            'discount_amount' => $booking->discount_amount,
             'customer_notes' => $booking->customer_notes,
             'technician_notes' => $booking->technician_notes,
             'route_order' => $booking->route_order,
@@ -154,12 +210,15 @@ class AdminBookingController extends Controller
             'service' => $booking->service ? [
                 'id' => $booking->service->id,
                 'name' => $booking->service->name,
+                'base_price' => $booking->service->base_price,
+                'included_quarts' => $booking->service->included_quarts,
+                'additional_quart_price' => $booking->service->additional_quart_price,
             ] : null,
             'technician' => $booking->technician ? [
                 'id' => $booking->technician->id,
                 'name' => $booking->technician->name,
             ] : null,
-            'recommendations' => $booking->recommendations->map(fn ($r) => [
+            'recommendations' => $booking->recommendations->map(fn($r) => [
                 'part_type_label' => $r->part_type->label(),
                 'part_name' => $r->part_name,
                 'part_number' => $r->part_number,

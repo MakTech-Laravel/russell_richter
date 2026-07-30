@@ -45,14 +45,35 @@ interface Booking {
     latitude: number | null;
     longitude: number | null;
     total_price: string | number | null;
+    package_price: string | number | null;
+    extra_quarts: number;
+    extra_quarts_amount: string | number | null;
+    extra_charge_amount: string | number | null;
+    extra_charge_label: string | null;
+    discount_percent: string | number | null;
+    discount_amount: string | number | null;
     customer_notes: string | null;
     technician_notes: string | null;
     route_order: number | null;
     customer: { id: number; name: string; email: string; phone: string | null } | null;
     vehicle: { id: number; display_name: string; vin: string; mileage: number | null; oil_preference_notes: string | null } | null;
-    service: { id: number; name: string } | null;
+    service: {
+        id: number;
+        name: string;
+        base_price?: string | number;
+        included_quarts?: number | null;
+        additional_quart_price?: string | number | null;
+    } | null;
     technician: { id: number; name: string } | null;
     recommendations: Recommendation[];
+}
+
+interface ServiceOption {
+    id: number;
+    name: string;
+    base_price: string | number;
+    included_quarts: number | null;
+    additional_quart_price: string | number | null;
 }
 
 interface StatusOption {
@@ -72,6 +93,7 @@ interface ShowProps {
     booking: Booking;
     technicians: Array<{ id: number; name: string }>;
     statuses: StatusOption[];
+    services: ServiceOption[];
     oilSpec: OilSpec | null;
 }
 
@@ -90,6 +112,8 @@ function DetailRow({ label, value }: { label: string; value: string | number | n
 
 export default function Show({ booking, technicians, statuses, oilSpec }: ShowProps) {
     const fullAddress = `${booking.service_address}, ${booking.service_city}, ${booking.service_state} ${booking.service_zip}`;
+    const quartPrice = Number(booking.service?.additional_quart_price ?? 0);
+    const includedQuarts = booking.service?.included_quarts ?? null;
 
     return (
         <AdminLayout
@@ -132,8 +156,159 @@ export default function Show({ booking, technicians, statuses, oilSpec }: ShowPr
                                 <DetailRow label="Service" value={booking.service?.name} />
                                 <DetailRow label="Address" value={fullAddress} />
                                 <DetailRow label="Route Order" value={booking.route_order} />
+                                <DetailRow label="Package" value={booking.package_price != null ? `$${Number(booking.package_price).toFixed(2)}` : null} />
+                                <DetailRow
+                                    label="Extra Quarts"
+                                    value={
+                                        booking.extra_quarts > 0
+                                            ? `${booking.extra_quarts} × $${quartPrice.toFixed(2)} = $${Number(booking.extra_quarts_amount ?? 0).toFixed(2)}`
+                                            : 'None'
+                                    }
+                                />
+                                <DetailRow
+                                    label={booking.extra_charge_label || 'Extra Charge'}
+                                    value={
+                                        Number(booking.extra_charge_amount ?? 0) > 0
+                                            ? `$${Number(booking.extra_charge_amount).toFixed(2)}`
+                                            : 'None'
+                                    }
+                                />
+                                <DetailRow
+                                    label="Discount"
+                                    value={
+                                        Number(booking.discount_percent ?? 0) > 0
+                                            ? `${Number(booking.discount_percent).toFixed(0)}% (−$${Number(booking.discount_amount ?? 0).toFixed(2)})`
+                                            : 'None'
+                                    }
+                                />
                                 <DetailRow label="Total" value={booking.total_price != null ? `$${Number(booking.total_price).toFixed(2)}` : null} />
                                 <DetailRow label="Customer Notes" value={booking.customer_notes} />
+                            </DashboardCardContent>
+                        </DashboardCard>
+
+                        <DashboardCard>
+                            <DashboardCardHeader
+                                title="Customer-Specific Pricing"
+                                subtitle="Changes apply only to this booking — package catalog prices stay unchanged."
+                            />
+                            <DashboardCardContent>
+                                <Form
+                                    action={route('admin.bookings.pricing.update', booking.route_key)}
+                                    method="patch"
+                                    className="space-y-4"
+                                >
+                                    {({ processing, errors }) => (
+                                        <>
+                                            {includedQuarts != null && (
+                                                <p className="text-xs text-slate-400">
+                                                    Package includes {includedQuarts} quarts
+                                                    {quartPrice > 0 ? ` · extra quarts $${quartPrice.toFixed(2)} each` : ''}.
+                                                    {oilSpec ? ` Vehicle capacity: ${oilSpec.oil_capacity_quarts} quarts.` : ''}
+                                                </p>
+                                            )}
+
+                                            <div className="grid gap-4 sm:grid-cols-2">
+                                                <div className="space-y-2">
+                                                    <label htmlFor="extra_quarts" className={dashboardLabelClass()}>Extra Quarts</label>
+                                                    <input
+                                                        id="extra_quarts"
+                                                        name="extra_quarts"
+                                                        type="number"
+                                                        min={0}
+                                                        max={50}
+                                                        defaultValue={booking.extra_quarts}
+                                                        className={dashboardInputClass()}
+                                                    />
+                                                    <InputError message={errors.extra_quarts} />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label htmlFor="discount_percent" className={dashboardLabelClass()}>Discount %</label>
+                                                    <input
+                                                        id="discount_percent"
+                                                        name="discount_percent"
+                                                        type="number"
+                                                        min={0}
+                                                        max={100}
+                                                        step="0.01"
+                                                        defaultValue={Number(booking.discount_percent ?? 0)}
+                                                        className={dashboardInputClass()}
+                                                    />
+                                                    <InputError message={errors.discount_percent} />
+                                                </div>
+                                            </div>
+
+                                            <div className="grid gap-4 sm:grid-cols-2">
+                                                <div className="space-y-2">
+                                                    <label htmlFor="extra_charge_label" className={dashboardLabelClass()}>Extra Charge Label</label>
+                                                    <input
+                                                        id="extra_charge_label"
+                                                        name="extra_charge_label"
+                                                        type="text"
+                                                        defaultValue={booking.extra_charge_label ?? ''}
+                                                        placeholder="e.g. Cabin filter, after-hours fee"
+                                                        className={dashboardInputClass()}
+                                                    />
+                                                    <InputError message={errors.extra_charge_label} />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label htmlFor="extra_charge_amount" className={dashboardLabelClass()}>Extra Charge Amount</label>
+                                                    <input
+                                                        id="extra_charge_amount"
+                                                        name="extra_charge_amount"
+                                                        type="number"
+                                                        min={0}
+                                                        step="0.01"
+                                                        defaultValue={Number(booking.extra_charge_amount ?? 0)}
+                                                        className={dashboardInputClass()}
+                                                    />
+                                                    <InputError message={errors.extra_charge_amount} />
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label htmlFor="scheduled_at" className={dashboardLabelClass()}>Scheduled At</label>
+                                                <input
+                                                    id="scheduled_at"
+                                                    name="scheduled_at"
+                                                    type="datetime-local"
+                                                    defaultValue={booking.scheduled_at?.slice(0, 16)}
+                                                    className={dashboardInputClass()}
+                                                />
+                                                <InputError message={errors.scheduled_at} />
+                                            </div>
+
+                                            <div className="grid gap-4 sm:grid-cols-2">
+                                                <div className="space-y-2 sm:col-span-2">
+                                                    <label htmlFor="service_address" className={dashboardLabelClass()}>Address</label>
+                                                    <input
+                                                        id="service_address"
+                                                        name="service_address"
+                                                        type="text"
+                                                        defaultValue={booking.service_address}
+                                                        className={dashboardInputClass()}
+                                                    />
+                                                    <InputError message={errors.service_address} />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label htmlFor="service_city" className={dashboardLabelClass()}>City</label>
+                                                    <input id="service_city" name="service_city" type="text" defaultValue={booking.service_city} className={dashboardInputClass()} />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label htmlFor="service_state" className={dashboardLabelClass()}>State</label>
+                                                    <input id="service_state" name="service_state" type="text" maxLength={2} defaultValue={booking.service_state} className={dashboardInputClass()} />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label htmlFor="service_zip" className={dashboardLabelClass()}>ZIP</label>
+                                                    <input id="service_zip" name="service_zip" type="text" defaultValue={booking.service_zip} className={dashboardInputClass()} />
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" disabled={processing} className="ml-btn-primary inline-flex">
+                                                {processing ? 'Saving...' : 'Save Customer Pricing'}
+                                            </button>
+                                        </>
+                                    )}
+                                </Form>
                             </DashboardCardContent>
                         </DashboardCard>
 

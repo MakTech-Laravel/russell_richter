@@ -48,6 +48,13 @@ return [
         'currency' => env('STRIPE_CURRENCY', 'usd'),
     ],
 
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_AUTH_TOKEN'),
+        'from' => env('TWILIO_FROM'),
+        'admin_phone' => env('SMS_ADMIN_PHONE'),
+    ],
+
     'google' => [
         'places_api_key' => env('GOOGLE_PLACES_API_KEY'),
         'place_id' => env('GOOGLE_PLACE_ID'),

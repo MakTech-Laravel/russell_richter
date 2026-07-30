@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 
 import {
     DashboardCard,
@@ -13,6 +13,7 @@ import AdminLayout from '@/layouts/admin-layout';
 
 interface TransactionRow {
     id: number;
+    invoice_number: string | null;
     amount: string | number;
     currency: string;
     status: string;
@@ -46,6 +47,14 @@ interface IndexProps {
 }
 
 export default function Index({ transactions }: IndexProps) {
+    const deleteTransaction = (id: number) => {
+        if (!confirm('Delete this transaction? Use this for test records.')) {
+            return;
+        }
+
+        router.delete(route('admin.transactions.destroy', id));
+    };
+
     return (
         <AdminLayout title="Transactions" subtitle="All Stripe payment transactions across the platform.">
             <Head title="Transactions" />
@@ -60,17 +69,21 @@ export default function Index({ transactions }: IndexProps) {
                             <DashboardTable>
                                 <thead>
                                     <tr className={dashboardTableHeadClass()}>
+                                        <th className="pb-3 pr-4">Invoice</th>
                                         <th className="pb-3 pr-4">Customer</th>
                                         <th className="pb-3 pr-4">Service</th>
                                         <th className="pb-3 pr-4">Amount</th>
                                         <th className="pb-3 pr-4">Status</th>
                                         <th className="pb-3 pr-4">Paid At</th>
-                                        <th className="pb-3">Booking</th>
+                                        <th className="pb-3">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {transactions.data.map((tx) => (
                                         <tr key={tx.id} className={dashboardTableRowClass()}>
+                                            <td className="py-3 pr-4 font-mono text-sm text-gold-300">
+                                                {tx.invoice_number ?? `TX-${tx.id}`}
+                                            </td>
                                             <td className="py-3 pr-4">
                                                 <p className="text-white">{tx.customer ?? '—'}</p>
                                                 {tx.customer_email && (
@@ -89,12 +102,27 @@ export default function Index({ transactions }: IndexProps) {
                                             </td>
                                             <td className="py-3 pr-4 text-slate-400">{tx.paid_at ?? tx.created_at}</td>
                                             <td className="py-3">
-                                                <Link
-                                                    href={route('admin.bookings.show', tx.booking_route_key ?? tx.booking_id)}
-                                                    className="text-gold-400 hover:underline"
-                                                >
-                                                    #{tx.booking_id}
-                                                </Link>
+                                                <div className="flex flex-wrap gap-2">
+                                                    <Link
+                                                        href={route('admin.transactions.show', tx.id)}
+                                                        className="text-sm text-gold-400 hover:underline"
+                                                    >
+                                                        Details
+                                                    </Link>
+                                                    <Link
+                                                        href={route('admin.bookings.show', tx.booking_route_key ?? tx.booking_id)}
+                                                        className="text-sm text-slate-400 hover:text-white"
+                                                    >
+                                                        Booking
+                                                    </Link>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => deleteTransaction(tx.id)}
+                                                        className="text-sm text-rose-300 hover:underline"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

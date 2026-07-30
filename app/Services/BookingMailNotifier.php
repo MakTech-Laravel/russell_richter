@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Enums\BookingStatus;
+use App\Mail\BookingAdditionalPaymentMail;
 use App\Mail\BookingAssignedMail;
 use App\Mail\BookingCancelledMail;
 use App\Mail\BookingConfirmedMail;
+use App\Mail\BookingPricingRefundMail;
 use App\Mail\BookingStatusChangedMail;
 use App\Mail\BookingUpdatedMail;
 use App\Mail\ContactMessageMail;
@@ -102,6 +104,46 @@ class BookingMailNotifier
         $this->sendToAssignedTechnician(
             $booking,
             new BookingUpdatedMail($booking, 'technician'),
+            exceptEmail: $customerEmail,
+        );
+    }
+
+    public function pricingRefundIssued(Booking $booking, float $refundAmount, string $reason): void
+    {
+        $booking->loadMissing(['user', 'service', 'vehicle', 'technician']);
+
+        $customerEmail = $booking->user?->email;
+
+        if ($customerEmail) {
+            Mail::to($booking->user)->send(
+                new BookingPricingRefundMail($booking, $refundAmount, $reason, 'customer'),
+            );
+        }
+
+        $this->eachAdmin(
+            fn(): Mailable => new BookingPricingRefundMail($booking, $refundAmount, $reason, 'admin'),
+            exceptEmail: $customerEmail,
+        );
+    }
+
+    public function additionalPaymentRequested(
+        Booking $booking,
+        float $amountDue,
+        string $reason,
+        ?string $checkoutUrl = null,
+    ): void {
+        $booking->loadMissing(['user', 'service', 'vehicle', 'technician']);
+
+        $customerEmail = $booking->user?->email;
+
+        if ($customerEmail) {
+            Mail::to($booking->user)->send(
+                new BookingAdditionalPaymentMail($booking, $amountDue, $reason, $checkoutUrl, 'customer'),
+            );
+        }
+
+        $this->eachAdmin(
+            fn(): Mailable => new BookingAdditionalPaymentMail($booking, $amountDue, $reason, $checkoutUrl, 'admin'),
             exceptEmail: $customerEmail,
         );
     }

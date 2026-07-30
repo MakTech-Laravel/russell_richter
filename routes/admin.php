@@ -30,6 +30,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
         Route::get('/bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
         Route::patch('/bookings/{booking}', [AdminBookingController::class, 'update'])->name('bookings.update');
+        Route::patch('/bookings/{booking}/pricing', [AdminBookingController::class, 'updatePricing'])->name('bookings.pricing.update');
 
         Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
         Route::get('/customers/{customer}', [AdminCustomerController::class, 'show'])->name('customers.show');
@@ -70,6 +71,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/services/{service}', [AdminServiceController::class, 'destroy'])->name('services.destroy');
 
         Route::get('/transactions', [AdminTransactionController::class, 'index'])->name('transactions.index');
+        Route::get('/transactions/{transaction}', [AdminTransactionController::class, 'show'])->name('transactions.show');
+        Route::delete('/transactions/{transaction}', [AdminTransactionController::class, 'destroy'])->name('transactions.destroy');
 
         Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
         Route::patch('/notifications/{notification}/read', [AdminNotificationController::class, 'markAsRead'])->name('notifications.read');

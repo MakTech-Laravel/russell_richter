@@ -12,6 +12,7 @@ use App\Models\Service;
 use App\Models\Vehicle;
 use App\Services\AdminNotifier;
 use App\Services\BookingMailNotifier;
+use App\Services\BookingPricingService;
 use App\Services\GeocodingService;
 use App\Services\RecommendationService;
 use App\Services\StripeCheckoutService;
@@ -30,6 +31,7 @@ class BookingController extends Controller
         private StripeCheckoutService $stripeCheckoutService,
         private AdminNotifier $adminNotifier,
         private BookingMailNotifier $bookingMailNotifier,
+        private BookingPricingService $bookingPricingService,
     ) {}
 
     public function index(Request $request): Response
@@ -91,9 +93,9 @@ class BookingController extends Controller
         $booking = $request->user()->bookings()->create([
             ...$data,
             ...$coordinates,
+            ...$this->bookingPricingService->calculate($service),
             'status' => BookingStatus::Pending,
             'payment_status' => PaymentStatus::Unpaid,
-            'total_price' => $service->base_price,
         ]);
 
         $this->recommendationService->generateForBooking($booking);
@@ -195,6 +197,13 @@ class BookingController extends Controller
             'service_zip' => $booking->service_zip,
             'mileage_at_service' => $booking->mileage_at_service,
             'total_price' => $booking->total_price,
+            'package_price' => $booking->package_price,
+            'extra_quarts' => $booking->extra_quarts,
+            'extra_quarts_amount' => $booking->extra_quarts_amount,
+            'extra_charge_amount' => $booking->extra_charge_amount,
+            'extra_charge_label' => $booking->extra_charge_label,
+            'discount_percent' => $booking->discount_percent,
+            'discount_amount' => $booking->discount_amount,
             'customer_notes' => $booking->customer_notes,
             'technician_notes' => $booking->technician_notes,
             'route_order' => $booking->route_order,
